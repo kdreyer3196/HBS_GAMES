@@ -60,7 +60,9 @@ def calcChi2(exp, sim, std):
     
     #Calculate chi2
     for i, sim_val in enumerate(sim): #for each datapoint
-        err = ((exp[i] - sim_val) / (std[i])) ** 2
+        # err = ((exp[i] - sim_val) / (std[i])) ** 2
+        
+        err = (exp[i] - sim_val) ** 2
         chi2 = chi2 + err
         
     return chi2
@@ -68,113 +70,127 @@ def calcChi2(exp, sim, std):
 # =============================================================================
 # CODE TO DEFINE ODES
 # ============================================================================= 
-def model_AB(y, t, v):
-    ''' 
-    Purpose: Define ODEs for reference model, call directly with odeint
+
+def HBS_1a(y, t, params):
+
+    [k_out, k_prod, k_pMARS, k_dMARS, k_dreg1, k_dreg2, k_dreg3, k_dreg4, O2] = params
+
+    #parameters that will be held constant:
+    k_txnBh = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_drep = 0.029 #1/hr
+
+    k_in = 1.0 #au (MARS with NEW Mechanism)
+    k_txn = 1 #au/h
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from hypoxic incubator experiment
+    else:
+        O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
         
-    Inputs: 
-        y: list of states
-        t: list of timepoints
-        v: list of model-specific arguments needed to define ODEs
-           
-    Output: 
-        dydt: list of differential equations describing system
-    
-    '''
-    
-    #Unpack doses and parameters
-    [[dose_a, dose_b, dose_l], [e, b, k_bind, m, km, n]] = v
+    #y holds these state variables: y0= MARS0, y1 = MARS,  y2 = HIF1a mRNA, y3 = HIF1a protein, y4 = HIF2a mRNA,
+    #y5 = HIF2a protein, y6 = DsRED2 mRNA, y7 = DsRED2 protein
 
-    #Set fixed parameters
-    k_txn = 1
-    k_trans = 1
-    kdeg_rna = 2.7  
-    kdeg_protein = .35  
-    kdeg_reporter = .029  
-    k_deg_ligand = .01
-    kdeg_a = kdeg_protein
-    kdeg_b = kdeg_protein
+    y0, y1, y2, y3, y4, y5, y6, y7 = y
 
-    y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8 = y
-    
-    #Calculate fractical activation of promoter
-    f_num = b + m * (y_6/km) ** n
-    f_denom = 1 + (y_6/km) ** n + (y_2/km) ** n
-    f = f_num/f_denom
-    
-    #If nan is present, set f to 0 
-    if math.isnan(f):
-        f = 0
-
-    #Define ODEs
-    dydt = [k_txn * dose_a - kdeg_rna * y_1, #y1 A mRNA
-            k_trans * y_1 - kdeg_a * y_2 - k_bind * y_2 * y_4 * y_5, #y2 A protein
-            k_txn * dose_b - kdeg_rna * y_3, #y3 B mRNA
-            k_trans * y_3 - kdeg_b * y_4 - k_bind  * y_2 * y_4 * y_5, #y4 B protein
-            - k_bind * y_2 * y_4 * y_5 - y_5 * k_deg_ligand, #y5 Ligand
-            k_bind  * y_2 * y_4 * y_5 - kdeg_protein * y_6, #y6 Activator
-            k_txn * f - kdeg_rna * y_7, #y7 Reporter mRNA
-            k_trans * y_7 - kdeg_reporter * y_8] #y8 Reporter protein
+    dydt = [k_in + k_prod*(y3 + y5) - k_pMARS*y0 - k_out*y0,
+            k_pMARS*y0 +  - k_dMARS*y1,
+            k_txn - k_dR*y2 - k_dreg1*y1*y2,
+            k_tln*y2 - k_dP*y3 - k_dreg2*y1*O2_rate*y3,
+            k_txn - k_dR*y4 + k_dreg3*y1,
+            k_tln*y4 - k_dP*y5 - k_dreg4*y1*O2_rate*y5,
+            
+            k_txnBh*(y3 + y5) - k_dR*y6,
+            k_tln*y6 - k_drep*y7]
 
     return dydt
 
-def model_CD(y, t, v):
-    ''' 
-    Purpose: Define ODEs for reference model, call directly with odeint
+def HBS_4b(y, t, params):
+
+    [k_out, k_prod, k_pMARS, k_dMARS, k_dreg1, k_dreg2, k_tln2, k_dreg3, k_dreg4, O2] = params
+
+    #parameters that will be held constant:
+    k_txnBh = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_drep = 0.029 #1/hr
+    
+    k_in = 1.0 #au (MARS with NEW Mechanism)
+    k_txn = 1 #au/h
+    
+        #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+    else:
+        #Exponential decrease in pO2 from hypoxic incubator experiment
+        O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
         
-    Inputs: 
-        y: list of states
-        t: list of timepoints
-        v: list of model-specific arguments needed to define ODEs
-           
-    Output: 
-        dydt: list of differential equations describing system
-    
-    '''
-    
-    #Unpack doses and parameters
-    [[dose_a, dose_b, dose_l], [e, b, k_bind, m_star, km, n]] = v
-    
-    m = m_star
-    b = 1
+    #y holds these state variables: y0 = MARS0, y1= MARS,  y2 = HIF1a mRNA, y3 = synthetic HIF1a mRNA, y4 = HIF1a protein,
+    #y5 = HIF2a mRNA, y6 = HIF2a protein, y7 = DsRED2 mRNA, y8 = DsRED2 protein
 
-    #Set fixed parameters
-    k_txn = 1
-    k_trans = 1
-    kdeg_rna = 2.7  
-    kdeg_protein = .35  
-    kdeg_reporter = .029  
-    k_deg_ligand = .01 
-    kdeg_a = kdeg_protein
-    kdeg_b = kdeg_protein
+    y0, y1, y2, y3, y4, y5, y6, y7, y8 = y
 
-    y_1, y_2, y_3, y_4, y_5, y_6, y_7, y_8 = y
-    
-    #Calculate fractical activation of promoter
-    f_num = b + m * (y_6/km) ** n
-    f_denom = 1 + (y_6/km) ** n + (y_2/km) ** n
-    f = f_num/f_denom
-    
-    #If nan is present, set f to 0 
-    if math.isnan(f):
-        f = 0
-
-    #Define ODEs
-    dydt = [k_txn * dose_a - kdeg_rna * y_1, #y1 A mRNA
-            k_trans * y_1 - kdeg_a * y_2 - k_bind * y_2 * y_4 * y_5, #y2 A protein
-            k_txn * dose_b - kdeg_rna * y_3, #y3 B mRNA
-            k_trans * y_3 - kdeg_b * y_4 - k_bind  * y_2 * y_4 * y_5, #y4 B protein
-            - k_bind * y_2 * y_4 * y_5 - y_5 * k_deg_ligand, #y5 Ligand
-            k_bind  * y_2 * y_4 * y_5 - kdeg_protein * y_6, #y6 Activator
-            k_txn * f - kdeg_rna * y_7, #y7 Reporter mRNA
-            k_trans * y_7 - kdeg_reporter * y_8] #y8 Reporter protein
+    dydt = [k_in + k_prod*(y4 + y6) - k_pMARS*y0 - k_out*y0,
+            k_pMARS*y0 +  - k_dMARS*y1,
+            k_txn - k_dR*y2 - k_dreg1*y1*y2,
+            k_txnBh*(y4 + y6) - k_dR*y3,
+            k_tln*y2 + k_tln2*y3 - k_dP*y4 - k_dreg2*y1*O2_rate*y4,
+            k_txn - k_dR*y5 + k_dreg3*y1,
+            k_tln*y5 - k_dP*y6 - k_dreg4*y1*O2_rate*y6,
+            
+            k_txnBh*(y4 + y6) - k_dR*y7,
+            k_tln*y7 - k_drep*y8]
 
     return dydt
 
+def HBS_4c(y, t, params):
+
+    [k_out, k_prod, k_pMARS, k_dMARS, k_dreg1, k_dreg2, k_tln2, k_dreg3, k_dreg4, O2] = params
+
+    #parameters that will be held constant:
+    k_txnBh = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_drep = 0.029 #1/hr
+    
+    k_in = 1.0 #au (MARS with NEW Mechanism)
+    k_txn = 1 #au/h
+
+        #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+    else:
+        #Exponential decrease in pO2 from hypoxic incubator experiment
+        O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        
+    #y holds these state variables: Y0 = MARS0, y1 = MARS,  y2 = HIF1a mRNA, y3 = HIF1a protein, y4 = HIF2a mRNA, y5 = synthetic HIF2a mRNA,
+    #y6 = HIF2a protein, y7 = DsRED2 mRNA, y8 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8 = y
+
+    dydt = [k_in + k_prod*(y3 + y6) - k_pMARS*y0 - k_out*y0,
+            k_pMARS*y0 +  - k_dMARS*y1,
+            k_txn - k_dR*y2 - k_dreg1*y1*y2,
+            k_tln*y2 - k_dP*y3 - k_dreg2*y1*O2_rate*y3,
+            k_txn - k_dR*y4 + k_dreg3*y1,
+            k_txnBh*(y3 + y6) - k_dR*y5,
+            k_tln*y4 + k_tln2*y5 - k_dP*y6 - k_dreg4*y1*O2_rate*y6,
+
+            k_txnBh*(y3 + y6) - k_dR*y7,
+            k_tln*y7 - k_drep*y8]
+
+    return dydt
 
 
 # =============================================================================
-# CODE TO SOLVE MODEL FOR A SINGLE DATA POINT
+# CODE TO SOLVE ONE HBS in Normoxia and Hypoxia (START HERE)
 # ============================================================================= 
 def solveSingle(args): 
     

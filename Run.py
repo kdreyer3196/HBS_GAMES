@@ -41,7 +41,7 @@ sky_blue = [i/255 for i in [86, 180, 233]]
 pink_ = [i/255 for i in [204, 121, 167]]
 
 #Unpack conditions from Settings.py
-conditions_dictionary, initial_params_dictionary, data_dictionary = Settings.init()
+conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info = Settings.init()
 run = conditions_dictionary["run"]
 model = conditions_dictionary["model"] 
 data = conditions_dictionary["data"]

@@ -6,7 +6,7 @@
 #Package imports
 import numpy as np
 
-def defineExp(data, df_ref):
+def defineExp(data, df_ref, df_err):
     ''' 
     Purpose: Import the experimental data from an (.xlsx sheet) and 
         structure the data to be compatible with downstream LMFIT code.
@@ -28,48 +28,33 @@ def defineExp(data, df_ref):
         
   '''
 
-    doses_ligand = [0] + list(np.logspace(0, 2, 10))
-    doses_dbd = [0, 2, 5, 10, 20, 50, 100, 200]
+    exp_lists = df_ref.values.tolist()
+    err_lists = df_err.values.tolist()
+
     
-    #Restructure data
-    if data == 'ligand dose response only':
-        data_ligand = df_ref['L']
- 
-        x = []
-        for val in doses_ligand:
-            x1 = 50
-            x2 = 50
-            x3 = val
-            x.append([x1, x2, x3])
-  
-        data = data_ligand
-        error = [.05] * len(x)
+    if data == 'hypox only':
+        exp1a = np.append(exp_lists[0][:5], exp_lists[1][3])
+        exp4b = np.append(exp_lists[2], exp_lists[3][3])
+        exp4c = np.append(exp_lists[4], exp_lists[5][3])
         
-    elif data == 'ligand dose response and DBD dose response':
-        data_ligand = list(df_ref['L'])
-        data_dbd_20 = list(df_ref['DBD_20'])[0:8]
-        data_dbd_10 = list(df_ref['DBD_10'])[0:8]
+        err1a = np.append(err_lists[0][:5], err_lists[1][3])
+        err4b = np.append(err_lists[2], err_lists[3][3])
+        err4c = np.append(err_lists[4], err_lists[5][3])
         
-        x = []
-        for val in doses_ligand:
-            x1 = 50
-            x2 = 50
-            x3 = val
-            x.append([x1, x2, x3])
         
-        for val in doses_dbd:
-            x1 = val
-            x2 = 20
-            x3 = 100
-            x.append([x1, x2, x3])
-            
-        for val in doses_dbd:
-            x1 = val
-            x2 = 10
-            x3 = 100
-            x.append([x1, x2, x3])
+    elif data == 'all':
         
-        data = data_ligand + data_dbd_20 + data_dbd_10
-        error = [.05] * len(x)
+        exp1a = np.concatenate((exp_lists[0][:5], exp_lists[1][3:]))
+        exp4b = np.concatenate((exp_lists[2], exp_lists[3][3:]))
+        exp4c = np.concatenate((exp_lists[4], exp_lists[5][3:]))
+
+        err1a = np.concatenate((err_lists[0][:5], err_lists[1][3:]))
+        err4b = np.concatenate((err_lists[2], err_lists[3][3:]))
+        err4c = np.concatenate((err_lists[4], err_lists[5][3:]))
+    
+    
+    data = np.concatenate((exp1a, exp4b, exp4c))
+    error = np.concatenate((err1a, err4b, err4c))
+
        
-    return x, data, error
+    return data, error
