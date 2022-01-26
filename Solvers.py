@@ -71,9 +71,9 @@ def calcChi2(exp, sim, std):
 # CODE TO DEFINE ODES
 # ============================================================================= 
 
-def HBS_1a(y, t, params):
-
-    [k_out, k_prod, k_pMARS, k_dMARS, k_dreg1, k_dreg2, k_dreg3, k_dreg4, O2] = params
+def HBS_1a(y, t, v):
+ 
+    [[k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio], O2] = v
 
     #parameters that will be held constant:
     k_txnBh = 1.0
@@ -85,6 +85,7 @@ def HBS_1a(y, t, params):
     k_in = 1.0 #au (MARS with NEW Mechanism)
     k_txn = 1 #au/h
 
+    k_dreg4 = k_dreg2*deg_ratio
     #when in normoxic incubator, use normoxic pO2
     if O2 == 138:
         O2_rate = O2
@@ -110,9 +111,9 @@ def HBS_1a(y, t, params):
 
     return dydt
 
-def HBS_4b(y, t, params):
+def HBS_4b(y, t, v):
 
-    [k_out, k_prod, k_pMARS, k_dMARS, k_dreg1, k_dreg2, k_tln2, k_dreg3, k_dreg4, O2] = params
+    [[k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio], O2] = v
 
     #parameters that will be held constant:
     k_txnBh = 1.0
@@ -123,6 +124,8 @@ def HBS_4b(y, t, params):
     
     k_in = 1.0 #au (MARS with NEW Mechanism)
     k_txn = 1 #au/h
+    
+    k_dreg4 = k_dreg2*deg_ratio
     
         #when in normoxic incubator, use normoxic pO2
     if O2 == 138:
@@ -149,9 +152,9 @@ def HBS_4b(y, t, params):
 
     return dydt
 
-def HBS_4c(y, t, params):
+def HBS_4c(y, t, v):
 
-    [k_out, k_prod, k_pMARS, k_dMARS, k_dreg1, k_dreg2, k_tln2, k_dreg3, k_dreg4, O2] = params
+    [[k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio], O2] = v
 
     #parameters that will be held constant:
     k_txnBh = 1.0
@@ -162,6 +165,8 @@ def HBS_4c(y, t, params):
     
     k_in = 1.0 #au (MARS with NEW Mechanism)
     k_txn = 1 #au/h
+    
+    k_dreg4 = k_dreg2*deg_ratio
 
         #when in normoxic incubator, use normoxic pO2
     if O2 == 138:
@@ -190,7 +195,7 @@ def HBS_4c(y, t, params):
 
 
 # =============================================================================
-# CODE TO SOLVE ONE HBS in Normoxia and Hypoxia (START HERE)
+# CODE TO SOLVE ONE HBS in Normoxia and Hypoxia 
 # ============================================================================= 
 def solveSingle(args): 
     
@@ -200,7 +205,7 @@ def solveSingle(args):
         
     Inputs: 
         args (a list of arguments defining the condition) defined as
-        args = [index, v, tp1_, tp2_,  output, model]
+        args = [model, v, num_states, state_names, O2_range, output]
            
     Output: 
         if output == 'save internal states'
@@ -221,83 +226,74 @@ def solveSingle(args):
     
     '''
     
-    [index, v, tp1_, tp2_, output, model] = args
+    [ODEs, v, num_states, state_names, output, O2_range] = args
 
-    #We only consider a single model structure in this work. 
-    #To change the model structure (without changing the free params or training data)
-    #Add an elif statement to this section of the code with the appropirate information. 
+    y0_nox = np.zeros(num_states)
+    t_ss = np.arange(0, 500, 1) #hours
+    v[1] = 138
     
-    num_states = 8
-    output_state = 7
-    state_labels = ['A mRNA', 'A protein', 'B mRNA', 'B protein', 
-                    'Ligand', 'TF', 'Reporter mRNA', 'Reporter protein']
+    solution_nox = spi.odeint(ODEs, y0_nox, t_ss, args=(v,))
     
-    if model in ['model A', 'model B']:
-        ode_model = model_AB
+    ###create dictionary to store SS normoxia solutions
+    SS_nox = {}
+    
+    for i in range(0,num_states):
+        name = state_names[i]
         
-    elif model in ['model C', 'model D']:
-        ode_model = model_CD
+        SS_nox[name] = solution_nox[:,i]
 
-    else: 
-        print('Error: Model name does not exist.')
-
-    #Define ligand dose
-    dose_ligand = v[0][2]
-
-    #Set time 
-    numpoints = 100 #number of timepoints
-    t_1 = [tp1_ * float(i) / (numpoints - 1) for i in range(numpoints)]  #range of timepoints
+    ###hypoxia simulation###
+    y0_hox = []
     
-    #Set initial conditions to 0
-    y0_before = [0] * num_states
+    for name in state_names:
+        y0_hox.append(SS_nox[name][-1])
+        
+    t_hox = [0, 24, 48, 72, 96, 120] #(for comparison to experimental data)
     
-    #1. Solve the ODEs for the time up until ligand addition
-    solution_before = odeint(ode_model, y0_before, t_1, args=(v,), mxstep=50000000)
-    
-    #2. Solve equations at and after Ligand addition timepoint
-    #set ligand initial condition to dose_ligand
-    solution_before[-1, 4] =  dose_ligand
-    
-    #set initial conditions to the final timepoint values of 
-    #each state variable from the "before" condition
-    y0_on = solution_before[-1, :]
-
-    #Set time
-    numpoints = 25
-    t_2_ = [tp2_ * float(i) / (numpoints - 1) for i in range(numpoints)]  # hours
-  
-    #Solve equations after Ligand addition 
-    solution_on = odeint(ode_model, y0_on, t_2_, args=(v,), mxstep=500000000)
-    
-    #Define t_2 for plotting
-    t_2 = [i + tp1_ for i in t_2_]  
+    ###create dictionary to store SS normoxia solutions
+    SS_hox = {}
+    for O2_val in O2_range:
+        v[1] = O2_val
+        SS_hox[O2_val] = {}
+        solution_hox = spi.odeint(ODEs, y0_hox, t_hox, args=(v,))
+        
+        for i in range(0,num_states):
+            name = state_names[i]
+            
+            SS_hox[O2_val][name] = solution_hox[:,i]
+#############################################################################################
 
     if output == 'timecourse':
         
         #Plot timecourse
-        fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
-        fig.subplots_adjust(hspace=.5)
-        fig.subplots_adjust(wspace=0.3)
-        
+        if num_states == 8:
+            fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
+            fig.subplots_adjust(hspace=.5)
+            fig.subplots_adjust(wspace=0.3)
+            
+        if num_states == 9:
+            fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, figsize = (6, 6))
+            fig.subplots_adjust(hspace=.5)
+            fig.subplots_adjust(wspace=0.3)
+            
         axs = axs.ravel()
         for i in range(0, num_states):
-            axs[i].plot(t_1, solution_before[:,i], color = 'black', linestyle = 'dashed')
-            axs[i].plot(t_2, solution_on[:,i], color = 'black')
+            axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = 'black', 
+                        label = '1% O2')
+            axs[i].plot(t_hox, SS_hox[138][state_names[i]], color = 'dimgrey', 
+                        label = '21% O2')
             axs[i].set_xlabel('Time (hours)', fontsize = 8)
             axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
-            axs[i].set_title(state_labels[i], fontweight = 'bold', fontsize = 10)
+            axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
             
-            max1 = max(solution_before[:,i])
-            max2 = max(solution_on[:,i])
-            axs[i].set_ylim(top = max(max1, max2) + .1 * max(max1, max2) )
+            max1 = max(SS_hox[7.6][state_names[i]])
+            axs[i].set_ylim(top = max1 + .1 * max1 )
         plt.savefig('./TIMECOURSES.svg')
         
         return 'Timecourses saved as TIMECOURSES.svg'
               
-    elif output == 'save internal states':
-        return t_1, t_2, solution_before, solution_on, state_labels
     else:
-        return solution_on[-1, output_state] 
+        return t_hox, SS_hox
 
 
     

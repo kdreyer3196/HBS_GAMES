@@ -8,7 +8,7 @@ Created on Mon Sep 28 11:12:12 2020
 #Package imports
 from math import log10
 import pandas as pd
-impost os
+import os
 
 #GAMES imports
 from Saving import makeMainDir
@@ -38,8 +38,8 @@ def init():
 
     #p_ref = [15, 1, .05, 720, 100, 2] #for model C (m = m*)
   
-    p_ref = [1.0, 0, 0, 0, 0, 1.0, 2.7, 0, 1.0, 0.35,
-             0, 0, 0, 0, 1.0, 0.029, 138] #for model D (m = m*)
+    p_ref = [7.91, 1.43e-4, 1.51e-2, 3.91e-3, 1.08e-2, 1.07, 1.15e-2, 9.96e-2,
+             0.967] #for model D (m = m*)
     
     p_all = p_ref
 

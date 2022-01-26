@@ -83,9 +83,9 @@ plt.style.use('./paper.mplstyle.py')
 # =============================================================================
 # General parameter estimation and solver code (used by modules 1, 2, 3)
 # =============================================================================    
-#Define doses
-doses_ligand = [0] + list(np.logspace(0, 2, 10))
-doses_dbd = [0, 2, 5, 10, 20, 50, 100, 200]
+#Define pO2 conditions
+O2_range = [7.6, 138]
+HBS_list = [HBS_1a, HBS_4b, HBS_4c]
 
 def solveAll(p, exp_data):
     
@@ -110,7 +110,7 @@ def solveAll(p, exp_data):
  
     '''
 
-    def solveDBD(v):
+    def solveHBS(v):
         
         '''
         Purpose: Solve ODEs for the DBD dose response 
@@ -124,68 +124,47 @@ def solveAll(p, exp_data):
                 plots (DBD doses)
             sol: a list of floats corresponding to the y-axis values in the training data plots 
                 (normalized reporter expression across DBD doses)   
-        '''
+                
+                [ODEs, v, num_states, state_names, output, O2_range] = args
+                '''
         
-        tp1_ = 18
-        tp2_ = 24
-       
-        sol = []
-        for dose in doses_dbd:
-            v[0][0] = dose
-            output = ''
-            args =  [0, v, tp1_, tp2_, output, model]
-            rep = solveSingle(args)
-            sol.append(rep)
-        return doses_dbd, sol     
+        
+        [k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio] = p
+        v = [[], ]
+        v[0] = p
+        v[1] = O2_range[-1]
+        
+        args = [HBS_list[0], v, HBS_info['HBS_1a']['# states'], HBS_info['HBS_1a']['state names'],
+                '', O2_range]
+        t_hox, SS_hox_1a = solveSingle(args)
+        
+        args = [HBS_list[1], v, HBS_info['HBS_4b']['# states'], HBS_info['HBS_4b']['state names'],
+                '', O2_range]
+        t_hox, SS_hox_4b = solveSingle(args)
+        
+        args = [HBS_list[2], v, HBS_info['HBS_4c']['# states'], HBS_info['HBS_4c']['state names'],
+                '', O2_range]
+        t_hox, SS_hox_4c = solveSingle(args)
     
-    #Define v
-    tp1_ = 18
-    tp2_ = 24
-    [e, b, k_bind, m, km, n] = p
-    v = [[], []]
-    v[0] = [50, 50, 100] #set base case doses
-    saturating_ligand_dose = 100 * e
-    v[1] = p
-    
-    if data == 'ligand dose response only' or data == 'ligand dose response and DBD dose response':
-        doses_ligand = [0] + list(np.logspace(0, 2, 10))
-        sol = []
-        for dose in doses_ligand:
-            v[0][2] = dose * e
+        
+        norm = np.mean(SS_hox_1a[7.6]['DSRed2P'][:5])
 
-            if save_internal_states_flag == True and dose == doses_ligand[-1]:
-                output = 'save internal states'
-                args =  [0, v, tp1_, tp2_,  output, model]
-                t_1, t_2, solution_before, solution_on, state_labels = solveSingle(args)
-
-            else:
-                output = ''
-                args =  [0, v, tp1_, tp2_, output, model]
-                rep = solveSingle(args)   
-                sol.append(rep)
-      
-        solutions = [i/np.max(sol) for i in sol]  
-        doses_ = doses_ligand
+        if data == 'hypox only':
+            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][3])
+            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][3])
+            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][3])
             
-    
-    if data == 'ligand dose response and DBD dose response':
-        norm_sol_ligand = solutions
-        solutions_dbd_raw = []
-        v[0][2] = saturating_ligand_dose
+        elif data == 'all':
+            DSRed2P_1a = np.concatenate((SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][3:]))
+            DSRed2P_4b = np.concatenate((SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][3:]))
+            DSRed2P_4c = np.concatenate((SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][3:]))     
         
-        #Solve for results of DBD plasmid dose response
-        for dose_AD in [20, 10]:
-            v[0][1] = dose_AD
-            doses_DBD_, sol = solveDBD(v)
-            solutions_dbd_raw.append(sol)
-    
-        #Normalize to max value in this dataset
-        max1 = max(solutions_dbd_raw[0])
-        max2 = max(solutions_dbd_raw[1])
-        max_val = max(max1,max2)
-        norm_sol_dbd_20 = [i/max_val for i in solutions_dbd_raw[0]]
-        norm_sol_dbd_10 = [i/max_val for i in solutions_dbd_raw[1]]
-        solutions = norm_sol_ligand + norm_sol_dbd_20 + norm_sol_dbd_10
+        norm_1a = DSRed2P_1a/norm
+        norm_4b = DSRed2P_4b/norm
+        norm_4c = DSRed2P_4c/norm
+        
+        solutions = np.concatenate((norm_1a, norm_4b, norm_4c))
+        
         
         #Check for Nan and set chi2 to arbitrary, very high value if Nan in solutions
         for item in solutions:
@@ -193,17 +172,16 @@ def solveAll(p, exp_data):
                 print('Nan in solutions')
                 Rsq = 0
                 chi2 = 1000000
-                return doses_, solutions, chi2, Rsq
+                return solutions, chi2, Rsq
   
-        doses_ = [doses_ligand, doses_dbd, doses_dbd] 
     
     #Calculate the cost function
     chi2 = calcChi2(exp_data, solutions, error)
     
     if save_internal_states_flag:
-        return t_1, t_2, solution_before, solution_on, state_labels
+        return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c
     else:
-        return doses_, solutions, chi2
+        return solutions, chi2
 
 def solvePar(row):
     '''
@@ -224,8 +202,8 @@ def solvePar(row):
    '''
 
     #Define parameters and solve ODEs
-    p = [row[1], row[2], row[3], row[4], row[5], row[6]]
-    doses, norm_solutions, chi2 = solveAll(p, exp_data)
+    p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]
+    norm_solutions, chi2 = solveAll(p, exp_data)
     output = [chi2]
    
     #If this is a PEM evluation run, need to calculate the cost function for each PEM evaluation data set 
@@ -264,11 +242,11 @@ def optPar(row):
     #Initialize list to keep track of CF at each function evaluation
     chi2_list = []
 
-    def solveForOpt(x, p1, p2, p3, p4, p5, p6):
+    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9):
         #This is the function that is solved at each step in the optimization algorithm
         
-        p = [p1, p2, p3, p4, p5, p6]
-        doses, norm_solutions, chi2 = solveAll(p, exp_data)
+        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9]
+        norm_solutions, chi2 = solveAll(p, exp_data)
         chi2_list.append(chi2)
         
         return np.array(norm_solutions)
@@ -305,7 +283,7 @@ def optPar(row):
         
     #Perform fit and print results
     weights_ = [1/i for i in error] 
-    results = model_.fit(exp_data, params, method=method, x=x, weights = weights_)
+    results = model_.fit(exp_data, params, method=method, pO2=O2_range)#, weights = weights_)
     
     #If not in the PL section, print to the console after each optimization round is complete 
     #(printing this in the PL clogs up the console because so many optimization rounds must be
@@ -322,7 +300,7 @@ def optPar(row):
     best_fit_params_list = list(best_fit_params.values())
     
     #Solve ODEs with final optimized parameters, calculate chi2, and add to result_row for saving
-    doses_ligand, norm_solutions, chi2  = solveAll(best_fit_params_list, exp_data)
+    norm_solutions, chi2  = solveAll(best_fit_params_list, exp_data)
     result_row.append(chi2)
     result_row_labels.append('chi2')
     
@@ -344,8 +322,10 @@ def optPar(row):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
         
-    result_row = result_row[:19]
-    result_row_labels = result_row_labels[:19]
+    z = len(p)*2 + 1 + len(items)
+    
+    result_row = result_row[:z]
+    result_row_labels = result_row_labels[:z]
 
     return result_row, result_row_labels
 
@@ -377,130 +357,148 @@ def plotTrainingDataFits(df):
         size_ = (3,3)
         color_ = 'black'
         
-    if data == 'ligand dose response only': 
-        dose_responses = list(df['Simulation results'])
-        fig = plt.figure(figsize = size_)
-        ax1 = plt.subplot(111)  
+ ####PLOT Simulations for ALL params along with training data####
         
-        #Plot experimental data
-        ax1.errorbar(doses_ligand, exp_data, color = module_color, marker = marker_, yerr = error, 
-                     fillstyle = 'none', linestyle = 'none',capsize = 2, label = 'Training data')
+    fig = plt.figure(figsize = (9,3))
+    fig.subplots_adjust(wspace=0.2)
+    ax1 = plt.subplot(131)   
+    ax2 = plt.subplot(132)
+    ax3 = plt.subplot(133)
+        
+    all_sims = list(df['Simulation results'])
+    chi2_list = list(df['chi2'])
+    val, idx = min((val, idx) for (idx, val) in enumerate(chi2_list))
+    best_case = all_sims[idx]
+        
+    exp_1a = exp_data[:6]
+    exp_4b = exp_data[6:13]
+    exp_4c = exp_data[13:]
+    
+    err_1a = error[:6]
+    err_4b = error[6:13]
+    err_4c = error[13:]
+        
+    sim_1a_best = best_case[:6]
+    sim_4b_best = best_case[6:13]
+    sim_4c_best = best_case[13:]
+    
+    t_1a = [0, 24, 48, 72, 96]
+    t_4b = [0, 24, 48, 72, 96, 120]
+    t_4c = t_4b    
+    
+    
+    colors = ['black', 'dimgrey']
+    linestyles = ['dotted', 'dotted', 'dotted']
+    ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+    ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+    ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
+             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+ 
+    count = 0
+    sns.set_palette("Greys", len(all_sims))
+    for sim in all_sims:
+        count += 1
+        sim_1a = sim[:6]
+        sim_4b = sim[6:13]
+        sim_4c = sim[13:]
+        
+        ax1.plot(t_1a, sim_1a[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+                 linestyle = linestyles[0], color = colors[0])
+        ax1.plot(t_1a[0], sim_1a[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+                 linestyle = linestyles[0], color = colors[0])
+        
+        ax2.plot(t_4b, sim_4b[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+                 linestyle = linestyles[0], color = colors[0])
+        ax2.plot(t_4b[0], sim_4b[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+                 linestyle = linestyles[0], color = colors[0])
+        
+        ax3.plot(t_4c, sim_4c[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+                 linestyle = linestyles[0], color = colors[0])
+        ax3.plot(t_4c[0], sim_4c[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+                 linestyle = linestyles[0], color = colors[0])
+ 
+    ax1.set_xlabel('Time Post-Plating (hours)')
+    ax1.set_ylabel('Relative DsRE2 Expression')
+    ax1.set_title('Simple HBS')
+    
+    ax2.set_xlabel('Time Post-Plating (hours)')
+    ax2.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_title('HIF1a Feedback HBS')
+    
+    ax3.set_xlabel('Time Post-Plating (hours)')
+    ax3.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_title('HIF2a Feedback HBS')
+    
+    plt.savefig('./FITS.svg', bbox_inches="tight")
+    
+    
+    ####Plot best fit params with training data####
+ 
+    fig = plt.figure(figsize = (9,3))
+    fig.subplots_adjust(wspace=0.2)
+    ax1 = plt.subplot(131)   
+    ax2 = plt.subplot(132)
+    ax3 = plt.subplot(133)
+        
+    colors = ['black', 'dimgrey']
+    ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+    ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+    ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
+             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
 
-        #Plot simulated data for each parameter set in df
-        sns.set_palette("Greys", len(dose_responses))
-        count = 0
-        for data_ in dose_responses:
-            count += 1
-            ax1.plot(doses_ligand, data_, linestyle = ':', marker = None, label = 'Model fit ' 
-                     + str(count))
-        ax1.set_xscale('symlog')
-        ax1.set_xlabel('Ligand dose (nM)')
-        ax1.set_ylabel('Reporter expression')
-        plt.savefig('./FITS.svg', bbox_inches="tight")
-        
-        #Plot best case parameter set ONLY 
-        fig = plt.figure(figsize = size_)
-        ax1 = plt.subplot(111)  
-        
-        chi2_list = list(df['chi2'])
-        val, idx = min((val, idx) for (idx, val) in enumerate(chi2_list))
-        best_case = dose_responses[idx]
-        
-        #Plot experimental data
-        ax1.errorbar(doses_ligand, exp_data, color = module_color, marker = marker_, yerr = error,  
-                     fillstyle = 'none', linestyle = 'none',capsize = 2, label = 'Training data')
 
-        #Plot simulated data for the best case parameter set
-        ax1.plot(doses_ligand, best_case,  color = color_, linestyle = ':', marker = None, 
-                 label = 'Best case model fit')
-        ax1.set_xscale('symlog')
-        ax1.set_xlabel('Ligand dose (nM)')
-        ax1.set_ylabel('Reporter expression')
-        plt.savefig('./BEST FIT.svg', bbox_inches="tight")
-    
-    
-    elif data == 'ligand dose response and DBD dose response': 
-        fig = plt.figure(figsize = (9,3))
-        fig.subplots_adjust(wspace=0.2)
-        ax1 = plt.subplot(131)   
-        ax2 = plt.subplot(132)
-        ax3 = plt.subplot(133)
-        
-        dose_responses = list(df['Simulation results'])
-        chi2_list = list(df['chi2'])
-        val, idx = min((val, idx) for (idx, val) in enumerate(chi2_list))
-        best_case = dose_responses[idx]
-        
-        L_exp = exp_data[:11]
-        DBD20_exp = exp_data[11:19]
-        DBD10_exp = exp_data[19:]
-        
-        L_sim = best_case[:11]
-        DBD20_sim = best_case[11:19]
-        DBD10_sim = best_case[19:]
-        
-        e1 = error[:11]
-        e2 = error[11:19]
-        e3 = error[19:]
-    
-        colors = ['black', 'black', 'black']
-        linestyles = ['dotted', 'dotted', 'dotted']
-        ax1.errorbar(doses_ligand, L_exp, color = colors[0], marker = marker_, yerr = e1, 
-                     fillstyle = 'none', linestyle = 'none',capsize = 2)
-        ax2.errorbar(doses_dbd, DBD20_exp, color =  colors[1], marker = marker_, yerr = e2,  
-                     fillstyle = 'none', linestyle = 'none',capsize = 2)
-        ax3.errorbar(doses_dbd, DBD10_exp, color =  colors[2], marker = marker_, yerr = e3,  
-                     fillstyle = 'none', linestyle = 'none',capsize = 2)
-        ax1.set_xscale('symlog')
-     
-        count = 0
-        sns.set_palette("Greys", len(dose_responses))
-        for dose_response in dose_responses:
-            count += 1
-            ax1.plot(doses_ligand, dose_response[0:11], marker = None, label = 'Model fit ' + str(count), 
-                     linestyle = linestyles[0], color = colors[0])
-            ax2.plot(doses_dbd, dose_response[11:19], marker = None, label = 'Model fit ' + str(count), 
-                     linestyle = linestyles[1], color = colors[1])
-            ax3.plot(doses_dbd, dose_response[19:], marker = None, label = 'Model fit ' + str(count), 
-                     linestyle = linestyles[2], color = colors[2])
-    
-        ax1.set_xscale('symlog')
-        ax1.set_xlabel('Ligand dose (nM)')
-        ax1.set_ylabel('Reporter expression')
-        ax2.set_xlabel('DBD plasmid (ng)')
-        ax2.set_ylabel('Reporter expression')
-        ax3.set_xlabel('DBD plasmid (ng)')
-        ax3.set_ylabel('Reporter expression')
-        plt.savefig('./FITS.svg', bbox_inches="tight")
-     
-        fig = plt.figure(figsize = (6,3))
-        fig.subplots_adjust(wspace=0.2)
-        ax1 = plt.subplot(121)   
-        ax2 = plt.subplot(122)
-        ax1.set_xscale('symlog')
-        
-        colors = ['black', 'black', 'dimgrey']
-        ax1.errorbar(doses_ligand, L_exp, color = colors[0], marker = marker_, yerr = e1, 
-                     fillstyle = 'none', linestyle = 'none',capsize = 2)
-        ax2.errorbar(doses_dbd, DBD20_exp, color =  colors[1], marker = marker_, yerr = e2, 
-                     fillstyle = 'none', linestyle = 'none',capsize = 2)
-        ax2.errorbar(doses_dbd, DBD10_exp, color =  colors[2], marker = marker_, yerr = e3, 
-                     fillstyle = 'none', linestyle = 'none',capsize = 2)
   
-        #Plot simulated data for the best case parameter set
-        ax1.plot(doses_ligand, L_sim, linestyle =':', marker = None, 
-                 label = 'Model fit ' + str(count), color = colors[0])
-        ax2.plot(doses_dbd, DBD20_sim, linestyle = ':', marker = None, 
-                 label = 'Model fit ' + str(count), color = colors[1])
-        ax2.plot(doses_dbd, DBD10_sim, linestyle = ':', marker = None, 
-                 label = 'Model fit ' + str(count), color = colors[2])
+    #Plot simulated data for the best case parameter set
+    ax1.plot(t_1a, sim_1a_best[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+             linestyle = linestyles[0], color = colors[0])
+    ax1.plot(t_1a[0], sim_1a_best[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+             linestyle = linestyles[0], color = colors[0])
     
-        #Set x and y labels
-        ax1.set_xlabel('Ligand dose (nM)')
-        ax1.set_ylabel('Reporter expression')
-        ax2.set_xlabel('DBD plasmid (ng)')
-        ax2.set_ylabel('Reporter expression')
-        plt.savefig('./BEST FIT.svg', bbox_inches="tight")
+    ax2.plot(t_4b, sim_4b_best[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+             linestyle = linestyles[0], color = colors[0])
+    ax2.plot(t_4b[0], sim_4b_best[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+             linestyle = linestyles[0], color = colors[0])
+    
+    ax3.plot(t_4c, sim_4c_best[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+             linestyle = linestyles[0], color = colors[0])
+    ax3.plot(t_4c[0], sim_4c_best[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+             linestyle = linestyles[0], color = colors[0])
+    
+    #Set x and y labels
+    ax1.set_xlabel('Time Post-Plating (hours)')
+    ax1.set_ylabel('Relative DsRE2 Expression')
+    ax1.set_title('Simple HBS')
+    
+    ax2.set_xlabel('Time Post-Plating (hours)')
+    ax2.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_title('HIF1a Feedback HBS')
+    
+    ax3.set_xlabel('Time Post-Plating (hours)')
+    ax3.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_title('HIF2a Feedback HBS')
+
+    plt.savefig('./BEST FIT.svg', bbox_inches="tight")
         
 # =============================================================================
 #  Module 2 - code for parameter estimation using training data
@@ -523,38 +521,97 @@ def plotParamDistributions(df):
    '''
    
     #Only keep rows for which Rsq >= .99
-    df = df[df["Rsq"] >= 0.99]
-    dose_responses = list(df['Simulation results'])
+    df = df[df["Rsq"] >= 0.95]
+    all_sims = list(df['Simulation results'])
     
     # =============================================================================
-    # 1. dose response for parameter sets with Rsq > .99
+    # 1. dose response for parameter sets with Rsq > .95
     # ============================================================================
-    fig = plt.figure(figsize = (3,3))
-    ax1 = plt.subplot(111)  
-    error = [.05] * 11
+    fig = plt.figure(figsize = (9,3))
+    fig.subplots_adjust(wspace=0.2)
+    ax1 = plt.subplot(131)   
+    ax2 = plt.subplot(132)
+    ax3 = plt.subplot(133)
+    marker_ = 'o'
+    linestyle_ = 'dotted'
+    
+    exp_1a = exp_data[:6]
+    exp_4b = exp_data[6:13]
+    exp_4c = exp_data[13:]
+    
+    err_1a = error[:6]
+    err_4b = error[6:13]
+    err_4c = error[13:]
+    
+    t_1a = [0, 24, 48, 72, 96]
+    t_4b = [0, 24, 48, 72, 96, 120]
+    t_4c = t_4b    
     
     #Plot experimental/training data
-    ax1.errorbar(doses_ligand, exp_data[:11], color = 'black', marker = 'o', yerr = error,  
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = 'Training data')
-    ax1.set_xscale('symlog')
+    colors = ['black', 'dimgrey']
+    ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+    ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    
+    ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
+             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
     
     #Plot simulated data for each parameter set in df
-    n = len(dose_responses)
+    n = len(all_sims)
     color = plt.cm.Blues(np.linspace(.1, 1, n))
     plt.rcParams['axes.prop_cycle'] = cycler.cycler('color', color)
     count = 0
-    for dose_response in dose_responses:
+    for sim in all_sims:
         count += 1
-        ax1.plot(doses_ligand, dose_response, linestyle = ':', marker = None, 
-                 label = 'Model fit ' + str(count))
-    ax1.set_xlabel('Ligand dose (nM)')
-    ax1.set_ylabel('Reporter expression')
-    plt.savefig('./FITS Rsq ABOVE 0.99.svg', bbox_inches="tight")
+        sim_1a = sim[:6]
+        sim_4b = sim[6:13]
+        sim_4c = sim[13:]
+        
+        ax1.plot(t_1a, sim_1a[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+                 linestyle = linestyle_, color = colors[0])
+        ax1.plot(t_1a[0], sim_1a[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+                 linestyle = linestyle_, color = colors[0])
+        
+        ax2.plot(t_4b, sim_4b[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+                 linestyle = linestyle_, color = colors[0])
+        ax2.plot(t_4b[0], sim_4b[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+                 linestyle = linestyle_, color = colors[0])
+        
+        ax3.plot(t_4c, sim_4c[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+                 linestyle = linestyle_, color = colors[0])
+        ax3.plot(t_4c[0], sim_4c[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+                 linestyle = linestyle_, color = colors[0])
+ 
+    ax1.set_xlabel('Time Post-Plating (hours)')
+    ax1.set_ylabel('Relative DsRE2 Expression')
+    ax1.set_title('Simple HBS')
+    
+    ax2.set_xlabel('Time Post-Plating (hours)')
+    ax2.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_title('HIF1a Feedback HBS')
+    
+    ax3.set_xlabel('Time Post-Plating (hours)')
+    ax3.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_title('HIF2a Feedback HBS')
+
+    plt.savefig('./FITS Rsq ABOVE 0.96.svg', bbox_inches="tight")
     
     # =============================================================================
     # 2. parameter distributions for parameter sets with Rsq > .99
     # =============================================================================
-    param_labels = ['e*', 'b*', 'k_bind*', 'm*', 'km*', 'n*']
+    param_labels = []
+    for param in real_param_labels_all:
+        new_param = param + '*'
+        param_labels.append(new_param)
+
     for label in param_labels:
         new_list = [log10(i) for i in list(df[label])]
         df[label] = new_list
@@ -677,7 +734,7 @@ def runParameterEstimation():
             col_name = real_param_labels_all[i] + '*'
             val = df[col_name].iloc[j]
             params.append(val)
-        doses, norm_solutions, chi2 = solveAll(params, exp_data)
+        norm_solutions, chi2 = solveAll(params, exp_data)
         Rsq = calcRsq(norm_solutions, exp_data)  
         Rsq_list.append(Rsq)
     df['Rsq'] = Rsq_list
@@ -1519,7 +1576,7 @@ def plotPLConsequences(df, param_label):
     fig.subplots_adjust(wspace=0.2)
     
     for param_list in y: # for each parameter set
-        t_1, t_2, solution_before, solution_on, state_labels = solveAll(param_list, exp_data)
+        t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c = solveAll(param_list, exp_data)
         
         axs = axs.ravel()
         for i in range(0, len(state_labels)):
@@ -1537,13 +1594,13 @@ def plotPLConsequences(df, param_label):
                    
 def calcThresholdPL(calibrated_params, exp_data):
         print('CALIBRATED PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
-        doses, norm_solutions_cal, chi2 = solveAll(calibrated_params, exp_data)
+        norm_solutions_cal, chi2 = solveAll(calibrated_params, exp_data)
         calibrated_chi2 = chi2
         print('******************')
         print('chi2 CALIBRATED: ' + str(round(chi2, 4)))
     
         print('REFERENCE PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
-        doses, norm_solutions_ref, chi2 = solveAll(p_ref, exp_data)
+        norm_solutions_ref, chi2 = solveAll(p_ref, exp_data)
         print('chi2 REFERENCE: ' + str(round(chi2, 4)))
         print('******************')
         
@@ -1591,7 +1648,7 @@ def calcThresholdPL(calibrated_params, exp_data):
             exp_data_noise_list.append(exp_data_noise_)
             
             #Calculate chi2_ref using noise realization i
-            doses_ligand, norm_solutions, chi2_ref = solveAll(p_ref, exp_data)
+            norm_solutions, chi2_ref = solveAll(p_ref, exp_data)
             chi2_ref_list.append(chi2_ref)
           
         print('done')
@@ -1728,7 +1785,7 @@ def generatePemEvalData(df_global_search, num_datasets):
     for row in df_params.itertuples(name = None):
         #Define parameters
         p = [row[2], row[3], row[4], row[5], row[6], row[7]]
-        doses_ligand, norm_solutions, chi2 = solveAll(p, exp_data)
+        norm_solutions, chi2 = solveAll(p, exp_data)
         
         #Add noise
         noise_solutions = addNoise(norm_solutions, count)
@@ -1937,7 +1994,7 @@ def runOptPemEval(df_results, run):
             col_name = real_param_labels_all[i] + '*'
             val = df_opt[col_name].iloc[j]
             params.append(val)
-        doses, norm_solutions, chi2 = solveAll(params, exp_data)
+        norm_solutions, chi2 = solveAll(params, exp_data)
         Rsq = calcRsq(norm_solutions, exp_data)  
         Rsq_list.append(Rsq)
 
@@ -2164,7 +2221,7 @@ if 3 in modules:
     
     #Calculate profile likelihood for each free parameter
     PL_ID = 'yes' 
-    doses_ligand, norm_solutions_cal, calibrated_chi2 = solveAll(calibrated_params, exp_data)
+    norm_solutions_cal, calibrated_chi2 = solveAll(calibrated_params, exp_data)
     df_list = calcPL(calibrated_params, calibrated_chi2, threshold_PL_val)
     
     #Plot internal model states and parameter relationships based on the 
