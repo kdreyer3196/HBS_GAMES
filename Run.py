@@ -22,7 +22,6 @@ from lmfit import Model, Parameters
 from openpyxl import load_workbook
 import matplotlib.pyplot as plt 
 import seaborn as sns
-import cycler
 
 #Import GAMES functions
 from Solvers import solveSingle, calcRsq, calcChi2
@@ -78,14 +77,13 @@ save_internal_states_flag = False
 parallelization = 'yes' 
 
 #Set style file
-plt.style.use('./paper.mplstyle.py')
+plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
 # =============================================================================
 # General parameter estimation and solver code (used by modules 1, 2, 3)
 # =============================================================================    
 #Define pO2 conditions
 O2_range = [7.6, 138]
-HBS_list = [HBS_1a, HBS_4b, HBS_4c]
 
 def solveAll(p, exp_data):
     
@@ -127,52 +125,54 @@ def solveAll(p, exp_data):
                 
                 [ODEs, v, num_states, state_names, output, O2_range] = args
                 '''
-        
-        
-        [k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio] = p
-        v = [[], ]
-        v[0] = p
-        v[1] = O2_range[-1]
-        
-        args = [HBS_list[0], v, HBS_info['HBS_1a']['# states'], HBS_info['HBS_1a']['state names'],
+     
+        args = [HBS_1a, v, HBS_info['HBS_1a']['# states'], HBS_info['HBS_1a']['state names'],
                 '', O2_range]
         t_hox, SS_hox_1a = solveSingle(args)
         
-        args = [HBS_list[1], v, HBS_info['HBS_4b']['# states'], HBS_info['HBS_4b']['state names'],
+        args = [HBS_4b, v, HBS_info['HBS_4b']['# states'], HBS_info['HBS_4b']['state names'],
                 '', O2_range]
         t_hox, SS_hox_4b = solveSingle(args)
         
-        args = [HBS_list[2], v, HBS_info['HBS_4c']['# states'], HBS_info['HBS_4c']['state names'],
+        args = [HBS_4c, v, HBS_info['HBS_4c']['# states'], HBS_info['HBS_4c']['state names'],
                 '', O2_range]
         t_hox, SS_hox_4c = solveSingle(args)
+        
+        return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c
     
-        
-        norm = np.mean(SS_hox_1a[7.6]['DSRed2P'][:5])
+    [k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio] = p
+    v = [[], ]
+    v[0] = p
+    v[1] = O2_range[-1]
+    
+    t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c = solveHBS(v)
+    
+    norm = np.mean(SS_hox_1a[7.6]['DSRed2P'][:5])
 
-        if data == 'hypox only':
-            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][3])
-            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][3])
-            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][3])
-            
-        elif data == 'all':
-            DSRed2P_1a = np.concatenate((SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][3:]))
-            DSRed2P_4b = np.concatenate((SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][3:]))
-            DSRed2P_4c = np.concatenate((SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][3:]))     
+    if data == 'hypox only':
+        DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][3])
+        DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][3])
+        DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][3])
         
-        norm_1a = DSRed2P_1a/norm
-        norm_4b = DSRed2P_4b/norm
-        norm_4c = DSRed2P_4c/norm
+    elif data == 'all':
+        DSRed2P_1a = np.concatenate((SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][3:]))
+        DSRed2P_4b = np.concatenate((SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][3:]))
+        DSRed2P_4c = np.concatenate((SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][3:]))     
+    
+    norm_1a = DSRed2P_1a/norm
+    norm_4b = DSRed2P_4b/norm
+    norm_4c = DSRed2P_4c/norm
+    
+    solutions = np.concatenate((norm_1a, norm_4b, norm_4c))
         
-        solutions = np.concatenate((norm_1a, norm_4b, norm_4c))
         
-        
-        #Check for Nan and set chi2 to arbitrary, very high value if Nan in solutions
-        for item in solutions:
-            if math.isnan(item):
-                print('Nan in solutions')
-                Rsq = 0
-                chi2 = 1000000
-                return solutions, chi2, Rsq
+    #Check for Nan and set chi2 to arbitrary, very high value if Nan in solutions
+    for item in solutions:
+        if math.isnan(item):
+            print('Nan in solutions')
+            Rsq = 0
+            chi2 = 1000000
+            return solutions, chi2, Rsq
   
     
     #Calculate the cost function
@@ -387,7 +387,7 @@ def plotTrainingDataFits(df):
     t_4c = t_4b    
     
     
-    colors = ['black', 'dimgrey']
+    colors = ['dimgrey', 'black']
     linestyles = ['dotted', 'dotted', 'dotted']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
@@ -414,19 +414,19 @@ def plotTrainingDataFits(df):
         sim_4c = sim[13:]
         
         ax1.plot(t_1a, sim_1a[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyles[0], color = colors[0])
+                 linestyle = linestyles[0])
         ax1.plot(t_1a[0], sim_1a[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyles[0], color = colors[0])
+                 linestyle = linestyles[0], color = colors[1])
         
         ax2.plot(t_4b, sim_4b[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyles[0], color = colors[0])
+                 linestyle = linestyles[0])
         ax2.plot(t_4b[0], sim_4b[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyles[0], color = colors[0])
+                 linestyle = linestyles[0], color = colors[1])
         
         ax3.plot(t_4c, sim_4c[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyles[0], color = colors[0])
+                 linestyle = linestyles[0])
         ax3.plot(t_4c[0], sim_4c[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyles[0], color = colors[0])
+                 linestyle = linestyles[0], color = colors[1])
  
     ax1.set_xlabel('Time Post-Plating (hours)')
     ax1.set_ylabel('Relative DsRE2 Expression')
@@ -451,7 +451,7 @@ def plotTrainingDataFits(df):
     ax2 = plt.subplot(132)
     ax3 = plt.subplot(133)
         
-    colors = ['black', 'dimgrey']
+    colors = [sky_blue[1], 'black']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
@@ -473,17 +473,17 @@ def plotTrainingDataFits(df):
     ax1.plot(t_1a, sim_1a_best[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
              linestyle = linestyles[0], color = colors[0])
     ax1.plot(t_1a[0], sim_1a_best[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-             linestyle = linestyles[0], color = colors[0])
+             linestyle = linestyles[0], color = colors[1])
     
     ax2.plot(t_4b, sim_4b_best[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
              linestyle = linestyles[0], color = colors[0])
     ax2.plot(t_4b[0], sim_4b_best[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-             linestyle = linestyles[0], color = colors[0])
+             linestyle = linestyles[0], color = colors[1])
     
     ax3.plot(t_4c, sim_4c_best[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
              linestyle = linestyles[0], color = colors[0])
     ax3.plot(t_4c[0], sim_4c_best[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-             linestyle = linestyles[0], color = colors[0])
+             linestyle = linestyles[0], color = colors[1])
     
     #Set x and y labels
     ax1.set_xlabel('Time Post-Plating (hours)')
@@ -548,7 +548,7 @@ def plotParamDistributions(df):
     t_4c = t_4b    
     
     #Plot experimental/training data
-    colors = ['black', 'dimgrey']
+    colors = ['dimgrey', 'black']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
@@ -565,9 +565,7 @@ def plotParamDistributions(df):
              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
     
     #Plot simulated data for each parameter set in df
-    n = len(all_sims)
-    color = plt.cm.Blues(np.linspace(.1, 1, n))
-    plt.rcParams['axes.prop_cycle'] = cycler.cycler('color', color)
+    sns.set_palette("Greys", len(all_sims))
     count = 0
     for sim in all_sims:
         count += 1
@@ -576,19 +574,19 @@ def plotParamDistributions(df):
         sim_4c = sim[13:]
         
         ax1.plot(t_1a, sim_1a[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[0])
+                 linestyle = linestyle_)
         ax1.plot(t_1a[0], sim_1a[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[0])
+                 linestyle = linestyle_, color = colors[1])
         
         ax2.plot(t_4b, sim_4b[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[0])
+                 linestyle = linestyle_)
         ax2.plot(t_4b[0], sim_4b[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[0])
+                 linestyle = linestyle_, color = colors[1])
         
         ax3.plot(t_4c, sim_4c[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[0])
+                 linestyle = linestyle_)
         ax3.plot(t_4c[0], sim_4c[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[0])
+                 linestyle = linestyle_, color = colors[1])
  
     ax1.set_xlabel('Time Post-Plating (hours)')
     ax1.set_ylabel('Relative DsRE2 Expression')
@@ -720,6 +718,9 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
+    real_param_labels_all = ['k_prod', 'k_pMARS', 'k_out', 'k_dMARS', 
+                             'k_dreg1', 'k_tln2', 'k_dreg2', 'k_dreg3',
+                             'deg_ratio']
     best_case_params = []
     for i in range(0, len(real_param_labels_all)):
         col_name = real_param_labels_all[i] + '*'
@@ -1567,150 +1568,202 @@ def plotPLConsequences(df, param_label):
     plt.savefig('PARAMETER RELATIONSHIPS ALONG ' + param_label + '.svg', dpi = 600)
     
     '''2. Plot internal model states'''
-    n = len(y)
-    color = plt.cm.Blues(np.linspace(.2, 1,n))
-    plt.rcParams['axes.prop_cycle'] = cycler.cycler('color', color)
-    
-    fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
-    fig.subplots_adjust(hspace=.25)
-    fig.subplots_adjust(wspace=0.2)
+    sns.set_palette("Greys", len(y))
     
     for param_list in y: # for each parameter set
         t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c = solveAll(param_list, exp_data)
+
+        fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
+        fig.subplots_adjust(hspace=.5)
+        fig.subplots_adjust(wspace=0.3)
         
         axs = axs.ravel()
-        for i in range(0, len(state_labels)):
-            axs[i].plot(t_1, solution_before[:,i], linestyle = 'dashed')
-            axs[i].plot(t_2, solution_on[:,i])
+        num_states = HBS_info['HBS_1a']['# states']
+        state_names = HBS_info['HBS_1a']['state names']
+        for i in range(0, num_states):
+            axs[i].plot(t_hox, SS_hox_1a[7.6][state_names[i]], label = '1% O2')
+            axs[i].plot(t_hox, SS_hox_1a[138][state_names[i]], color = 'black',
+                        label = '21% O2')
+            axs[i].set_xlabel('Time (hours)', fontsize = 8)
+            axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
+            axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
             
-            if i in [0, 4]:
-                axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
-            if i in [4,5,6,7]:
-                axs[i].set_xlabel('Time (hours)', fontsize = 8)
+            max1 = max(SS_hox_1a[7.6][state_names[i]])
+            axs[i].set_ylim(top = max1 + .1 * max1 )
             
-            axs[i].set_title(state_labels[i], fontweight = 'bold', fontsize = 8)
+        plt.savefig('INTERNAL STATES 1a ALONG ' + param_label + '.svg', dpi = 600)
+        
+        fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, figsize = (6, 6))
+        fig.subplots_adjust(hspace=.5)
+        fig.subplots_adjust(wspace=0.3)
             
-        plt.savefig('INTERNAL STATES ALONG ' + param_label + '.svg', dpi = 600)
+        axs = axs.ravel()
+        num_states = HBS_info['HBS_4b']['# states']
+        state_names = HBS_info['HBS_4b']['state names']
+        for i in range(0, num_states):
+            axs[i].plot(t_hox, SS_hox_4b[7.6][state_names[i]], label = '1% O2')
+            axs[i].plot(t_hox, SS_hox_4b[138][state_names[i]], color = 'black', 
+                        label = '21% O2')
+            axs[i].set_xlabel('Time (hours)', fontsize = 8)
+            axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
+            axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
+            
+            max1 = max(SS_hox_4b[7.6][state_names[i]])
+            axs[i].set_ylim(top = max1 + .1 * max1 )
+            
+        plt.savefig('INTERNAL STATES 4b ALONG ' + param_label + '.svg', dpi = 600)
+        
+        fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, figsize = (6, 6))
+        fig.subplots_adjust(hspace=.5)
+        fig.subplots_adjust(wspace=0.3)
+            
+        axs = axs.ravel()
+        num_states = HBS_info['HBS_4c']['# states']
+        state_names = HBS_info['HBS_4c']['state names']
+        for i in range(0, num_states):
+            axs[i].plot(t_hox, SS_hox_4c[7.6][state_names[i]], label = '1% O2')
+            axs[i].plot(t_hox, SS_hox_4c[138][state_names[i]], color = 'black', 
+                        label = '21% O2')
+            axs[i].set_xlabel('Time (hours)', fontsize = 8)
+            axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
+            axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
+            
+            max1 = max(SS_hox_4c[7.6][state_names[i]])
+            axs[i].set_ylim(top = max1 + .1 * max1 )
+            
+        plt.savefig('INTERNAL STATES 4c ALONG ' + param_label + '.svg', dpi = 600)
+
                    
 def calcThresholdPL(calibrated_params, exp_data):
-        print('CALIBRATED PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
-        norm_solutions_cal, chi2 = solveAll(calibrated_params, exp_data)
-        calibrated_chi2 = chi2
-        print('******************')
-        print('chi2 CALIBRATED: ' + str(round(chi2, 4)))
+    print('CALIBRATED PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
+    norm_solutions_cal, chi2 = solveAll(calibrated_params, exp_data)
+    calibrated_chi2 = chi2
+    print('******************')
+    print('chi2 CALIBRATED: ' + str(round(chi2, 4)))
+
+    print('REFERENCE PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
+    norm_solutions_ref, chi2 = solveAll(p_ref, exp_data)
+    print('chi2 REFERENCE: ' + str(round(chi2, 4)))
+    print('******************')
     
-        print('REFERENCE PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
-        norm_solutions_ref, chi2 = solveAll(p_ref, exp_data)
-        print('chi2 REFERENCE: ' + str(round(chi2, 4)))
-        print('******************')
-        
-        print('Calculating chi2 REFERENCE...')  
-        
-        #Generate noise realizations and calculate chi2_ref for each noise realization
-        n_noise_realizations = 1000
-        exp_data_original = exp_data
-        exp_data_noise_list = []
-        chi2_ref_list = []
+    print('Calculating chi2 REFERENCE...')  
     
-        #Generate noise array
-        #Define mean and standard error for error distribution
-        mu = 0
-        sigma =  .05 / 3
-        
-        #Generate noise values
+    #Generate noise realizations and calculate chi2_ref for each noise realization
+    n_noise_realizations = 1000
+    exp_data_original = exp_data
+    exp_data_noise_list = []
+    chi2_ref_list = []
+
+    #Generate noise array
+    #Define mean and standard error for error distribution
+    exp_data_original = exp_data
+    n_noise_realizations = 2
+    mu = 0
+
+    #calc all noise realizations by data point
+    noise_by_datapoint = []
+    for i, val in enumerate(exp_data_original):
+        sigma = error[i]
         np.random.seed(6754)
-        noise_array = np.random.normal(mu, sigma, (n_noise_realizations, len(exp_data_original)))
-
-        for i in range(0, n_noise_realizations):
-            
-            #add noise and append to experimental data to list for saving
-            exp_data_noise = []
-            for j, val in enumerate(exp_data_original):
-                new_val = val + noise_array[i, j]
-                if new_val < 0.0:
-                    new_val = 0.0
-                exp_data_noise.append(new_val)
-   
-            #Re-normalize the data to the maximum value in the dataset
-            if data == 'ligand dose response and DBD dose response':
-                data_ligand = exp_data_noise[:11]
-                data_DBD = exp_data_noise[11:]
-                
-                L_norm = [i/max(data_ligand) for i in data_ligand]
-                DBD_norm = [i/max(data_DBD) for i in data_DBD]
-                exp_data_noise_ = L_norm + DBD_norm
-        
-            else:
-                exp_data_noise_ = [i/max(exp_data_noise) for i in exp_data_noise]
-            
-            data_dictionary['exp_data'] = exp_data_noise_
-            exp_data = data_dictionary['exp_data']
-            exp_data_noise_list.append(exp_data_noise_)
-            
-            #Calculate chi2_ref using noise realization i
-            norm_solutions, chi2_ref = solveAll(p_ref, exp_data)
-            chi2_ref_list.append(chi2_ref)
-          
-        print('done')
-        print('Calculating chi2 FIT...')   
-
-        #Set up parallelization for calculating chi2_Fit by structuring parameters and 
-        #noise realizations into a dataframe
-        dfNoise = pd.DataFrame()
-        dfNoise['count'] = range(0, n_noise_realizations)
-        dfNoise['p'] = [calibrated_params] * n_noise_realizations
-        dfNoise['fit labels'] = [fit_params] * n_noise_realizations
-        dfNoise['exp data'] = exp_data_noise_list
-        dfNoise['bounds'] = [bounds] * n_noise_realizations
+        noise_array = np.random.normal(mu, sigma, n_noise_realizations)
+        all_noise_datapoint = []
+        for j in range(0, n_noise_realizations):
+            new_val = val + noise_array[j]
+            if new_val < 0.0:
+                new_val = 0.0
+            all_noise_datapoint.append(new_val)
+        noise_by_datapoint.append(all_noise_datapoint)
+    # print(noise_by_datapoint)
     
-        #Solve each parameter estimation problem with parallelization using the calibrated 
-        #parameters as the initial guess
-        df = dfNoise
-        all_opt_results = []
-        with mp.Pool(num_cores) as pool:
-            result = pool.imap(optPar, df.itertuples(name=None))
-            pool.close()
-            pool.join()
-            output = [[list(x[0]), list(x[1])] for x in result]
-         
-        #Unpack and restructure results
-        for ig in range(0, len(output)):
-            all_opt_results.append(output[ig][0])
-            result_row_labels = output[ig][1]
+    #reformat so result list contains lists of each exp dataset w noise
+    noise_realization_lists = []
+    for i in range(0, n_noise_realizations):
+        noise_realization = []
+        for j in range(len(noise_by_datapoint)):
+            val = noise_by_datapoint[j][i]
+            noise_realization.append(val)
+        noise_realization_lists.append(noise_realization)
+    # print(noise_realization_lists)
             
-        df_opt = pd.DataFrame(all_opt_results, columns = result_row_labels)
-        chi2_fit = list(df_opt['chi2'])
+    # #renormalize after reformatting datasets
+    exp_data_noise = []
+    for item in noise_realization_lists:
+        norm = np.mean(item[:5])
+        item_ = [i/norm for i in item]
+        exp_data_noise.append(item_)
+    # print(exp_data_noise)
 
-        #Plot chi2 distribution and calculate 99% CI threshold
-        x2 = []
-        for i in range(0, len(chi2_ref_list)):
-            val = chi2_ref_list[i] - chi2_fit[i]
-            x2.append(val)
-         
-        #Define threshold value
-        threshold_PL_val = np.percentile(x2, confidence_interval_label)
+
+    for item in exp_data_noise:
+        exp_data_noise_ = item
+        
+        data_dictionary['exp_data'] = exp_data_noise_
+        exp_data = data_dictionary['exp_data']
+        
+        #Calculate chi2_ref using noise realization i
+        norm_solutions, chi2_ref = solveAll(p_ref, exp_data)
+        chi2_ref_list.append(chi2_ref)
+      
+    print('done')
+    print('Calculating chi2 FIT...')   
+
+    #Set up parallelization for calculating chi2_Fit by structuring parameters and 
+    #noise realizations into a dataframe
+    dfNoise = pd.DataFrame()
+    dfNoise['count'] = range(0, n_noise_realizations)
+    dfNoise['p'] = [calibrated_params] * n_noise_realizations
+    dfNoise['fit labels'] = [fit_params] * n_noise_realizations
+    dfNoise['exp data'] = exp_data_noise_list
+    dfNoise['bounds'] = [bounds] * n_noise_realizations
+
+    #Solve each parameter estimation problem with parallelization using the calibrated 
+    #parameters as the initial guess
+    df = dfNoise
+    all_opt_results = []
+    with mp.Pool(num_cores) as pool:
+        result = pool.imap(optPar, df.itertuples(name=None))
+        pool.close()
+        pool.join()
+        output = [[list(x[0]), list(x[1])] for x in result]
+     
+    #Unpack and restructure results
+    for ig in range(0, len(output)):
+        all_opt_results.append(output[ig][0])
+        result_row_labels = output[ig][1]
+        
+    df_opt = pd.DataFrame(all_opt_results, columns = result_row_labels)
+    chi2_fit = list(df_opt['chi2'])
+
+    #Plot chi2 distribution and calculate 99% CI threshold
+    x2 = []
+    for i in range(0, len(chi2_ref_list)):
+        val = chi2_ref_list[i] - chi2_fit[i]
+        x2.append(val)
+     
+    #Define threshold value
+    threshold_PL_val = np.percentile(x2, confidence_interval_label)
   
-        #Plot results
-        plt.figure(figsize = (5,3))
-        plt.xlabel('chi2_ref - chi2_fit')
-        plt.ylabel('Count')
-        y, x, _ = plt.hist(x2, bins = 35, histtype='bar', color = 'dimgrey')
-        plt.plot([threshold_PL_val, threshold_PL_val], [0, max(y)], '-', lw=3, 
-                 alpha=0.6, color = sky_blue, linestyle = ':', 
-                 label = str(confidence_interval_label) + '%')  
-        plt.savefig('./CHI2 DISTRIBUTION', bbox_inches="tight", dpi = 600)
-        
-        print('******************')
-        threshold_PL_val = np.round(threshold_PL_val, 1)
-        print('CHI2 THRESHOLD FOR ' + str(num_vars) + ' PARAMETERS WITH ' + 
-              str(confidence_interval_label) + '% CONFIDENCE')
-        print(threshold_PL_val)
-        print('******************')
-        
-        #Save results
-        savePL(threshold_PL_val, calibrated_params, calibrated_chi2, real_param_labels_all)
-        
-        return threshold_PL_val
+    #Plot results
+    plt.figure(figsize = (5,3))
+    plt.xlabel('chi2_ref - chi2_fit')
+    plt.ylabel('Count')
+    y, x, _ = plt.hist(x2, bins = 35, histtype='bar', color = 'dimgrey')
+    plt.plot([threshold_PL_val, threshold_PL_val], [0, max(y)], '-', lw=3, 
+             alpha=0.6, color = sky_blue, linestyle = ':', 
+             label = str(confidence_interval_label) + '%')  
+    plt.savefig('./CHI2 DISTRIBUTION', bbox_inches="tight", dpi = 600)
+    
+    print('******************')
+    threshold_PL_val = np.round(threshold_PL_val, 1)
+    print('CHI2 THRESHOLD FOR ' + str(num_vars) + ' PARAMETERS WITH ' + 
+          str(confidence_interval_label) + '% CONFIDENCE')
+    print(threshold_PL_val)
+    print('******************')
+    
+    #Save results
+    savePL(threshold_PL_val, calibrated_params, calibrated_chi2, real_param_labels_all)
+    
+    return threshold_PL_val
         
 # =============================================================================
 #  Module 1 - code to generate and simulate PEM EVALUATION data
@@ -1735,15 +1788,9 @@ def savePemEvalData(data_, data_type, filename, count):
         
     '''
    #Define the dataframe
-    if data == 'ligand dose response only':
-        df_test1 = pd.DataFrame(data_, columns = ['L'])
-        df_test = pd.concat([df_test1], axis=1)
-    
-    elif data == 'ligand dose response and DBD dose response':
-        df_test1 = pd.DataFrame(data_[:11], columns = ['L'])
-        df_test2 = pd.DataFrame(data_[11:19], columns = ['DBD_20'])
-        df_test3 = pd.DataFrame(data_[19:], columns = ['DBD_10'])
-        df_test = pd.concat([df_test1, df_test2, df_test3], axis=1)
+    df_test1 = pd.DataFrame(data_, columns = ['DsRE2'])
+    df_test = pd.concat([df_test1], axis=1)
+
         
     #Save results
     filename = filename + data_type + '.xlsx'
@@ -1784,7 +1831,7 @@ def generatePemEvalData(df_global_search, num_datasets):
     Rsq_list = []
     for row in df_params.itertuples(name = None):
         #Define parameters
-        p = [row[2], row[3], row[4], row[5], row[6], row[7]]
+        p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]
         norm_solutions, chi2 = solveAll(p, exp_data)
         
         #Add noise
@@ -1837,16 +1884,8 @@ def addNoise(raw_vals, count):
         noise_vals.append(new_val)
     
     #Re-normalize the data to the maximum value in the dataset
-    if data == 'ligand dose response and DBD dose response':
-        data_ligand = noise_vals[:11]
-        data_DBD = noise_vals[11:]
-        
-        L_norm = [i/max(data_ligand) for i in data_ligand]
-        DBD_norm = [i/max(data_DBD) for i in data_DBD]
-        noise_vals_norm = L_norm + DBD_norm
-
-    else:
-        noise_vals_norm = [i/max(noise_vals) for i in noise_vals]
+        norm = np.mean(noise_vals[:5])
+        noise_vals_norm = [i/norm for i in noise_vals]
         
     return noise_vals_norm
 
@@ -2024,13 +2063,10 @@ def defineExpPemEval(df, data):
           
     '''
     
-    data_ligand = list(df['L'])
-    if data == 'ligand dose response only':
-        exp_data = data_ligand
-    elif data == 'ligand dose response and DBD dose response':
-        data_dbd_20 = list(df['DBD_20'])[:8]
-        data_dbd_10 = list(df['DBD_10'])[:8]
-        exp_data = data_ligand + data_dbd_20 + data_dbd_10
+    data_ = list(df['DsRE2'])
+
+    exp_data = data_
+
  
     return exp_data
 

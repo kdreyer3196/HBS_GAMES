@@ -22,7 +22,7 @@ def makeMainDir(folder_name):
         results_folder_path + folder_name: a string defining the location of the new folder
     '''
 
-    results_folder_path = '/Users/kate/Documents/GitHub/GAMES/Results/'
+    results_folder_path = 'C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
     
     try:
         if not os.path.exists(results_folder_path + folder_name):

@@ -18,17 +18,15 @@ from Run import addNoise, solveAll
 from Saving import createFolder
 
 #Define settings
-conditions_dictionary, initial_params_dictionary, data_dictionary = Settings.init()
+conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info = Settings.init()
 run = conditions_dictionary["run"]
 full_path = conditions_dictionary["directory"]
 model = conditions_dictionary["model"]
 data = conditions_dictionary["data"]
 error = data_dictionary["error"]
 exp_data = data_dictionary["exp_data"]
-plt.style.use('./paper.mplstyle.py')
+plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
-doses_ligand = [0] + list(np.logspace(0, 2, 10))
-doses_dbd = [0, 2, 5, 10, 20, 50, 100, 200]
 
 def saveRefData(data_):
     
@@ -47,16 +45,9 @@ def saveRefData(data_):
         REFERENCE TRAINING DATA.xlsx (dataframe containing reference training data)
     
     '''
-    
-    if data == 'ligand dose response only':
-        df_ref_1 = pd.DataFrame(data_, columns = ['L'])
-        df_ref = pd.concat([df_ref_1], axis=1)
-    
-    elif data == 'ligand dose response and DBD dose response':
-        df_ref_1 = pd.DataFrame(data_[:11], columns = ['L'])
-        df_ref_2 = pd.DataFrame(data_[11:19], columns = ['DBD_20'])
-        df_ref_3 = pd.DataFrame(data_[19:], columns = ['DBD_10'])
-        df_ref = pd.concat([df_ref_1, df_ref_2, df_ref_3], axis=1)
+    df_ref_1 = pd.DataFrame(data_, columns = ['DsRE2'])
+    df_ref = pd.concat([df_ref_1], axis=1)
+
         
     #Save results
     filename = 'REFERENCE TRAINING DATA.xlsx'
@@ -88,74 +79,45 @@ def generateRefData(p_ref):
     os.chdir('./' + sub_folder_name)
     
     #Solve for simulation data
-    doses, norm_solutions, chi2 = solveAll(p_ref)
+    norm_solutions, chi2 = solveAll(p_ref)
     
-    if data == 'ligand dose response only':
-        #Add technical error
-        noise_rep = addNoise(norm_solutions, 0)   
-        noise_rep = [i/max(noise_rep) for i in noise_rep]
+    #Add technical error
+    noise_solutions = addNoise(norm_solutions, 0)
 
-        #Plot true trajectory and values with noise
-        fig = plt.figure(figsize = (3,3))
-        ax1 = plt.subplot(111)   
-        ax1.plot(doses,  norm_solutions, color = 'black', marker = None, 
-                 linestyle = ':', label = 'true')
-        ax1.errorbar(doses, noise_rep, color = 'black', marker = 'o', 
-                     yerr = error, markerSize = 6, fillstyle = 'none', 
-                     linestyle = 'none',capsize = 2, label = 'noise')
-        ax1.set_xscale('symlog')
-        ax1.set_xlabel('Ligand (nM)')
-        ax1.set_ylabel('Reporter expression')
-        plt.savefig('./REFERENCE TRAINING DATA' + '.svg')
+    #Plot 
+    fig = plt.figure(figsize = (6,3))
+    fig.subplots_adjust(wspace=0.2)
+    ax1 = plt.subplot(121)   
+    ax2 = plt.subplot(122)
 
-    elif data == 'ligand dose response and DBD dose response':
-        #Unpack simulations
-        norm_solutions_ligand = norm_solutions[:11]
-        norm_solutions_dbd_20 = norm_solutions[11:19]
-        norm_solutions_dbd_10 = norm_solutions[19:]
-        solutions_dbd_norm = [norm_solutions_dbd_20, norm_solutions_dbd_10]
-        
-        #Add technical error
-        noise_solutions = addNoise(norm_solutions, 0)
-        noise_solutions_ligand = noise_solutions[:11]
-        noise_solutions_dbd_20 = noise_solutions[11:19]
-        noise_solutions_dbd_10 = noise_solutions[19:]
-        solutions_dbd_noise = [noise_solutions_dbd_20, noise_solutions_dbd_10]
+    #Ligand dose response (true model trajectory and training data with noise)`
+    error_ = error[:11]
+    ax1.plot(doses_ligand,  norm_solutions_ligand, color = 'black', marker = None, 
+             linestyle = ':', label = 'ref')
+    ax1.errorbar(doses_ligand,  noise_solutions_ligand, color = 'black', marker = 'o', 
+                 yerr = error_, markerSize = 6, fillstyle = 'none', linestyle = 'none',
+                 capsize = 2, label = 'td')
+    ax1.set_xscale('symlog')
+    ax1.set_xlabel('Ligand (nM)')
+    ax1.set_ylabel('Reporter expression')
+    ax1.legend(loc = 'upper left')
 
-        #Plot 
-        fig = plt.figure(figsize = (6,3))
-        fig.subplots_adjust(wspace=0.2)
-        ax1 = plt.subplot(121)   
-        ax2 = plt.subplot(122)
-
-        #Ligand dose response (true model trajectory and training data with noise)`
-        error_ = error[:11]
-        ax1.plot(doses_ligand,  norm_solutions_ligand, color = 'black', marker = None, 
-                 linestyle = ':', label = 'ref')
-        ax1.errorbar(doses_ligand,  noise_solutions_ligand, color = 'black', marker = 'o', 
-                     yerr = error_, markerSize = 6, fillstyle = 'none', linestyle = 'none',
-                     capsize = 2, label = 'td')
-        ax1.set_xscale('symlog')
-        ax1.set_xlabel('Ligand (nM)')
-        ax1.set_ylabel('Reporter expression')
-        ax1.legend(loc = 'upper left')
-    
-        #DBD dose response 
-        linestyles = [':', ':']
-        labels = ['20ngAD', '10ngAD']
-        colors = ['black', 'grey']
-        error_ = error[11:19]
-        for i in [0, 1]:
-            ax2.plot(doses_dbd, solutions_dbd_norm[i], linestyle = linestyles[i], 
-                     label = labels[i], color = colors[i])
-            ax2.errorbar(doses_dbd, solutions_dbd_noise[i], color = colors[i], 
-                         marker = 'o', yerr = error_, markerSize = 6, fillstyle = 'none', 
-                         linestyle = 'none',capsize = 2)
-        ax2.set_xlabel('DBD plasmid (ng)')
-        ax2.set_ylabel('Reporter expression')
-        ax2.legend()
-        plt.show()
-        plt.savefig('./REFERENCE TRAINING DATA.svg', dpi = 600)
+    #DBD dose response 
+    linestyles = [':', ':']
+    labels = ['20ngAD', '10ngAD']
+    colors = ['black', 'grey']
+    error_ = error[11:19]
+    for i in [0, 1]:
+        ax2.plot(doses_dbd, solutions_dbd_norm[i], linestyle = linestyles[i], 
+                 label = labels[i], color = colors[i])
+        ax2.errorbar(doses_dbd, solutions_dbd_noise[i], color = colors[i], 
+                     marker = 'o', yerr = error_, markerSize = 6, fillstyle = 'none', 
+                     linestyle = 'none',capsize = 2)
+    ax2.set_xlabel('DBD plasmid (ng)')
+    ax2.set_ylabel('Reporter expression')
+    ax2.legend()
+    plt.show()
+    plt.savefig('./REFERENCE TRAINING DATA.svg', dpi = 600)
         
     #Calculate chi2 between reference training data with and without noise
     chi2 = calcChi2(noise_solutions, norm_solutions, error)
@@ -188,7 +150,7 @@ def testSingleSet():
     createFolder('./' + sub_folder_name)
     os.chdir('./' + sub_folder_name)
     
-    doses, solutions, chi2 = solveAll(p, exp_data)
+    solutions, chi2 = solveAll(p, exp_data)
     R_sq = calcRsq(solutions, exp_data)  
     print('*******')
     print('R2: ' + str(np.round(R_sq, 3)))

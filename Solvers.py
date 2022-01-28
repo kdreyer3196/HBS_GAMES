@@ -278,9 +278,9 @@ def solveSingle(args):
             
         axs = axs.ravel()
         for i in range(0, num_states):
-            axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = 'black', 
+            axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = 'dimgrey', 
                         label = '1% O2')
-            axs[i].plot(t_hox, SS_hox[138][state_names[i]], color = 'dimgrey', 
+            axs[i].plot(t_hox, SS_hox[138][state_names[i]], color = 'black', 
                         label = '21% O2')
             axs[i].set_xlabel('Time (hours)', fontsize = 8)
             axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
