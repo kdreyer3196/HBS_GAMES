@@ -22,6 +22,9 @@ from lmfit import Model, Parameters
 from openpyxl import load_workbook
 import matplotlib.pyplot as plt 
 import seaborn as sns
+import cycler
+from math import sqrt
+
 
 #Import GAMES functions
 from Solvers import solveSingle, calcRsq, calcChi2
@@ -722,7 +725,7 @@ def runParameterEstimation():
                              'k_dreg1', 'k_tln2', 'k_dreg2', 'k_dreg3',
                              'deg_ratio']
     best_case_params = []
-    for i in range(0, len(real_param_labels_all)):
+    for i in range(0, len(p_all)):
         col_name = real_param_labels_all[i] + '*'
         val = df[col_name].iloc[0]
         best_case_params.append(round(val, 4))
@@ -731,7 +734,7 @@ def runParameterEstimation():
     Rsq_list = []
     for j in range(0, n_initial_guesses):
         params = []
-        for i in range(0, len(real_param_labels_all)):
+        for i in range(0, len(p_all)):
             col_name = real_param_labels_all[i] + '*'
             val = df[col_name].iloc[j]
             params.append(val)
@@ -832,12 +835,12 @@ def calcPL(calibrated_vals, calibrated_chi2, threshold_val):
         df_params = generateParams(problem_, n_search, param_vals, problem_all_params, model)
 
         #Global search
-        if parallelization == 'no': ###without multiprocessing###
+        if parallelization == 'no': #without multiprocessing
             output = []
             for row in df_params.itertuples(name = None):
                 result = solvePar(row)
                 output.append(result)
-        elif parallelization == 'yes':  ###with multiprocessing###
+        elif parallelization == 'yes':  #with multiprocessing
             with mp.Pool(8) as pool:
                 result = pool.imap(solvePar, df_params.itertuples(name = None))
                 pool.close()
@@ -860,7 +863,7 @@ def calcPL(calibrated_vals, calibrated_chi2, threshold_val):
                 result_row, result_row_labels = optPar(row)
                 all_opt_results.append(result_row)
                 
-        elif parallelization == 'yes': #with par
+        elif parallelization == 'yes': #with multiprocessing
             with mp.Pool(8) as pool: #with multiprocessing
                 result = pool.imap(optPar, df.itertuples(name=None))
                 pool.close()
@@ -1868,7 +1871,7 @@ def addNoise(raw_vals, count):
     
     #Define mean and std for error distribution
     mu = 0
-    sigma =  .05 / 3
+    sigma =  .05 / sqrt(3)
     
     #Generate noise values
     seeds = [3457, 1234, 2456, 7984, 7306, 3869, 5760, 9057, 2859]
@@ -1947,29 +1950,44 @@ def runGlobalSearchPemEval(n_search):
         './GLOBAL SEARCH RESULTS.xlsx' (the dataframe df_results in Excel form)
     '''
     
+
     #Generate parameter sets
     df_params = generateParams(problem_free, n_search, p_all, problem_all_params, model)
     
     if data_type == 'PEM evaluation':
-        with mp.Pool(conditions_dictionary["num_cores"]) as pool:
-            result = pool.imap(solvePar, df_params.itertuples(name = None))
-            pool.close()
-            pool.join()
-            output = [[round(x[0],4),round(x[1],4), round(x[2],4), round(x[3],4), 
-                       round(x[4],4), round(x[5],4), round(x[6],4), round(x[7],4)] 
-                      for x in result]
+        if parallelization == 'no':  # without multiprocessing
+            output = []
+            for row in df_params.itertuples(name = None):
+                result = solvePar(row)
+                output.append(result)
+        
+        if parallelization == 'yes':  # with multiprocessing
+            with mp.Pool(conditions_dictionary["num_cores"]) as pool:
+                result = pool.imap(solvePar, df_params.itertuples(name = None))
+                pool.close()
+                pool.join()
+                output = [[round(x[0],4),round(x[1],4), round(x[2],4), round(x[3],4), 
+                           round(x[4],4), round(x[5],4), round(x[6],4), round(x[7],4)] 
+                          for x in result]
 
         #Unpack GS results
         df_results = df_params
         df_results_unpacked = unpackPemEvalData(output, df_results)
         
-        
     elif data_type == 'experimental': 
-        with mp.Pool(conditions_dictionary["num_cores"]) as pool:
-            result = pool.imap(solvePar, df_params.itertuples(name = None))
-            pool.close()
-            pool.join()
-            output = [[round(x[0],4)] for x in result]
+        if parallelization == 'no':  # without multiprocessing
+            output = []
+            for row in df_params.itertuples(name = None):
+                result = solvePar(row)
+                output.append(result)
+        
+        if parallelization == 'yes':  # with multiprocessing
+            with mp.Pool(conditions_dictionary["num_cores"]) as pool:
+                result = pool.imap(solvePar, df_params.itertuples(name = None))
+                pool.close()
+                pool.join()
+                output = [[round(x[0],4)] for x in result]
+                
         df_results = df_params
         df_results['chi2'] = output
         df_results_unpacked = df_results
@@ -2011,14 +2029,21 @@ def runOptPemEval(df_results, run):
     df['exp_data'] = [exp_data] * len(df.index)
     df['bounds'] = [problem_free['bounds']] * len(df.index)
     all_opt_results = []
-    with mp.Pool(num_cores) as pool:
-        result = pool.imap(optPar, df.itertuples(name=None))
-        pool.close()
-        pool.join()
-        output = [[list(x[0]), list(x[1])] for x in result]
-    for ig in range(0, len(output)):
-        all_opt_results.append(output[ig][0])
-        result_row_labels = output[ig][1]
+    
+    if parallelization == 'no':   # without multiprocessing
+        for row in df.itertuples(name = None):
+            result_row, result_row_labels = optPar(row)
+            all_opt_results.append(result_row)
+            
+    if parallelization == 'yes':   # with multiprocessing 
+        with mp.Pool(num_cores) as pool:
+            result = pool.imap(optPar, df.itertuples(name=None))
+            pool.close()
+            pool.join()
+            output = [[list(x[0]), list(x[1])] for x in result]
+        for ig in range(0, len(output)):
+            all_opt_results.append(output[ig][0])
+            result_row_labels = output[ig][1]
         
     df_opt = pd.DataFrame(all_opt_results, columns = result_row_labels)
 
@@ -2029,7 +2054,7 @@ def runOptPemEval(df_results, run):
     Rsq_list = []
     for j in range(0, n_initial_guesses):
         params = []
-        for i in range(0, len(real_param_labels_all)):
+        for i in range(0, len(p_all)):
             col_name = real_param_labels_all[i] + '*'
             val = df_opt[col_name].iloc[j]
             params.append(val)
@@ -2048,6 +2073,7 @@ def runOptPemEval(df_results, run):
     plotTrainingDataFits(df_opt)
     
     return df_opt
+
 
 def defineExpPemEval(df, data):
     '''
