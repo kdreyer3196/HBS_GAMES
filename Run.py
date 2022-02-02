@@ -27,7 +27,7 @@ from math import sqrt
 
 
 #Import GAMES functions
-from Solvers import solveSingle, calcRsq, calcChi2
+from Solvers import solveSingle, calcRsq, calcChi2, HBS_1a, HBS_4b, HBS_4c
 from Saving import createFolder, saveConditions, savePL
 from GlobalSearch import generateParams, filterGlobalSearch
 import Settings
@@ -71,7 +71,6 @@ all_param_labels = problem_all_params['names']
 param_labels = list(initial_params_dictionary.keys())
 init_params = list(initial_params_dictionary.values())
 real_param_labels_free = conditions_dictionary["real_param_labels_free"]
-x = data_dictionary["x_vals"]
 data_type = data_dictionary["data_type"]
 exp_data = data_dictionary["exp_data"]
 exp_data_original = data_dictionary["exp_data"]
@@ -80,8 +79,12 @@ save_internal_states_flag = False
 parallelization = 'yes' 
 
 #Set style file
-plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
+#local file path
+#plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+
+#QUEST file path
+plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 # =============================================================================
 # General parameter estimation and solver code (used by modules 1, 2, 3)
 # =============================================================================    
@@ -144,7 +147,7 @@ def solveAll(p, exp_data):
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c
     
     [k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio] = p
-    v = [[], ]
+    v = [[], 0]
     v[0] = p
     v[1] = O2_range[-1]
     
@@ -324,11 +327,9 @@ def optPar(row):
     for i in range(0, len(items)):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
-        
-    z = len(p)*2 + 1 + len(items)
     
-    result_row = result_row[:z]
-    result_row_labels = result_row_labels[:z]
+    result_row = result_row[:25]
+    result_row_labels = result_row_labels[:25]
 
     return result_row, result_row_labels
 
@@ -389,23 +390,22 @@ def plotTrainingDataFits(df):
     t_4b = [0, 24, 48, 72, 96, 120]
     t_4c = t_4b    
     
-    
     colors = ['dimgrey', 'black']
     linestyles = ['dotted', 'dotted', 'dotted']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none', capsize = 2, label = '1% O2 Training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none', capsize = 2, label = '21% O2 Training data')
     
     ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none', capsize = 2, label = '1% O2 Training data')
     ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none', capsize = 2, label = '21% O2 Training data')
     
     ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none', capsize = 2, label = '1% O2 Training data')
     ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
-             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none', capsize = 2, label = '21% O2 Training data')
     
  
     count = 0
@@ -434,14 +434,17 @@ def plotTrainingDataFits(df):
     ax1.set_xlabel('Time Post-Plating (hours)')
     ax1.set_ylabel('Relative DsRE2 Expression')
     ax1.set_title('Simple HBS')
+    ax1.legend()
     
     ax2.set_xlabel('Time Post-Plating (hours)')
     ax2.set_ylabel('Relative DsRE2 Expression')
     ax2.set_title('HIF1a Feedback HBS')
+    ax2.legend()
     
     ax3.set_xlabel('Time Post-Plating (hours)')
     ax3.set_ylabel('Relative DsRE2 Expression')
-    ax2.set_title('HIF2a Feedback HBS')
+    ax3.set_title('HIF2a Feedback HBS')
+    ax3.legend()
     
     plt.savefig('./FITS.svg', bbox_inches="tight")
     
@@ -454,7 +457,7 @@ def plotTrainingDataFits(df):
     ax2 = plt.subplot(132)
     ax3 = plt.subplot(133)
         
-    colors = [sky_blue[1], 'black']
+    colors = [sky_blue, 'black']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
@@ -492,16 +495,19 @@ def plotTrainingDataFits(df):
     ax1.set_xlabel('Time Post-Plating (hours)')
     ax1.set_ylabel('Relative DsRE2 Expression')
     ax1.set_title('Simple HBS')
+    ax1.legend()
     
     ax2.set_xlabel('Time Post-Plating (hours)')
     ax2.set_ylabel('Relative DsRE2 Expression')
     ax2.set_title('HIF1a Feedback HBS')
+    ax2.legend()
     
     ax3.set_xlabel('Time Post-Plating (hours)')
     ax3.set_ylabel('Relative DsRE2 Expression')
-    ax2.set_title('HIF2a Feedback HBS')
+    ax3.set_title('HIF2a Feedback HBS')
+    ax3.legend()
 
-    plt.savefig('./BEST FIT.svg', bbox_inches="tight")
+    plt.savefig('./BEST_FIT.svg', bbox_inches="tight")
         
 # =============================================================================
 #  Module 2 - code for parameter estimation using training data
@@ -594,16 +600,19 @@ def plotParamDistributions(df):
     ax1.set_xlabel('Time Post-Plating (hours)')
     ax1.set_ylabel('Relative DsRE2 Expression')
     ax1.set_title('Simple HBS')
+    ax1.legend()
     
     ax2.set_xlabel('Time Post-Plating (hours)')
     ax2.set_ylabel('Relative DsRE2 Expression')
     ax2.set_title('HIF1a Feedback HBS')
+    ax2.legend()
     
     ax3.set_xlabel('Time Post-Plating (hours)')
     ax3.set_ylabel('Relative DsRE2 Expression')
-    ax2.set_title('HIF2a Feedback HBS')
+    ax3.set_title('HIF2a Feedback HBS')
+    ax3.legend()
 
-    plt.savefig('./FITS Rsq ABOVE 0.96.svg', bbox_inches="tight")
+    plt.savefig('./FITS_Rsq_ABOVE_0.96.svg', bbox_inches="tight")
     
     # =============================================================================
     # 2. parameter distributions for parameter sets with Rsq > .99
@@ -622,7 +631,7 @@ def plotParamDistributions(df):
     ax = sns.boxplot(x='variable', y='value', data=df, color = sky_blue)
     ax = sns.swarmplot(x='variable', y='value', data=df, color="gray")
     ax.set(xlabel='Parameter', ylabel='log(value)')
-    plt.savefig('OPTIMIZED PARAMETER DISTRIBUTIONS.svg', dpi = 600)
+    plt.savefig('OPTIMIZED_PARAMETER_DISTRIBUTIONS.svg', dpi = 600)
 
 def runParameterEstimation():
     '''
@@ -655,7 +664,7 @@ def runParameterEstimation():
             output.append(result)
 
     elif parallelization == 'yes':  # with multiprocessing
-        with mp.Pool(conditions_dictionary["num_cores"]) as pool:
+        with mp.Pool(num_cores) as pool:
             result = pool.imap(solvePar, df_params.itertuples(name = None))
             pool.close()
             pool.join()
@@ -841,7 +850,7 @@ def calcPL(calibrated_vals, calibrated_chi2, threshold_val):
                 result = solvePar(row)
                 output.append(result)
         elif parallelization == 'yes':  #with multiprocessing
-            with mp.Pool(8) as pool:
+            with mp.Pool(num_cores) as pool:
                 result = pool.imap(solvePar, df_params.itertuples(name = None))
                 pool.close()
                 pool.join()
@@ -864,7 +873,7 @@ def calcPL(calibrated_vals, calibrated_chi2, threshold_val):
                 all_opt_results.append(result_row)
                 
         elif parallelization == 'yes': #with multiprocessing
-            with mp.Pool(8) as pool: #with multiprocessing
+            with mp.Pool(num_cores) as pool: #with multiprocessing
                 result = pool.imap(optPar, df.itertuples(name=None))
                 pool.close()
                 pool.join()
@@ -1515,7 +1524,7 @@ def plotPL(param_lists, chi2_PL_lists, threshold_val, calibrated_vals, calibrate
         ax.plot(x1, y1, ':', color = 'dimgrey')
             
     #Save the figure
-    plt.savefig('PROFILE LIKELIHOOD PLOTS.svg')
+    plt.savefig('PROFILE_LIKELIHOOD_PLOTS.svg')
 
 def plotPLConsequences(df, param_label):
     
@@ -1568,7 +1577,7 @@ def plotPLConsequences(df, param_label):
     plt.legend(loc='upper center', bbox_to_anchor=(0.5, -0.25),
                fancybox=True, shadow=False, ncol=3)
    
-    plt.savefig('PARAMETER RELATIONSHIPS ALONG ' + param_label + '.svg', dpi = 600)
+    plt.savefig('PARAMETER_RELATIONSHIPS_ALONG_' + param_label + '.svg', dpi = 600)
     
     '''2. Plot internal model states'''
     sns.set_palette("Greys", len(y))
@@ -1594,7 +1603,7 @@ def plotPLConsequences(df, param_label):
             max1 = max(SS_hox_1a[7.6][state_names[i]])
             axs[i].set_ylim(top = max1 + .1 * max1 )
             
-        plt.savefig('INTERNAL STATES 1a ALONG ' + param_label + '.svg', dpi = 600)
+        plt.savefig('INTERNAL_STATES_1a_ALONG_' + param_label + '.svg', dpi = 600)
         
         fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, figsize = (6, 6))
         fig.subplots_adjust(hspace=.5)
@@ -1614,7 +1623,7 @@ def plotPLConsequences(df, param_label):
             max1 = max(SS_hox_4b[7.6][state_names[i]])
             axs[i].set_ylim(top = max1 + .1 * max1 )
             
-        plt.savefig('INTERNAL STATES 4b ALONG ' + param_label + '.svg', dpi = 600)
+        plt.savefig('INTERNAL_STATES_4b_ALONG_' + param_label + '.svg', dpi = 600)
         
         fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, figsize = (6, 6))
         fig.subplots_adjust(hspace=.5)
@@ -1634,7 +1643,7 @@ def plotPLConsequences(df, param_label):
             max1 = max(SS_hox_4c[7.6][state_names[i]])
             axs[i].set_ylim(top = max1 + .1 * max1 )
             
-        plt.savefig('INTERNAL STATES 4c ALONG ' + param_label + '.svg', dpi = 600)
+        plt.savefig('INTERNAL_STATES_4c_ALONG_' + param_label + '.svg', dpi = 600)
 
                    
 def calcThresholdPL(calibrated_params, exp_data):
@@ -1754,7 +1763,7 @@ def calcThresholdPL(calibrated_params, exp_data):
     plt.plot([threshold_PL_val, threshold_PL_val], [0, max(y)], '-', lw=3, 
              alpha=0.6, color = sky_blue, linestyle = ':', 
              label = str(confidence_interval_label) + '%')  
-    plt.savefig('./CHI2 DISTRIBUTION', bbox_inches="tight", dpi = 600)
+    plt.savefig('./CHI2_DISTRIBUTION', bbox_inches="tight", dpi = 600)
     
     print('******************')
     threshold_PL_val = np.round(threshold_PL_val, 1)
@@ -1962,7 +1971,7 @@ def runGlobalSearchPemEval(n_search):
                 output.append(result)
         
         if parallelization == 'yes':  # with multiprocessing
-            with mp.Pool(conditions_dictionary["num_cores"]) as pool:
+            with mp.Pool(num_cores) as pool:
                 result = pool.imap(solvePar, df_params.itertuples(name = None))
                 pool.close()
                 pool.join()
@@ -1982,7 +1991,7 @@ def runGlobalSearchPemEval(n_search):
                 output.append(result)
         
         if parallelization == 'yes':  # with multiprocessing
-            with mp.Pool(conditions_dictionary["num_cores"]) as pool:
+            with mp.Pool(num_cores) as pool:
                 result = pool.imap(solvePar, df_params.itertuples(name = None))
                 pool.close()
                 pool.join()
@@ -2113,10 +2122,10 @@ if 1 in modules:
     #STEP 1: generate PEM evaluation data by running a global search with respect to the experimental/training data 
     #Set up file structure
     os.chdir(full_path)
-    sub_folder_name = 'MODULE 1 - PARAMETER ESTIMATION WITH PEM EVALUATION DATA'
+    sub_folder_name = 'MODULE_1-PARAMETER_ESTIMATION_WITH_PEM_EVALUATION_DATA'
     createFolder('./' + sub_folder_name)
     os.chdir('./' + sub_folder_name)
-    sub_folder_name = 'GENERATE PEM EVALUATION DATA'
+    sub_folder_name = 'GENERATE_PEM_EVALUATION_DATA'
     createFolder('./' + sub_folder_name)
     os.chdir('./' + sub_folder_name)
     
@@ -2151,7 +2160,7 @@ if 1 in modules:
     #STEP 2: Run parameter estimation with PEM evaluation data
     print('Running parameter estimation with PEM evaluation data...')
     #Set up file structure
-    sub_folder_name = 'PARAMETER ESTIMATION WITH PEM EVALUATION DATA'
+    sub_folder_name = 'PARAMETER_ESTIMATION_WITH_PEM_EVALUATION_DATA'
     createFolder(sub_folder_name)
     os.chdir('./' + sub_folder_name)
     
@@ -2186,7 +2195,7 @@ if 1 in modules:
             df_results = runGlobalSearchPemEval(n_search)
               
         #Make subfolder, change to appropriate directory, and save conditions
-        sub_folder_name = 'RUN ' + run
+        sub_folder_name = 'RUN_' + run
         createFolder(sub_folder_name)
         os.chdir('./' + sub_folder_name)
         saveConditions(conditions_dictionary, initial_params_dictionary, data_dictionary)
@@ -2233,7 +2242,7 @@ if 2 in modules:
      
     #Set up file structure and save conditions
     os.chdir(full_path)
-    sub_folder_name = 'MODULE 2 - FIT TO EXPERIMENTAL DATA'
+    sub_folder_name = 'MODULE_2-FIT_TO_EXPERIMENTAL_DATA'
     createFolder('./' + sub_folder_name)
     os.chdir('./' + sub_folder_name)
     saveConditions(conditions_dictionary, initial_params_dictionary, data_dictionary)
@@ -2262,7 +2271,7 @@ if 3 in modules:
     PL_ID = 'yes'
     
     os.chdir(full_path)
-    sub_folder_name = 'MODULE 3 - PARAMETER IDENTIFIABILITY ANALYSIS'
+    sub_folder_name = 'MODULE_3-PARAMETER_IDENTIFIABILITY_ANALYSIS'
     createFolder('./' + sub_folder_name)
     os.chdir('./' + sub_folder_name)
     

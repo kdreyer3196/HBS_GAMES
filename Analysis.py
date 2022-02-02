@@ -17,7 +17,12 @@ import seaborn as sns
 from Saving import createFolder
 
 #Import custom style file for plotting
-plt.style.use('./paper.mplstyle.py')
+
+#local file path
+#plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+
+#QUEST file path
+plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 
 dpi_ = 600
 colors = ['teal', 'deeppink' ,'rebeccapurple', 'darkseagreen', 'darkorange', 'dimgrey', 
@@ -154,14 +159,14 @@ def plotPemEvaluation(files, R_sq_pem_eval_pass, chi2_10_percent):
     ax = sns.boxplot(x='run', y='Rsq', data=df_all, color = 'white')
     ax = sns.swarmplot(x='run', y='Rsq', data=df_all, color="black")
     ax.set(xlabel='PEM evaluation dataset', ylabel='Rsq, opt', title = 'R2pass = ' + str(R_sq_pem_eval_pass))
-    plt.savefig('PEM EVALUATION CRITERION.svg', dpi = dpi_)
-    
+    plt.savefig('PEM_EVALUATION_CRITERION.svg', dpi = dpi_)
+        
     df_all=df_all[df_all.Rsq > 0.9]
     plt.subplots(1,1, figsize=(4,3), sharex = True)
     ax = sns.boxplot(x='run', y='Rsq', data=df_all, color = 'white')
     ax = sns.swarmplot(x='run', y='Rsq', data=df_all, color="black")
     ax.set(xlabel='PEM evaluation dataset', ylabel='Rsq, opt', title = 'R2pass = ' + str(R_sq_pem_eval_pass))
-    plt.savefig('PEM EVALUATION CRITERION R2 >= 0.90.svg', dpi = dpi_)
+    plt.savefig('PEM_EVALUATION_CRITERION_R2_gte_0.90.svg', dpi = dpi_)
     
     print('R2pass: '+ str(R_sq_pem_eval_pass))
   

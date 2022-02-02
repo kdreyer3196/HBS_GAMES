@@ -9,7 +9,7 @@ Created on Tue Sep 29 08:39:09 2020
 #Package imports
 import math
 import numpy as np
-from scipy.integrate import odeint
+import scipy.integrate as spi
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 

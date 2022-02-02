@@ -84,7 +84,7 @@ def generateParams(problem, n_search, parameters, problem_all_params, model):
     df_params['bounds'] =  bounds
 
     #Save df
-    filename = './PARAM SWEEP.xlsx'
+    filename = './PARAM_SWEEP.xlsx'
     with pd.ExcelWriter(filename) as writer:  # doctest: +SKIP
         df_params.to_excel(writer, sheet_name='GSA params')
     
@@ -156,7 +156,7 @@ def filterGlobalSearch(data, num_ig, all_param_labels, sort_col):
     initial_guesses['free params'] = df_filtered['names']
     
     #Save initial guesses df
-    filename = 'INITIAL GUESSES'
+    filename = 'INITIAL_GUESSES'
     with pd.ExcelWriter(filename + '.xlsx') as writer:  # doctest: +SKIP
         initial_guesses.to_excel(writer, sheet_name='initial_guesses')
 

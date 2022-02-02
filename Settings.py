@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '2022-01-18_HBS_noerr'
+    folder_name = '2022-02-01_HBS_noerr'
     
     # =============================================================================
     # 2. Define free parameters and bounds
@@ -71,19 +71,19 @@ def init():
             p_ref_free.append(p_ref[i])
     
    
-   bounds_kprod = [-4, 1]
-   bounds_kpMARS = [-4, 1]
-   bounds_kout = [-4, 2]
-   bounds_kdMARS = [4, 1]
-   bounds_kdreg1 = [-4, 1]
-   bounds_ktln2 = [-1, 2]
-   bounds_kdreg2 = [-4, 1]
-   bounds_kdreg3 = [-4, 1]
-   bounds_degratio = [-1, 1]
+    bounds_kprod = [-4, 1]
+    bounds_kpMARS = [-4, 1]
+    bounds_kout = [-4, 2]
+    bounds_kdMARS = [-4, 1]
+    bounds_kdreg1 = [-4, 1]
+    bounds_ktln2 = [-1, 2]
+    bounds_kdreg2 = [-4, 1]
+    bounds_kdreg3 = [-4, 1]
+    bounds_degratio = [-1, 1]
     
-   bounds_log = [bounds_kprod, bounds_kpMARS, bounds_kout, bounds_kdMARS, 
-                 bounds_kdreg1, bounds_ktln2, bounds_kdreg2, bounds_kdreg3, 
-                 bounds_degratio]
+    bounds_log = [bounds_kprod, bounds_kpMARS, bounds_kout, bounds_kdMARS, 
+                  bounds_kdreg1, bounds_ktln2, bounds_kdreg2, bounds_kdreg3, 
+                  bounds_degratio]
                  
    # #Set bounds for parameter estimation (+/- 3 orders of magnitude from the ref parameter value)
     # bounds_log = []
@@ -107,7 +107,7 @@ def init():
     #Items that you might want to change
     conditions_dictionary = {}
     conditions_dictionary["model"] = 'model A'
-    conditions_dictionary["modules"] = [1, 2, 3] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
+    conditions_dictionary["modules"] = [1, 2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 1000
     conditions_dictionary["n_initial_guesses"] = 100
     conditions_dictionary["confidence_interval"] = .99 
@@ -144,8 +144,13 @@ def init():
     # 4. Define data dictionary
     # =============================================================================
     data_dictionary = {}
-    path_exp = ('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/' +
-            'Resources and Notes/Experimental_Data/20210512_Exp2_Analysis_for_Katie.xlsx')
+    #local file path
+    #path_exp = ('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/' +
+    #        'Resources and Notes/Experimental_Data/20210512_Exp2_Analysis_for_Katie.xlsx')
+    
+    #QUEST file path
+    path_exp = ('/home/ksd844/HBS_GAMES/Exp_Data.xlsx')
+    
     df_ref = pd.read_excel(path_exp, sheet_name='Exp_Data_Norm', header=0, index_col=[0,1])
     df_err = pd.read_excel(path_exp, sheet_name='Exp_Error_Norm', header=0, index_col=[0,1])
     exp_data, error = defineExp(conditions_dictionary["data"], df_ref, df_err)

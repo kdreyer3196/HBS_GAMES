@@ -22,6 +22,10 @@ savefig.dpi:       600
 savefig.format:    svg
 figure.autolayout: True
 
+#Legend
+legend.fontsize : x-small
+
+
 # x-axis
 #xtick.major.size: 7
 #xtick.major.width: 2
