@@ -226,7 +226,7 @@ def solveSingle(args):
     
     '''
     
-    [ODEs, v, num_states, state_names, output, O2_range] = args
+    [ODEs, v, num_states, state_names, output, O2_range, t_hox] = args
 
     y0_nox = np.zeros(num_states)
     t_ss = np.arange(0, 500, 1) #hours
@@ -247,9 +247,7 @@ def solveSingle(args):
     
     for name in state_names:
         y0_hox.append(SS_nox[name][-1])
-        
-    t_hox = [0, 24, 48, 72, 96, 120] #(for comparison to experimental data)
-    
+            
     ###create dictionary to store SS normoxia solutions
     SS_hox = {}
     for O2_val in O2_range:

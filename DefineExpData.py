@@ -34,12 +34,12 @@ def defineExp(data, df_ref, df_err):
     
     if data == 'hypox only':
         exp1a = np.append(exp_lists[0][:5], exp_lists[1][3])
-        exp4b = np.append(exp_lists[2], exp_lists[3][3])
-        exp4c = np.append(exp_lists[4], exp_lists[5][3])
+        exp4b = np.append(exp_lists[2][:6], exp_lists[3][3])
+        exp4c = np.append(exp_lists[4][:6], exp_lists[5][3])
         
         err1a = np.append(err_lists[0][:5], err_lists[1][3])
-        err4b = np.append(err_lists[2], err_lists[3][3])
-        err4c = np.append(err_lists[4], err_lists[5][3])
+        err4b = np.append(err_lists[2][:6], err_lists[3][3])
+        err4c = np.append(err_lists[4][:6], err_lists[5][3])
         
         
     elif data == 'all':
