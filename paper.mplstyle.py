@@ -10,12 +10,13 @@ lines.linewidth : 2
 lines.markersize : 6
 
 #fonts, labels, and titles
-axes.titlesize : 16
-font.weight:  bold
-axes.labelweight : bold
-axes.labelsize : 12
-xtick.labelsize : 10
-ytick.labelsize : 10
+font.sans-serif: Arial
+axes.titlesize : 12
+#font.weight:  bold
+#axes.labelweight : bold
+axes.labelsize : 9
+xtick.labelsize : 9
+ytick.labelsize : 9
 
 #Saving
 savefig.dpi:       600

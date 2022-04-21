@@ -71,6 +71,10 @@ def calcChi2(exp, sim, std):
 # CODE TO DEFINE ODES
 # ============================================================================= 
 
+# =============================================================================
+# MODEL 0
+# =============================================================================
+
 def HBS_1a(y, t, v):
  
     [[k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3, deg_ratio], O2] = v
@@ -90,9 +94,12 @@ def HBS_1a(y, t, v):
     if O2 == 138:
         O2_rate = O2
 
-    #Exponential decrease in pO2 from hypoxic incubator experiment
+    #Exponential decrease in pO2 fit to diffusion equation
     else:
-        O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
         
     #y holds these state variables: y0= MARS0, y1 = MARS,  y2 = HIF1a mRNA, y3 = HIF1a protein, y4 = HIF2a mRNA,
     #y5 = HIF2a protein, y6 = DsRED2 mRNA, y7 = DsRED2 protein
@@ -131,8 +138,11 @@ def HBS_4b(y, t, v):
     if O2 == 138:
         O2_rate = O2
     else:
-        #Exponential decrease in pO2 from hypoxic incubator experiment
-        O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        #Exponential decrease in pO2 from fit to diffusion equation
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
         
     #y holds these state variables: y0 = MARS0, y1= MARS,  y2 = HIF1a mRNA, y3 = synthetic HIF1a mRNA, y4 = HIF1a protein,
     #y5 = HIF2a mRNA, y6 = HIF2a protein, y7 = DsRED2 mRNA, y8 = DsRED2 protein
@@ -172,8 +182,11 @@ def HBS_4c(y, t, v):
     if O2 == 138:
         O2_rate = O2
     else:
-        #Exponential decrease in pO2 from hypoxic incubator experiment
-        O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        #Exponential decrease in pO2 from fit to diffusion equation
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
         
     #y holds these state variables: Y0 = MARS0, y1 = MARS,  y2 = HIF1a mRNA, y3 = HIF1a protein, y4 = HIF2a mRNA, y5 = synthetic HIF2a mRNA,
     #y6 = HIF2a protein, y7 = DsRED2 mRNA, y8 = DsRED2 protein
@@ -193,6 +206,134 @@ def HBS_4c(y, t, v):
 
     return dydt
 
+# =============================================================================
+# MODEL 1
+# =============================================================================
+
+def HBS_1a1(y, t, v):
+ 
+    [[k_pMARS, k_dMARS, k_dreg1, k_dO2, k_dreg2, k_act], O2] = v
+
+    #parameters that will be held constant:
+    k_txnBh = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_drep = 0.029 #1/hr
+
+    k_basal = 1.0 #au (MARS with NEW Mechanism)
+    k_txn = 1 #au/h
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0= MARS, y1 = HIF1a mRNA, y2 = HIF1a
+    # protein, y3 = HIF2a mRNA, y4 = HIF2a protein, y5 = DsRED2 mRNA,
+    # y6 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6 = y
+
+    dydt = [k_basal + k_pMARS*(y2 + y4) - k_dMARS*y0,
+            k_txn - k_dR*y1 - k_dreg1*y0*y1,
+            k_tln*y1 - k_dP*y2 - k_dO2*O2_rate*y2 - k_dreg2*y0*y2,
+            k_txn - k_dR*y3,
+            k_tln*y3 - k_dP*y4 - k_dO2*O2_rate*y4,
+            k_txnBh*y2 + k_txnBh*y4*(k_act*y0/(1 + k_act*y0)) - k_dR*y5,
+            k_tln*y5 - k_drep*y6]
+        
+    return dydt
+
+def HBS_4b1(y, t, v):
+ 
+    [[k_pMARS, k_dMARS, k_dreg1, k_dO2, k_dreg2, k_act], O2] = v
+
+    #parameters that will be held constant:
+    k_txnBh = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_drep = 0.029 #1/hr
+
+    k_basal = 1.0 #au (MARS with NEW Mechanism)
+    k_txn = 1 #au/h
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0= MARS, y1 = HIF1a mRNA, y2 = HIF1a
+    # protein, y3 = HIF2a mRNA, y4 = HIF2a protein, y5 = DsRED2 mRNA,
+    # y6 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6 = y
+
+    dydt = [k_basal + k_pMARS*(y2 + y4) - k_dMARS*y0,
+            k_txn + k_txnBh*y2 + k_txnBh*y4*(k_act*y0/(1 + k_act*y0)) - k_dR*y1
+            - k_dreg1*y0*y1,
+            k_tln*y1 - k_dP*y2 - k_dO2*O2_rate*y2 - k_dreg2*y0*y2,
+            k_txn - k_dR*y3,
+            k_tln*y3 - k_dP*y4 - k_dO2*O2_rate*y4,
+            k_txnBh*y2 + k_txnBh*y4*(k_act*y0/(1 + k_act*y0)) - k_dR*y5,
+            k_tln*y5 - k_drep*y6]
+        
+    return dydt
+
+def HBS_4c1(y, t, v):
+ 
+    [[k_pMARS, k_dMARS, k_dreg1, k_dO2, k_dreg2, k_act], O2] = v
+
+    #parameters that will be held constant:
+    k_txnBh = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_drep = 0.029 #1/hr
+
+    k_basal = 1.0 #au (MARS with NEW Mechanism)
+    k_txn = 1 #au/h
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0= MARS, y1 = HIF1a mRNA, y2 = HIF1a
+    # protein, y3 = HIF2a mRNA, y4 = HIF2a protein, y5 = DsRED2 mRNA,
+    # y6 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6 = y
+
+    dydt = [k_basal + k_pMARS*(y2 + y4) - k_dMARS*y0,
+            k_txn - k_dR*y1 - k_dreg1*y0*y1,
+            k_tln*y1 - k_dP*y2 - k_dO2*O2_rate*y2 - k_dreg2*y0*y2,
+            k_txn + k_txnBh*y2 + k_txnBh*y4*(k_act*y0/(1 + k_act*y0))
+            - k_dR*y3,
+            k_tln*y3 - k_dP*y4 - k_dO2*O2_rate*y4,
+            k_txnBh*y2 + k_txnBh*y4*(k_act*y0/(1 + k_act*y0)) - k_dR*y5,
+            k_tln*y5 - k_drep*y6]
+        
+    return dydt
 
 # =============================================================================
 # CODE TO SOLVE ONE HBS in Normoxia and Hypoxia 

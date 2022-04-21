@@ -28,31 +28,52 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '22411_Old_Model_Tests'
+    folder_name = '220420_Model1_PEM_new_bounds'
     
     # =============================================================================
     # 2. Define free parameters and bounds
     # =============================================================================
     #Set list of all potentially free parameters
-    #p_ref = [15, 0.05, 0.05, 36, 100, 2] #all potentially free parameters - for models A and B 
 
-    #p_ref = [15, 1, .05, 720, 100, 2] #for model C (m = m*)
-  
-    p_ref = [7.91, 1.43e-4, 1.51e-2, 3.91e-3, 1.08e-2, 1.07, 1.15e-2, 9.96e-2,
-             0.967] #for model D (m = m*)
+    # Model 0
+    # p_ref = [7.91, 1.43e-4, 1.51e-2, 3.91e-3, 1.08e-2, 1.07, 1.15e-2, 9.96e-2,
+             # 0.967] 
+    
+    # Model 1
+    p_ref = [1.43e-4, 1.51e-2, 1.08e-2, 1.15e-2, 1.0e-2, 1.0e-2]
     
     p_all = p_ref
 
     #Define parameter labels (real and general)
-    real_param_labels_all = ['k_prod', 'k_pMARS', 'k_out', 'k_dMARS',
-                             'k_dreg1', 'k_tln2', 'k_dreg2', 'k_dreg3',
-                             'deg_ratio']
+    
+    # Model 0
+    # real_param_labels_all = ['k_prod', 'k_pMARS', 'k_out', 'k_dMARS',
+                             # 'k_dreg1', 'k_tln2', 'k_dreg2', 'k_dreg3',
+                             # 'deg_ratio']
+                             
+    # Model 1
+    real_param_labels_all = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
+                             'k_dreg2', 'k_act']
+    
     #real labels for p_ref and p_all
-    p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'] #general param labels
+    
+    # Model 0
+    # p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'] #general param labels
+    
+    # Model 1
+    p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6']
     
     #if a param in real_param_labels_all is not included in realParamLabels_free,
     #it is fixed at the value set in p_all
-    real_param_labels_free = ['deg_ratio']  #real labels for free params
+    
+    # Model 0
+    # real_param_labels_free = ['k_prod', 'k_pMARS', 'k_out', 'k_dMARS',
+                             # 'k_dreg1', 'k_tln2', 'k_dreg2', 'k_dreg3',
+                             # 'deg_ratio']
+    
+    # Model 1
+    real_param_labels_free = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
+                             'k_dreg2', 'k_act']  #real labels for free params
 
     #Change param labels to generalizable param labels
     num_free_params = len(real_param_labels_free)
@@ -68,34 +89,34 @@ def init():
             params.append(value)
             p_ref_free.append(p_ref[i])
     
-   
-    bounds_kprod = [-4, 1]
-    bounds_kpMARS = [-4, 1]
-    bounds_kout = [-4, 2]
-    bounds_kdMARS = [-4, 1]
-    bounds_kdreg1 = [-4, 1]
-    bounds_ktln2 = [-1, 2]
-    bounds_kdreg2 = [-4, 1]
-    bounds_kdreg3 = [-4, 1]
-    bounds_degratio = [-1, 1]
+    # Set bounds for parameter estimation 
+    
+    # Model 0
+    # bounds_kprod = [-4, 1]
+    # bounds_kpMARS = [-4, 1]
+    # bounds_kout = [-4, 2]
+    # bounds_kdMARS = [-4, 1]
+    # bounds_kdreg1 = [-4, 1]
+    # bounds_ktln2 = [-1, 2]
+    # bounds_kdreg2 = [-4, 1]
+    # bounds_kdreg3 = [-4, 1]
+    # bounds_degratio = [-1, 1]
     
     # bounds_log = [bounds_kprod, bounds_kpMARS, bounds_kout, bounds_kdMARS, 
     #               bounds_kdreg1, bounds_ktln2, bounds_kdreg2, bounds_kdreg3, 
     #               bounds_degratio]
-
-    bounds_log = [bounds_degratio]
-
-   # #Set bounds for parameter estimation (+/- 3 orders of magnitude from the ref parameter value)
-    # bounds_log = []
-    # for i in range(0, num_free_params):
-    #     min_bound = log10(p_ref_free[i]) - 3
-    #     max_bound = log10(p_ref_free[i]) + 3
-    #     bounds_log.append([min_bound, max_bound])
-  
-    # #n is an exception to this because it has a biologically 
-    # #relevant range from 1 -> 4 (in linear scale)
-    # bounds_log[-1] = [0, .602]
     
+    # Model 1
+    bounds_kpMARS = [-4, 2]
+    bounds_kdMARS = [-4, 2]
+    bounds_kdreg1 = [-5, 2]
+    bounds_kdO2 = [-4, 2]
+    bounds_kdreg2 = [-5, 2]
+    bounds_kact = [-4, 2]
+    
+    bounds_log = [bounds_kpMARS, bounds_kdMARS, bounds_kdreg1, bounds_kdO2, 
+                  bounds_kdreg2, bounds_kact]
+        
     #Define the parameter estimation problem (free parameters for this run only)
     problem = {'num_vars': num_free_params,  #set free parameters and bounds
                'names': p_labels_free, 
@@ -106,22 +127,16 @@ def init():
     #Initialize conditions dictionary
     #Items that you might want to change
     conditions_dictionary = {}
-    conditions_dictionary["model"] = 'model A'
-    conditions_dictionary["modules"] = [1] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
+    conditions_dictionary["model"] = 'model 1' #'model 0', 'model 1'
+    conditions_dictionary["modules"] = [2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 20
-    conditions_dictionary["n_initial_guesses"] = 10
+    conditions_dictionary["n_initial_guesses"] = 5
     conditions_dictionary["confidence_interval"] = .99 
     conditions_dictionary["num_cores"] = 14
     conditions_dictionary["num_datasets_pem_eval"] = 3
     conditions_dictionary["n_search_pem_eval"] = 20
     conditions_dictionary["param_index_PL"] = 'all' #'all' or index of p (int)
     conditions_dictionary["data"] = 'hypox only'
-    
-    
-    # if conditions_dictionary["model"] == 'model A':
-    #     conditions_dictionary["data"] = 'ligand dose response only'
-    # elif conditions_dictionary["model"] in ['model B', 'model C', 'model D']:
-    #     
 
     #Define parameter labels
     #Items that you likely will not change
@@ -150,11 +165,11 @@ def init():
             # 'Resources and Notes/Experimental_Data/20210512_Exp2_Analysis_for_Katie.xlsx')
     
     #desktop file path
-    path_exp = ('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/' +
-            'Resources and Notes/Experimental_Data/20210512_Exp2_Analysis_for_Katie.xlsx')
+    # path_exp = ('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/' +
+            # 'Resources and Notes/Experimental_Data/20210512_Exp2_Analysis_for_Katie.xlsx')
     
     #QUEST file path
-    # path_exp = ('/home/ksd844/HBS_GAMES/Exp_Data.xlsx')
+    path_exp = ('/home/ksd844/HBS_GAMES/Exp_Data.xlsx')
     
     df_ref = pd.read_excel(path_exp, sheet_name='Exp_Data_Norm', header=0, index_col=[0,1], engine='openpyxl')
     df_err = pd.read_excel(path_exp, sheet_name='Exp_Error_Norm', header=0, index_col=[0,1], engine='openpyxl')
@@ -164,6 +179,8 @@ def init():
     data_dictionary["data_type"] = ''
     
     HBS_info = {}
+    
+    # MODEL 0
     HBS_info['HBS_1a'] = {}
     HBS_info['HBS_1a']['# states'] = 8
     HBS_info['HBS_1a']['state names'] = ['MARS0', 'MARS', 'HIF1R', 'HIF1P',
@@ -178,5 +195,20 @@ def init():
     HBS_info['HBS_4c']['# states'] = 9
     HBS_info['HBS_4c']['state names'] = ['MARS0', 'MARS', 'HIF1R', 'HIF1P', 'HIF2R',
                                          'sHIF2R', 'HIF2P', 'DSRed2R', 'DSRed2P']
+    # MODEL 1
+    HBS_info['HBS_1a1'] = {}
+    HBS_info['HBS_1a1']['# states'] = 7
+    HBS_info['HBS_1a1']['state names'] = ['MARS', 'HIF1R', 'HIF1P','HIF2R',
+                                          'HIF2P', 'DSRed2R', 'DSRed2P']
+    
+    HBS_info['HBS_4b1'] = {}
+    HBS_info['HBS_4b1']['# states'] = 7
+    HBS_info['HBS_4b1']['state names'] = ['MARS', 'HIF1R', 'HIF1P','HIF2R',
+                                          'HIF2P', 'DSRed2R', 'DSRed2P']
+    
+    HBS_info['HBS_4c1'] = {}
+    HBS_info['HBS_4c1']['# states'] = 7
+    HBS_info['HBS_4c1']['state names'] = ['MARS', 'HIF1R', 'HIF1P','HIF2R',
+                                          'HIF2P', 'DSRed2R', 'DSRed2P']
     
     return conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info

@@ -22,10 +22,10 @@ from Saving import createFolder
 # plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
 #desktop file path
-plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+# plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
 #QUEST file path
-# plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
+plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 
 dpi_ = 600
 colors = ['teal', 'deeppink' ,'rebeccapurple', 'darkseagreen', 'darkorange', 'dimgrey', 
@@ -169,7 +169,7 @@ def plotPemEvaluation(files, R_sq_pem_eval_pass, chi2_10_percent):
     ax = sns.boxplot(x='run', y='Rsq', data=df_all, color = 'white')
     ax = sns.swarmplot(x='run', y='Rsq', data=df_all, color="black")
     ax.set(xlabel='PEM evaluation dataset', ylabel='Rsq, opt', title = 'R2pass = ' + str(R_sq_pem_eval_pass))
-    plt.savefig('PEM_EVAL_CRITERION_R2_gte_0.90.svg', dpi = dpi_)
+    plt.savefig('PEM_EVAL_CRIT_R2_gte_09.svg', dpi = dpi_)
     
     print('R2pass: '+ str(R_sq_pem_eval_pass))
   

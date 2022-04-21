@@ -26,10 +26,10 @@ def makeMainDir(folder_name):
     
     
     #desktop folder path
-    results_folder_path = 'C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
+    # results_folder_path = 'C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
     
     #QUEST folder path
-    # results_folder_path = '/home/ksd844/HBS_GAMES/Results/'
+    results_folder_path = '/home/ksd844/HBS_GAMES/Results/'
     
     try:
         if not os.path.exists(results_folder_path + folder_name):

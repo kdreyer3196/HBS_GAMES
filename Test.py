@@ -30,10 +30,10 @@ exp_data = data_dictionary["exp_data"]
 # plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
 #desktop file path
-plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+# plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
 #QUEST file path
-# plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
+plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 
 
 def saveRefData(data_):
