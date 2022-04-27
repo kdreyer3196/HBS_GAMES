@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220420_Model1_PEM_new_bounds'
+    folder_name = '220421_Model3_Modules1-2'
     
     # =============================================================================
     # 2. Define free parameters and bounds
@@ -40,7 +40,14 @@ def init():
              # 0.967] 
     
     # Model 1
-    p_ref = [1.43e-4, 1.51e-2, 1.08e-2, 1.15e-2, 1.0e-2, 1.0e-2]
+    # p_ref = [1.43e-4, 1.51e-2, 1.08e-2, 1.15e-2, 1.0e-2, 1.0e-2]
+    
+    # Model 2
+    # p_ref = [7.91, 1.51e-2, 1.43e-4, 3.91e-3, 1.08e-2, 1.15e-2, 1.0e-2, 1.0e-2]
+    
+    # Model 3
+    p_ref = [7.91, 1.51e-2, 1.43e-4, 3.91e-3, 1.08e-2, 1.15e-2, 1.0e-2, 1.0e-2,
+             1.0]
     
     p_all = p_ref
 
@@ -52,8 +59,17 @@ def init():
                              # 'deg_ratio']
                              
     # Model 1
-    real_param_labels_all = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
-                             'k_dreg2', 'k_act']
+    # real_param_labels_all = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
+                             # 'k_dreg2', 'k_act']
+    
+    # Model 2
+    # real_param_labels_all = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
+                             # 'k_dHP', 'k_dH1P', 'k_aH2P']
+        
+    # Model 3
+    real_param_labels_all = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
+                             'k_dHP', 'k_dH1P', 'k_aH2P', 'k_tln2']
+    
     
     #real labels for p_ref and p_all
     
@@ -61,7 +77,13 @@ def init():
     # p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9'] #general param labels
     
     # Model 1
-    p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6']
+    # p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6']
+    
+    # Model 2
+    # p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8']
+    
+    # Model 3
+    p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9']
     
     #if a param in real_param_labels_all is not included in realParamLabels_free,
     #it is fixed at the value set in p_all
@@ -72,8 +94,16 @@ def init():
                              # 'deg_ratio']
     
     # Model 1
-    real_param_labels_free = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
-                             'k_dreg2', 'k_act']  #real labels for free params
+    # real_param_labels_free = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
+                             # 'k_dreg2', 'k_act']  #real labels for free params
+    
+    # Model 2
+    # real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
+                             # 'k_dHP', 'k_dH1P', 'k_aH2P']
+                             
+    # Model 3
+    real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
+                             'k_dHP', 'k_dH1P', 'k_aH2P', 'k_tln2']
 
     #Change param labels to generalizable param labels
     num_free_params = len(real_param_labels_free)
@@ -107,15 +137,43 @@ def init():
     #               bounds_degratio]
     
     # Model 1
-    bounds_kpMARS = [-4, 2]
-    bounds_kdMARS = [-4, 2]
-    bounds_kdreg1 = [-5, 2]
-    bounds_kdO2 = [-4, 2]
-    bounds_kdreg2 = [-5, 2]
-    bounds_kact = [-4, 2]
+    # bounds_kpMARS = [-4, 2]
+    # bounds_kdMARS = [-4, 2]
+    # bounds_kdreg1 = [-5, 2]
+    # bounds_kdO2 = [-4, 2]
+    # bounds_kdreg2 = [-5, 2]
+    # bounds_kact = [-4, 2]
     
-    bounds_log = [bounds_kpMARS, bounds_kdMARS, bounds_kdreg1, bounds_kdO2, 
-                  bounds_kdreg2, bounds_kact]
+    # bounds_log = [bounds_kpMARS, bounds_kdMARS, bounds_kdreg1, bounds_kdO2, 
+    #               bounds_kdreg2, bounds_kact]
+    
+    # Model 2
+    # bounds_kpM0 = [-4, 2]
+    # bounds_kdM0 = [-4, 2]
+    # bounds_kpM1 = [-4, 2]
+    # bounds_kdM1 = [-4, 2]
+    # bounds_kdH1R = [-5, 2]
+    # bounds_kdHP = [-4, 2]
+    # bounds_kdH1P = [-5, 2]
+    # bounds_kaH2P = [-4, 2]
+    
+    # bounds_log = [bounds_kpM0, bounds_kdM0, bounds_kpM1, bounds_kdM1, 
+    #               bounds_kdH1R, bounds_kdHP, bounds_kdH1P, bounds_kaH2P]
+    
+    # Model 3
+    bounds_kpM0 = [-4, 2]
+    bounds_kdM0 = [-4, 2]
+    bounds_kpM1 = [-4, 2]
+    bounds_kdM1 = [-4, 2]
+    bounds_kdH1R = [-5, 2]
+    bounds_kdHP = [-4, 2]
+    bounds_kdH1P = [-5, 2]
+    bounds_kaH2P = [-4, 2]
+    bounds_ktln2 = [-1, 2]
+    
+    bounds_log = [bounds_kpM0, bounds_kdM0, bounds_kpM1, bounds_kdM1, 
+                  bounds_kdH1R, bounds_kdHP, bounds_kdH1P, bounds_kaH2P,
+                  bounds_ktln2]
         
     #Define the parameter estimation problem (free parameters for this run only)
     problem = {'num_vars': num_free_params,  #set free parameters and bounds
@@ -127,14 +185,14 @@ def init():
     #Initialize conditions dictionary
     #Items that you might want to change
     conditions_dictionary = {}
-    conditions_dictionary["model"] = 'model 1' #'model 0', 'model 1'
-    conditions_dictionary["modules"] = [2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
-    conditions_dictionary["n_search"] = 20
-    conditions_dictionary["n_initial_guesses"] = 5
+    conditions_dictionary["model"] = 'model 3' #'model 0', 'model 1', 'model 2', 'model 3'
+    conditions_dictionary["modules"] = [1, 2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
+    conditions_dictionary["n_search"] = 1000
+    conditions_dictionary["n_initial_guesses"] = 100
     conditions_dictionary["confidence_interval"] = .99 
     conditions_dictionary["num_cores"] = 14
     conditions_dictionary["num_datasets_pem_eval"] = 3
-    conditions_dictionary["n_search_pem_eval"] = 20
+    conditions_dictionary["n_search_pem_eval"] = 1000
     conditions_dictionary["param_index_PL"] = 'all' #'all' or index of p (int)
     conditions_dictionary["data"] = 'hypox only'
 
@@ -210,5 +268,42 @@ def init():
     HBS_info['HBS_4c1']['# states'] = 7
     HBS_info['HBS_4c1']['state names'] = ['MARS', 'HIF1R', 'HIF1P','HIF2R',
                                           'HIF2P', 'DSRed2R', 'DSRed2P']
+    # MODEL 2
+    HBS_info['HBS_1a2'] = {}
+    HBS_info['HBS_1a2']['# states'] = 8
+    HBS_info['HBS_1a2']['state names'] = ['MARS0', 'MARS1', 'HIF1R', 'HIF1P', 
+                                          'HIF2R', 'HIF2P', 'DSRed2R',
+                                          'DSRed2P']
+    
+    HBS_info['HBS_4b2'] = {}
+    HBS_info['HBS_4b2']['# states'] = 8
+    HBS_info['HBS_4b2']['state names'] = ['MARS0', 'MARS1', 'HIF1R', 'HIF1P', 
+                                          'HIF2R', 'HIF2P', 'DSRed2R',
+                                          'DSRed2P']
+    
+    HBS_info['HBS_4c2'] = {}
+    HBS_info['HBS_4c2']['# states'] = 8
+    HBS_info['HBS_4c2']['state names'] = ['MARS0', 'MARS1', 'HIF1R', 'HIF1P', 
+                                          'HIF2R', 'HIF2P', 'DSRed2R',
+                                          'DSRed2P']
+    
+    # MODEL 3
+    HBS_info['HBS_1a3'] = {}
+    HBS_info['HBS_1a3']['# states'] = 8
+    HBS_info['HBS_1a3']['state names'] = ['MARS0', 'MARS1', 'HIF1R', 'HIF1P', 
+                                          'HIF2R', 'HIF2P', 'DSRed2R',
+                                          'DSRed2P']
+    
+    HBS_info['HBS_4b3'] = {}
+    HBS_info['HBS_4b3']['# states'] = 9
+    HBS_info['HBS_4b3']['state names'] = ['MARS0', 'MARS1', 'HIF1R', 'sHIF1R',
+                                          'HIF1P', 'HIF2R', 'HIF2P', 'DSRed2R',
+                                          'DSRed2P']
+    
+    HBS_info['HBS_4c3'] = {}
+    HBS_info['HBS_4c3']['# states'] = 9
+    HBS_info['HBS_4c3']['state names'] = ['MARS0', 'MARS1', 'HIF1R', 'HIF1P', 
+                                          'HIF2R', 'sHIF2R', 'HIF2P', 'DSRed2R',
+                                          'DSRed2P']
     
     return conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info

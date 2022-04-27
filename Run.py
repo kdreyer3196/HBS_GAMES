@@ -27,7 +27,7 @@ from math import sqrt
 
 
 #Import GAMES functions
-from Solvers import solveSingle, calcRsq, calcChi2, HBS_1a, HBS_4b, HBS_4c, HBS_1a1, HBS_4b1, HBS_4c1
+from Solvers import *
 from Saving import createFolder, saveConditions, savePL
 from GlobalSearch import generateParams, filterGlobalSearch
 import Settings
@@ -143,7 +143,17 @@ def solveAll(p, exp_data, t_type, model):
         elif model == 'model 1':
             
             ODE_list = [HBS_1a1, HBS_4b1, HBS_4c1]
-            name_list = ['HBS_1a1', 'HBS_4b1', 'HBS_4c1']    
+            name_list = ['HBS_1a1', 'HBS_4b1', 'HBS_4c1']
+            
+        elif model == 'model 2':
+            
+            ODE_list = [HBS_1a2, HBS_4b2, HBS_4c2]
+            name_list = ['HBS_1a2', 'HBS_4b2', 'HBS_4c2']
+            
+        elif model == 'model 3':
+            
+            ODE_list = [HBS_1a3, HBS_4b3, HBS_4c3]
+            name_list = ['HBS_1a3', 'HBS_4b3', 'HBS_4c3'] 
         
         if t_type == 'plotting':
             
@@ -202,6 +212,12 @@ def solveAll(p, exp_data, t_type, model):
         
     elif model == 'model 1':
         [k_pMARS, k_dMARS, k_dreg1, k_dO2, k_dreg2, k_act] = p
+        
+    elif model == 'model 2':
+        [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dHP, k_dH1P, k_aH2P] = p
+        
+    elif model == 'model 3':
+        [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dHP, k_dH1P, k_aH2P, k_tln2] = p
     
     v = [[], 0]
     v[0] = p
@@ -246,7 +262,7 @@ def solveAll(p, exp_data, t_type, model):
                 print('Nan in solutions')
                 Rsq = 0
                 chi2 = 1000000
-                return solutions, chi2, Rsq
+                return solutions, chi2
   
     
         #Calculate the cost function
@@ -277,7 +293,7 @@ def solvePar(row):
    '''
 
     #Define parameters and solve ODEs
-    p = [row[1], row[2], row[3], row[4], row[5], row[6]]
+    p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]
     norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
     output = [chi2]
    
@@ -317,10 +333,10 @@ def optPar(row):
     #Initialize list to keep track of CF at each function evaluation
     chi2_list = []
 
-    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6):
+    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9):
         #This is the function that is solved at each step in the optimization algorithm
         
-        p = [p1, p2, p3, p4, p5, p6]
+        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
         chi2_list.append(chi2)
         
@@ -397,8 +413,8 @@ def optPar(row):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
     
-    result_row = result_row[:19]
-    result_row_labels = result_row_labels[:19]
+    result_row = result_row[:25]
+    result_row_labels = result_row_labels[:25]
 
     return result_row, result_row_labels
 
@@ -526,7 +542,7 @@ def plotTrainingDataFits(df):
         col_name = real_param_labels_all[i] + '*'
         val = df[col_name].iloc[0]
         params.append(val)
-    print('Params = ', params)
+    # print('Params = ', params)
     
     t_type = 'plotting'
 
@@ -813,8 +829,8 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
-    real_param_labels_all = ['k_pMARS', 'k_dMARS', 'k_dreg1', 'k_dO2',
-                             'k_dreg2', 'k_act']
+    real_param_labels_all = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
+                             'k_dHP', 'k_dH1P', 'k_aH2P', 'k_tln2']
     
     best_case_params = []
     for i in range(0, len(p_all)):
@@ -1922,7 +1938,7 @@ def generatePemEvalData(df_global_search, num_datasets):
     Rsq_list = []
     for row in df_params.itertuples(name = None):
         #Define parameters
-        p = [row[2], row[3], row[4], row[5], row[6], row[7]]
+        p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
         
         #Add noise
