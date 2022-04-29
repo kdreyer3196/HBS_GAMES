@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220427_Model2A_Modules1-2'
+    folder_name = '220429_Model0A_Plot_Testing'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -36,8 +36,8 @@ def init():
     #Initialize conditions dictionary
     #Items that you might want to change
     conditions_dictionary = {}
-    conditions_dictionary["model"] = 'model 2A' #'model 0', 'model 0A', 'model 0B', 'model 1', 'model 1A', 'model 2', 'model 2A', 'model 3'
-    conditions_dictionary["modules"] = [1] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
+    conditions_dictionary["model"] = 'model_0A' #'model_0', 'model_0A', 'model_0B', 'model_1', 'model_1A', 'model_2', 'model_2A', 'model_3'
+    conditions_dictionary["modules"] = [] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 1000
     conditions_dictionary["n_initial_guesses"] = 100
     conditions_dictionary["confidence_interval"] = .99 
@@ -46,7 +46,7 @@ def init():
     conditions_dictionary["n_search_pem_eval"] = 1000
     conditions_dictionary["param_index_PL"] = 'all' #'all' or index of p (int)
     conditions_dictionary["data"] = 'hypox only'
-    conditions_dictionary["location"] = 'quest' #'desktop', 'laptop', 'quest'
+    conditions_dictionary["location"] = 'desktop' #'desktop', 'laptop', 'quest'
     
     # =============================================================================
     # 3. Define free parameters and bounds
@@ -58,7 +58,7 @@ def init():
     
     [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dH1P, k_pH2R, k_dHP, k_aH2P, k_tln2, deg_ratio] = p_ref
     
-    if conditions_dictionary["model"] == 'model 0':
+    if conditions_dictionary["model"] == 'model_0':
         k_dHP = 0
         k_aH2P = 0
         
@@ -68,7 +68,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
                                   'k_dH1P', 'k_pH2R', 'k_tln2', 'deg_ratio']
         
-    elif conditions_dictionary["model"] == 'model 0A':
+    elif conditions_dictionary["model"] == 'model_0A':
         k_pH2R = 0
         k_dHP = 0
         
@@ -78,7 +78,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
                                   'k_dH1P', 'k_aH2P', 'k_tln2', 'deg_ratio']
         
-    elif conditions_dictionary["model"] == 'model 0B':
+    elif conditions_dictionary["model"] == 'model_0B':
         k_pH2R = 0
         k_dHP = 0
         
@@ -88,7 +88,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
                                   'k_dH1P', 'k_aH2P', 'k_tln2', 'deg_ratio']
 
-    elif conditions_dictionary["model"] == 'model 1':
+    elif conditions_dictionary["model"] == 'model_1':
         k_pM1 = 0
         k_dM1 = 0
         k_pH2R = 0
@@ -101,7 +101,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_dH1R', 'k_dH1P',
                                   'k_dHP', 'k_aH2P']
         
-    elif conditions_dictionary["model"] == 'model 1A':
+    elif conditions_dictionary["model"] == 'model_1A':
         k_pM1 = 0
         k_dM1 = 0
         k_pH2R = 0
@@ -114,7 +114,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_dH1R', 'k_dH1P',
                                   'k_dHP', 'k_aH2P']
 
-    elif conditions_dictionary["model"] == 'model 2':
+    elif conditions_dictionary["model"] == 'model_2':
         k_pH2R = 0
         k_tln2 = 0
         deg_ratio = 0
@@ -125,7 +125,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
                                   'k_dH1P', 'k_dHP', 'k_aH2P']
         
-    elif conditions_dictionary["model"] == 'model 2A':
+    elif conditions_dictionary["model"] == 'model_2A':
         k_pH2R = 0
         k_tln2 = 0
         deg_ratio = 0
@@ -136,7 +136,7 @@ def init():
         real_param_labels_free = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
                                   'k_dH1P', 'k_dHP', 'k_aH2P']
         
-    elif conditions_dictionary["model"] == 'model 3':
+    elif conditions_dictionary["model"] == 'model_3':
         k_pH2R = 0
         deg_ratio = 0
         

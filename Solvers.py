@@ -1134,8 +1134,8 @@ def solveSingle(args):
         
     Inputs: 
         args (a list of arguments defining the condition) defined as
-        args = [model, v, num_states, state_names, O2_range, output]
-           
+        [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args           
+ 
     Output: 
         if output == 'save internal states'
             t_1 (list of timepoints before ligand addition)
@@ -1150,13 +1150,13 @@ def solveSingle(args):
             solution_on[-1, -1] (float, the value of the reporter state at the final timepoint)
     
     Figures: 
-        if output == 'timecourse':
-            './TIMECOURSE.svg' (plots of dynamic trajectories of each state variable)
+        if output == 'all states':
+            './All_States_model_X.svg' (plots of dynamic trajectories of each state variable)
     
     '''
     
-    [ODEs, v, num_states, state_names, output, O2_range, t_hox] = args
-
+    [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args
+ 
     y0_nox = np.zeros(num_states)
     t_ss = np.arange(0, 500, 1) #hours
     v[1] = 138
@@ -1167,15 +1167,15 @@ def solveSingle(args):
     SS_nox = {}
     
     for i in range(0,num_states):
-        name = state_names[i]
+        name_st = state_names[i]
         
-        SS_nox[name] = solution_nox[:,i]
+        SS_nox[name_st] = solution_nox[:,i]
 
     ###hypoxia simulation###
     y0_hox = []
     
-    for name in state_names:
-        y0_hox.append(SS_nox[name][-1])
+    for name_st in state_names:
+        y0_hox.append(SS_nox[name_st][-1])
             
     ###create dictionary to store SS normoxia solutions
     SS_hox = {}
@@ -1185,42 +1185,64 @@ def solveSingle(args):
         solution_hox = spi.odeint(ODEs, y0_hox, t_hox, args=(v,))
         
         for i in range(0,num_states):
-            name = state_names[i]
+            name_st = state_names[i]
             
-            SS_hox[O2_val][name] = solution_hox[:,i]
+            SS_hox[O2_val][name_st] = solution_hox[:,i]
 #############################################################################################
 
-    if output == 'timecourse':
+    if output == 'all states':
         
         #Plot timecourse
-        if num_states == 8:
-            fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
+        linestyle = 'dotted'
+        sky_blue = [i/255 for i in [86, 180, 233]]
+        colors = [sky_blue, 'gray']
+        
+        if num_states == 7:
+            fig, axs = plt.subplots(nrows=2, ncols=4, sharex=False, sharey=False, figsize = (8, 4))
+            fig.subplots_adjust(hspace=.5)
+            fig.subplots_adjust(wspace=0.3)
+        
+        elif num_states == 8:
+            fig, axs = plt.subplots(nrows=2, ncols=4, sharex=False, sharey=False, figsize = (8, 4))
             fig.subplots_adjust(hspace=.5)
             fig.subplots_adjust(wspace=0.3)
             
-        if num_states == 9:
-            fig, axs = plt.subplots(nrows=3, ncols=3, sharex=True, sharey=False, figsize = (6, 6))
+        elif num_states == 9:
+            fig, axs = plt.subplots(nrows=3, ncols=3, sharex=False, sharey=False, figsize = (6, 6))
             fig.subplots_adjust(hspace=.5)
             fig.subplots_adjust(wspace=0.3)
             
         axs = axs.ravel()
         for i in range(0, num_states):
-            axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = 'dimgrey', 
+            axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = colors[0], 
+                        linestyle = linestyle,
                         label = '1% O2')
-            axs[i].plot(t_hox, SS_hox[138][state_names[i]], color = 'black', 
+            axs[i].plot(t_hox[0], SS_hox[138][state_names[i]][0], color = colors[1], 
+                        linestyle = linestyle,
                         label = '21% O2')
-            axs[i].set_xlabel('Time (hours)', fontsize = 8)
-            axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
-            axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
+            axs[i].set_xlabel('Time Post-Plating (hours)')
+            axs[i].set_ylabel('Simulation value (a.u.)')
+            axs[i].set_title(state_names[i])
+            axs[i].legend()
             
             max1 = max(SS_hox[7.6][state_names[i]])
-            axs[i].set_ylim(top = max1 + .1 * max1 )
-        plt.savefig('./TIMECOURSES.svg')
+            
+            if max1 < 0.5:
+                axs[i].set_ylim(top = max1 + .01 * max1 )
+                
+            else:
+                axs[i].set_ylim(top = max1 + .1 * max1 )
+            
+        if num_states == 7:
+            axs[-1].axis('off')
+            
+        fig.suptitle(name + ' States')
+        fig_name = name + 'States' + '.svg'
+        plt.savefig(fig_name)
         
-        return 'Timecourses saved as TIMECOURSES.svg'
+        print('Timecourses saved as', fig_name)
+        
+        return t_hox, SS_hox
               
     else:
         return t_hox, SS_hox
-
-
-    

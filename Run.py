@@ -99,7 +99,7 @@ elif location == 'quest':
 #Define pO2 conditions
 O2_range = [7.6, 138]
 
-def solveAll(p, exp_data, t_type, model):
+def solveAll(p, exp_data, t_type, model, output):
     
     '''
     Purpose: Solve ODEs for the entire dataset using parameters defined in p 
@@ -137,44 +137,44 @@ def solveAll(p, exp_data, t_type, model):
             sol: a list of floats corresponding to the y-axis values in the training data plots 
                 (normalized reporter expression across DBD doses)   
                 
-                [ODEs, v, num_states, state_names, output, O2_range, t_hox] = args
+                [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args
                 '''
-        if model == 'model 0':
+        if model == 'model_0':
             
             ODE_list = [HBS_1a0, HBS_4b0, HBS_4c0]
             name_list = ['HBS_1a0', 'HBS_4b0', 'HBS_4c0']
             
-        elif model == 'model 0A':
+        elif model == 'model_0A':
             
             ODE_list = [HBS_1a0A, HBS_4b0A, HBS_4c0A]
             name_list = ['HBS_1a0A', 'HBS_4b0A', 'HBS_4c0A']
             
-        elif model == 'model 0B':
+        elif model == 'model_0B':
             
             ODE_list = [HBS_1a0B, HBS_4b0B, HBS_4c0B]
             name_list = ['HBS_1a0B', 'HBS_4b0B', 'HBS_4c0B']
             
-        elif model == 'model 1':
+        elif model == 'model_1':
             
             ODE_list = [HBS_1a1, HBS_4b1, HBS_4c1]
             name_list = ['HBS_1a1', 'HBS_4b1', 'HBS_4c1']
             
-        elif model == 'model 1A':
+        elif model == 'model_1A':
             
             ODE_list = [HBS_1a1A, HBS_4b1A, HBS_4c1A]
             name_list = ['HBS_1a1A', 'HBS_4b1A', 'HBS_4c1A']
             
-        elif model == 'model 2':
+        elif model == 'model_2':
             
             ODE_list = [HBS_1a2, HBS_4b2, HBS_4c2]
             name_list = ['HBS_1a2', 'HBS_4b2', 'HBS_4c2']
             
-        elif model == 'model 2A':
+        elif model == 'model_2A':
             
             ODE_list = [HBS_1a2A, HBS_4b2A, HBS_4c2A]
             name_list = ['HBS_1a2A', 'HBS_4b2A', 'HBS_4c2A']
             
-        elif model == 'model 3':
+        elif model == 'model_3':
             
             ODE_list = [HBS_1a3, HBS_4b3, HBS_4c3]
             name_list = ['HBS_1a3', 'HBS_4b3', 'HBS_4c3'] 
@@ -183,24 +183,24 @@ def solveAll(p, exp_data, t_type, model):
             
             t_hox = np.linspace(0,120,31)
     
-            args_1a = [ODE_list[0], v, HBS_info[name_list[0]]['# states'],
-                       HBS_info[name_list[0]]['state names'], '', O2_range,
+            args_1a = [ODE_list[0], v, name_list[0], HBS_info[name_list[0]]['# states'],
+                       HBS_info[name_list[0]]['state names'], output, O2_range,
                        t_hox]
             t_hox, SS_hox_1a = solveSingle(args_1a)
 
-            args_4b = [ODE_list[1], v, HBS_info[name_list[1]]['# states'],
-                       HBS_info[name_list[1]]['state names'], '', O2_range, 
+            args_4b = [ODE_list[1], v, name_list[1], HBS_info[name_list[1]]['# states'],
+                       HBS_info[name_list[1]]['state names'], output, O2_range, 
                        t_hox]
             t_hox, SS_hox_4b = solveSingle(args_4b)
 
-            args_4c = [ODE_list[2], v, HBS_info[name_list[1]]['# states'],
-                       HBS_info[name_list[1]]['state names'], '', O2_range,
+            args_4c = [ODE_list[2], v, name_list[2], HBS_info[name_list[1]]['# states'],
+                       HBS_info[name_list[1]]['state names'], output, O2_range,
                        t_hox]
             t_hox, SS_hox_4c = solveSingle(args_4c)
             
             t_hox2 = [0, 24, 48, 72, 96]
             
-            args_1a2 = [ODE_list[0], v, HBS_info[name_list[0]]['# states'],
+            args_1a2 = [ODE_list[0], v, name_list[0], HBS_info[name_list[0]]['# states'],
                         HBS_info[name_list[0]]['state names'], '', O2_range,
                         t_hox2]
             t_hox2, SS_hox_1a2 = solveSingle(args_1a2)
@@ -211,18 +211,18 @@ def solveAll(p, exp_data, t_type, model):
             
             t_hox = [0, 24, 48, 72, 96, 120] #for comparison to experimental data
             
-            args_1a = [ODE_list[0], v, HBS_info[name_list[0]]['# states'],
-                    HBS_info[name_list[0]]['state names'], '', O2_range,
+            args_1a = [ODE_list[0], v, name_list[0], HBS_info[name_list[0]]['# states'],
+                    HBS_info[name_list[0]]['state names'], output, O2_range,
                     t_hox]
             t_hox, SS_hox_1a = solveSingle(args_1a)
 
-            args_4b = [ODE_list[1], v, HBS_info[name_list[1]]['# states'],
-                       HBS_info[name_list[1]]['state names'], '', O2_range,
+            args_4b = [ODE_list[1], v, name_list[1], HBS_info[name_list[1]]['# states'],
+                       HBS_info[name_list[1]]['state names'], output, O2_range,
                        t_hox]
             t_hox, SS_hox_4b = solveSingle(args_4b)
 
-            args_4c = [ODE_list[2], v, HBS_info[name_list[2]]['# states'],
-                       HBS_info[name_list[2]]['state names'], '', O2_range,
+            args_4c = [ODE_list[2], v, name_list[2], HBS_info[name_list[2]]['# states'],
+                       HBS_info[name_list[2]]['state names'], output, O2_range,
                        t_hox]
             t_hox, SS_hox_4c = solveSingle(args_4c)
             
@@ -308,7 +308,7 @@ def solvePar(row):
     #Define parameters and solve ODEs
     p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8],
          row[9], row[10], row[11]]
-    norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
+    norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
     output = [chi2]
    
     #If this is a PEM evluation run, need to calculate the cost function for each PEM evaluation data set 
@@ -351,7 +351,7 @@ def optPar(row):
         #This is the function that is solved at each step in the optimization algorithm
         
         p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11]
-        norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
+        norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         chi2_list.append(chi2)
         
         return np.array(norm_solutions)
@@ -405,7 +405,7 @@ def optPar(row):
     best_fit_params_list = list(best_fit_params.values())
     
     #Solve ODEs with final optimized parameters, calculate chi2, and add to result_row for saving
-    norm_solutions, chi2  = solveAll(best_fit_params_list, exp_data, ' ', model)
+    norm_solutions, chi2  = solveAll(best_fit_params_list, exp_data, ' ', model, ' ')
     result_row.append(chi2)
     result_row_labels.append('chi2')
     
@@ -470,9 +470,6 @@ def plotTrainingDataFits(df):
     ax3 = plt.subplot(133)
         
     all_sims = list(df['Simulation results'])
-    # chi2_list = list(df['chi2'])
-    # val, idx = min((val, idx) for (idx, val) in enumerate(chi2_list))
-    # best_case = all_sims[idx]
         
     exp_1a = exp_data[:6]
     exp_4b = exp_data[6:13]
@@ -481,10 +478,6 @@ def plotTrainingDataFits(df):
     err_1a = error[:6]
     err_4b = error[6:13]
     err_4c = error[13:]
-        
-    # sim_1a_best = best_case[:6]
-    # sim_4b_best = best_case[6:13]
-    # sim_4c_best = best_case[13:]
     
     t_1a = [0, 24, 48, 72, 96]
     t_4b = [0, 24, 48, 72, 96, 120]
@@ -563,7 +556,7 @@ def plotTrainingDataFits(df):
     
     t_type = 'plotting'
 
-    t_hox, solutions = solveAll(params_best, exp_data, t_type, model)
+    t_hox, solutions = solveAll(params_best, exp_data, t_type, model, 'all states')
  
     fig = plt.figure(figsize = (9,3))
     fig.subplots_adjust(wspace=0.2)
@@ -864,7 +857,7 @@ def runParameterEstimation():
             col_name = real_param_labels_all[i] + '*'
             val = df[col_name].iloc[j]
             params.append(val)
-        norm_solutions, chi2 = solveAll(params, exp_data, ' ', model)
+        norm_solutions, chi2 = solveAll(params, exp_data, ' ', model, ' ')
         Rsq = calcRsq(norm_solutions, exp_data)  
         Rsq_list.append(Rsq)
     df['Rsq'] = Rsq_list
@@ -1696,7 +1689,7 @@ def plotPLConsequences(df, param_label):
     sns.set_palette("Greys", len(y))
     
     for param_list in y: # for each parameter set
-        t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c = solveAll(param_list, exp_data, ' ', model)
+        t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c = solveAll(param_list, exp_data, ' ', model, ' ')
 
         fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
         fig.subplots_adjust(hspace=.5)
@@ -1761,13 +1754,13 @@ def plotPLConsequences(df, param_label):
                    
 def calcThresholdPL(calibrated_params, exp_data):
     print('CALIBRATED PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
-    norm_solutions_cal, chi2 = solveAll(calibrated_params, exp_data, ' ', model)
+    norm_solutions_cal, chi2 = solveAll(calibrated_params, exp_data, ' ', model, ' ')
     calibrated_chi2 = chi2
     print('******************')
     print('chi2 CALIBRATED: ' + str(round(chi2, 4)))
 
     print('REFERENCE PARAMETERS - ORIGINAL EXPERIMENTAL DATA')  
-    norm_solutions_ref, chi2 = solveAll(p_ref, exp_data, ' ', model)
+    norm_solutions_ref, chi2 = solveAll(p_ref, exp_data, ' ', model, ' ')
     print('chi2 REFERENCE: ' + str(round(chi2, 4)))
     print('******************')
     
@@ -1826,7 +1819,7 @@ def calcThresholdPL(calibrated_params, exp_data):
         exp_data = data_dictionary['exp_data']
         
         #Calculate chi2_ref using noise realization i
-        norm_solutions, chi2_ref = solveAll(p_ref, exp_data, ' ', model)
+        norm_solutions, chi2_ref = solveAll(p_ref, exp_data, ' ', model, ' ')
         chi2_ref_list.append(chi2_ref)
       
     print('done')
@@ -1958,7 +1951,7 @@ def generatePemEvalData(df_global_search, num_datasets):
         #Define parameters
         p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
              row[10], row[11], row[12]]
-        norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
+        norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         
         #Add noise
         noise_solutions = addNoise(norm_solutions, count)
@@ -2179,7 +2172,7 @@ def runOptPemEval(df_results, run):
             col_name = real_param_labels_all[i] + '*'
             val = df_opt[col_name].iloc[j]
             params.append(val)
-        norm_solutions, chi2 = solveAll(params, exp_data, ' ', model)
+        norm_solutions, chi2 = solveAll(params, exp_data, ' ', model, ' ')
         Rsq = calcRsq(norm_solutions, exp_data)  
         Rsq_list.append(Rsq)
 
@@ -2404,7 +2397,7 @@ if 3 in modules:
     
     #Calculate profile likelihood for each free parameter
     PL_ID = 'yes' 
-    norm_solutions_cal, calibrated_chi2 = solveAll(calibrated_params, exp_data, ' ', model)
+    norm_solutions_cal, calibrated_chi2 = solveAll(calibrated_params, exp_data, ' ', model, ' ')
     df_list = calcPL(calibrated_params, calibrated_chi2, threshold_PL_val)
     
     #Plot internal model states and parameter relationships based on the 
