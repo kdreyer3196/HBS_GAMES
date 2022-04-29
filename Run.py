@@ -75,19 +75,23 @@ data_type = data_dictionary["data_type"]
 exp_data = data_dictionary["exp_data"]
 exp_data_original = data_dictionary["exp_data"]
 error = data_dictionary["error"]
+location = conditions_dictionary["location"]
+
 save_internal_states_flag = False
-parallelization = 'yes' 
 
 #Set style file
+if location == 'desktop':
+    plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    parallelization = 'no' 
+    
+elif location == 'laptop':
+    plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    parallelization = 'no' 
 
-#laptop file path
-# plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+elif location == 'quest':
+    plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
+    parallelization = 'yes' 
 
-#desktop file path
-# plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
-
-#QUEST file path
-plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 
 # =============================================================================
 # General parameter estimation and solver code (used by modules 1, 2, 3)
@@ -137,18 +141,38 @@ def solveAll(p, exp_data, t_type, model):
                 '''
         if model == 'model 0':
             
-            ODE_list = [HBS_1a, HBS_4b, HBS_4c]
-            name_list = ['HBS_1a', 'HBS_4b', 'HBS_4c']
+            ODE_list = [HBS_1a0, HBS_4b0, HBS_4c0]
+            name_list = ['HBS_1a0', 'HBS_4b0', 'HBS_4c0']
+            
+        elif model == 'model 0A':
+            
+            ODE_list = [HBS_1a0A, HBS_4b0A, HBS_4c0A]
+            name_list = ['HBS_1a0A', 'HBS_4b0A', 'HBS_4c0A']
+            
+        elif model == 'model 0B':
+            
+            ODE_list = [HBS_1a0B, HBS_4b0B, HBS_4c0B]
+            name_list = ['HBS_1a0B', 'HBS_4b0B', 'HBS_4c0B']
             
         elif model == 'model 1':
             
             ODE_list = [HBS_1a1, HBS_4b1, HBS_4c1]
             name_list = ['HBS_1a1', 'HBS_4b1', 'HBS_4c1']
             
+        elif model == 'model 1A':
+            
+            ODE_list = [HBS_1a1A, HBS_4b1A, HBS_4c1A]
+            name_list = ['HBS_1a1A', 'HBS_4b1A', 'HBS_4c1A']
+            
         elif model == 'model 2':
             
             ODE_list = [HBS_1a2, HBS_4b2, HBS_4c2]
             name_list = ['HBS_1a2', 'HBS_4b2', 'HBS_4c2']
+            
+        elif model == 'model 2A':
+            
+            ODE_list = [HBS_1a2A, HBS_4b2A, HBS_4c2A]
+            name_list = ['HBS_1a2A', 'HBS_4b2A', 'HBS_4c2A']
             
         elif model == 'model 3':
             
@@ -206,18 +230,7 @@ def solveAll(p, exp_data, t_type, model):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    if model == 'model 0':
-        [k_prod, k_pMARS, k_out, k_dMARS, k_dreg1, k_tln2, k_dreg2, k_dreg3,
-         deg_ratio] = p
-        
-    elif model == 'model 1':
-        [k_pMARS, k_dMARS, k_dreg1, k_dO2, k_dreg2, k_act] = p
-        
-    elif model == 'model 2':
-        [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dHP, k_dH1P, k_aH2P] = p
-        
-    elif model == 'model 3':
-        [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dHP, k_dH1P, k_aH2P, k_tln2] = p
+    [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dH1P, k_pH2R, k_dHP, k_aH2P, k_tln2, deg_ratio] = p
     
     v = [[], 0]
     v[0] = p
@@ -293,7 +306,8 @@ def solvePar(row):
    '''
 
     #Define parameters and solve ODEs
-    p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9]]
+    p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8],
+         row[9], row[10], row[11]]
     norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
     output = [chi2]
    
@@ -333,10 +347,10 @@ def optPar(row):
     #Initialize list to keep track of CF at each function evaluation
     chi2_list = []
 
-    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9):
+    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11):
         #This is the function that is solved at each step in the optimization algorithm
         
-        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9]
+        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
         chi2_list.append(chi2)
         
@@ -409,12 +423,13 @@ def optPar(row):
              chi2_list, norm_solutions]
     item_labels = ['method', 'redchi2',  'success', 'model', 'chi2_list', 
                    'Simulation results']
+    
     for i in range(0, len(items)):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
     
-    result_row = result_row[:25]
-    result_row_labels = result_row_labels[:25]
+    result_row = result_row[:29]
+    result_row_labels = result_row_labels[:29]
 
     return result_row, result_row_labels
 
@@ -537,16 +552,18 @@ def plotTrainingDataFits(df):
     
     
     ####Plot best fit params with training data####
-    params = []
+    df = df.sort_values(by=['chi2'], ascending = True)
+    
+    params_best = []
     for i in range(0, len(p_all)):
         col_name = real_param_labels_all[i] + '*'
         val = df[col_name].iloc[0]
-        params.append(val)
+        params_best.append(val)
     # print('Params = ', params)
     
     t_type = 'plotting'
 
-    t_hox, solutions = solveAll(params, exp_data, t_type, model)
+    t_hox, solutions = solveAll(params_best, exp_data, t_type, model)
  
     fig = plt.figure(figsize = (9,3))
     fig.subplots_adjust(wspace=0.2)
@@ -830,7 +847,8 @@ def runParameterEstimation():
     
     #Save best case calibrated parameters (lowest chi2)
     real_param_labels_all = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
-                             'k_dHP', 'k_dH1P', 'k_aH2P', 'k_tln2']
+                             'k_dH1P', 'k_pH2R', 'k_dHP', 'k_aH2P', 'k_tln2',
+                             'deg_ratio']
     
     best_case_params = []
     for i in range(0, len(p_all)):
@@ -1938,7 +1956,8 @@ def generatePemEvalData(df_global_search, num_datasets):
     Rsq_list = []
     for row in df_params.itertuples(name = None):
         #Define parameters
-        p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9], row[10]]
+        p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
+             row[10], row[11], row[12]]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model)
         
         #Add noise

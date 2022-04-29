@@ -15,17 +15,21 @@ import seaborn as sns
 
 #GAMES imports
 from Saving import createFolder
+import Settings
 
-#Import custom style file for plotting
+conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info = Settings.init()
 
-#laptop file path
-# plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+location = conditions_dictionary["location"]
 
-#desktop file path
-# plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+#Set style file
+if location == 'desktop':
+    plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    
+elif location == 'laptop':
+    plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
-#QUEST file path
-plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
+elif location == 'quest':
+    plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 
 dpi_ = 600
 colors = ['teal', 'deeppink' ,'rebeccapurple', 'darkseagreen', 'darkorange', 'dimgrey', 

@@ -8,7 +8,7 @@ Created on Mon Sep 28 11:13:10 2020
 
 import os
 
-def makeMainDir(folder_name):    
+def makeMainDir(folder_name, location):    
     ''' 
     Purpose: Create the main directory to hold results of the run
         
@@ -21,16 +21,16 @@ def makeMainDir(folder_name):
     Output: 
         results_folder_path + folder_name: a string defining the location of the new folder
     '''
-    #laptop folder path
-    # results_folder_path =  '/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
     
-    
-    #desktop folder path
-    # results_folder_path = 'C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
-    
-    #QUEST folder path
-    results_folder_path = '/home/ksd844/HBS_GAMES/Results/'
-    
+    if location == 'desktop':
+        results_folder_path = 'C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
+        
+    elif location == 'laptop':
+        results_folder_path =  '/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
+        
+    elif location == 'quest':
+        results_folder_path = '/home/ksd844/HBS_GAMES/Results/'
+            
     try:
         if not os.path.exists(results_folder_path + folder_name):
             os.makedirs(results_folder_path + folder_name)

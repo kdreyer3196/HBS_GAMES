@@ -25,15 +25,17 @@ model = conditions_dictionary["model"]
 data = conditions_dictionary["data"]
 error = data_dictionary["error"]
 exp_data = data_dictionary["exp_data"]
+location = conditions_dictionary["location"]
 
-#laptop file path
-# plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+#Set style file
+if location == 'desktop':
+    plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    
+elif location == 'laptop':
+    plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
 
-#desktop file path
-# plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
-
-#QUEST file path
-plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
+elif location == 'quest':
+    plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
 
 
 def saveRefData(data_):
@@ -87,7 +89,7 @@ def generateRefData(p_ref):
     os.chdir('./' + sub_folder_name)
     
     #Solve for simulation data
-    norm_solutions, chi2 = solveAll(p_ref, exp_data)
+    norm_solutions, chi2 = solveAll(p_ref, exp_data, 'plotting', model)
     
     ref_1a = norm_solutions[:6]
     ref_4b = norm_solutions[6:13]
@@ -170,7 +172,9 @@ def generateRefData(p_ref):
     #Save reference dataframe as an excel sheet
     saveRefData(noise_solutions)
 
-p_ref = [7.91, 1.43e-4, 1.51e-2, 3.91e-3, 1.08e-2, 1.07, 1.15e-2, 9.96e-2, 0.967]    
+p_ref = [424.6140149, 0.003396993, 3.96067E-05, 0.008704502, 0.00036355, 0.000370442, 0.000102004, 0, 0, 0.875738158, 0.934311525]
+
+# p_ref = [7.91, 1.43e-4, 1.51e-2, 3.91e-3, 1.08e-2, 1.07, 1.15e-2, 9.96e-2, 0.967]    
 generateRefData(p_ref)
 
 
