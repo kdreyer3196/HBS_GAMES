@@ -176,7 +176,8 @@ def generateRefData(p_ref):
     # #Save reference dataframe as an excel sheet
     # saveRefData(noise_solutions)
 
-p_ref = [0.007910586, 0.029710604, 0.003554267, 0.631902759, 0.062087554, 0.039631183, 0, 0, 7.490957137, 2.564345231, 0.705591391]
+p_ref = [7.91, 1.51e-2, 1.43e-4, 3.91e-3, 1.08e-2, 1.15e-2, 9.96e-2, 
+         1.15e-2, 1.0e-2, 1.07, 0.967]
 
 generateRefData(p_ref)
 

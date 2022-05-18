@@ -164,6 +164,16 @@ def solveAll(p, exp_data, t_type, model, output):
             ODE_list = [HBS_1a1A, HBS_4b1A, HBS_4c1A]
             name_list = ['HBS_1a1A', 'HBS_4b1A', 'HBS_4c1A']
             
+        elif model == 'model_1B':
+            
+            ODE_list = [HBS_1a1B, HBS_4b1B, HBS_4c1B]
+            name_list = ['HBS_1a1B', 'HBS_4b1B', 'HBS_4c1B']            
+
+        elif model == 'model_1C':
+            
+            ODE_list = [HBS_1a1C, HBS_4b1C, HBS_4c1C]
+            name_list = ['HBS_1a1C', 'HBS_4b1C', 'HBS_4c1C'] 
+            
         elif model == 'model_2':
             
             ODE_list = [HBS_1a2, HBS_4b2, HBS_4c2]
@@ -174,10 +184,35 @@ def solveAll(p, exp_data, t_type, model, output):
             ODE_list = [HBS_1a2A, HBS_4b2A, HBS_4c2A]
             name_list = ['HBS_1a2A', 'HBS_4b2A', 'HBS_4c2A']
             
+        elif model == 'model_2B':
+            
+            ODE_list = [HBS_1a2B, HBS_4b2B, HBS_4c2B]
+            name_list = ['HBS_1a2B', 'HBS_4b2B', 'HBS_4c2B']
+            
+        elif model == 'model_2C':
+            
+            ODE_list = [HBS_1a2C, HBS_4b2C, HBS_4c2C]
+            name_list = ['HBS_1a2C', 'HBS_4b2C', 'HBS_4c2C']            
+
+        elif model == 'model_2D':
+            
+            ODE_list = [HBS_1a2D, HBS_4b2D, HBS_4c2D]
+            name_list = ['HBS_1a2D', 'HBS_4b2D', 'HBS_4c2D'] 
+
         elif model == 'model_3':
             
             ODE_list = [HBS_1a3, HBS_4b3, HBS_4c3]
-            name_list = ['HBS_1a3', 'HBS_4b3', 'HBS_4c3'] 
+            name_list = ['HBS_1a3', 'HBS_4b3', 'HBS_4c3']
+            
+        elif model == 'model_3B':
+            
+            ODE_list = [HBS_1a3B, HBS_4b3B, HBS_4c3B]
+            name_list = ['HBS_1a3B', 'HBS_4b3B', 'HBS_4c3B'] 
+            
+        elif model == 'model_3C':
+            
+            ODE_list = [HBS_1a3C, HBS_4b3C, HBS_4c3C]
+            name_list = ['HBS_1a3C', 'HBS_4b3C', 'HBS_4c3C'] 
         
         if t_type == 'plotting':
             
@@ -193,8 +228,8 @@ def solveAll(p, exp_data, t_type, model, output):
                        t_hox]
             t_hox, SS_hox_4b = solveSingle(args_4b)
 
-            args_4c = [ODE_list[2], v, name_list[2], HBS_info[name_list[1]]['# states'],
-                       HBS_info[name_list[1]]['state names'], output, O2_range,
+            args_4c = [ODE_list[2], v, name_list[2], HBS_info[name_list[2]]['# states'],
+                       HBS_info[name_list[2]]['state names'], output, O2_range,
                        t_hox]
             t_hox, SS_hox_4c = solveSingle(args_4c)
             
