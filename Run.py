@@ -143,76 +143,21 @@ def solveAll(p, exp_data, t_type, model, output):
             
             ODE_list = [HBS_1a0, HBS_4b0, HBS_4c0]
             name_list = ['HBS_1a0', 'HBS_4b0', 'HBS_4c0']
-            
-        elif model == 'model_0A':
-            
-            ODE_list = [HBS_1a0A, HBS_4b0A, HBS_4c0A]
-            name_list = ['HBS_1a0A', 'HBS_4b0A', 'HBS_4c0A']
-            
-        elif model == 'model_0B':
-            
-            ODE_list = [HBS_1a0B, HBS_4b0B, HBS_4c0B]
-            name_list = ['HBS_1a0B', 'HBS_4b0B', 'HBS_4c0B']
-            
-        elif model == 'model_1':
-            
-            ODE_list = [HBS_1a1, HBS_4b1, HBS_4c1]
-            name_list = ['HBS_1a1', 'HBS_4b1', 'HBS_4c1']
-            
-        elif model == 'model_1A':
-            
-            ODE_list = [HBS_1a1A, HBS_4b1A, HBS_4c1A]
-            name_list = ['HBS_1a1A', 'HBS_4b1A', 'HBS_4c1A']
-            
-        elif model == 'model_1B':
-            
-            ODE_list = [HBS_1a1B, HBS_4b1B, HBS_4c1B]
-            name_list = ['HBS_1a1B', 'HBS_4b1B', 'HBS_4c1B']            
 
-        elif model == 'model_1C':
+        elif model == 'model_2G':
             
-            ODE_list = [HBS_1a1C, HBS_4b1C, HBS_4c1C]
-            name_list = ['HBS_1a1C', 'HBS_4b1C', 'HBS_4c1C'] 
-            
-        elif model == 'model_2':
-            
-            ODE_list = [HBS_1a2, HBS_4b2, HBS_4c2]
-            name_list = ['HBS_1a2', 'HBS_4b2', 'HBS_4c2']
-            
-        elif model == 'model_2A':
-            
-            ODE_list = [HBS_1a2A, HBS_4b2A, HBS_4c2A]
-            name_list = ['HBS_1a2A', 'HBS_4b2A', 'HBS_4c2A']
-            
-        elif model == 'model_2B':
-            
-            ODE_list = [HBS_1a2B, HBS_4b2B, HBS_4c2B]
-            name_list = ['HBS_1a2B', 'HBS_4b2B', 'HBS_4c2B']
-            
-        elif model == 'model_2C':
-            
-            ODE_list = [HBS_1a2C, HBS_4b2C, HBS_4c2C]
-            name_list = ['HBS_1a2C', 'HBS_4b2C', 'HBS_4c2C']            
+            ODE_list = [HBS_1a2G, HBS_4b2G, HBS_4c2G]
+            name_list = ['HBS_1a2G', 'HBS_4b2G', 'HBS_4c2G'] 
 
-        elif model == 'model_2D':
+        elif model == 'model_4':
             
-            ODE_list = [HBS_1a2D, HBS_4b2D, HBS_4c2D]
-            name_list = ['HBS_1a2D', 'HBS_4b2D', 'HBS_4c2D'] 
-
-        elif model == 'model_3':
+            ODE_list = [HBS_1a4, HBS_4b4, HBS_4c4]
+            name_list = ['HBS_1a4', 'HBS_4b4', 'HBS_4c4'] 
             
-            ODE_list = [HBS_1a3, HBS_4b3, HBS_4c3]
-            name_list = ['HBS_1a3', 'HBS_4b3', 'HBS_4c3']
+        elif model == 'model_4A':
             
-        elif model == 'model_3B':
-            
-            ODE_list = [HBS_1a3B, HBS_4b3B, HBS_4c3B]
-            name_list = ['HBS_1a3B', 'HBS_4b3B', 'HBS_4c3B'] 
-            
-        elif model == 'model_3C':
-            
-            ODE_list = [HBS_1a3C, HBS_4b3C, HBS_4c3C]
-            name_list = ['HBS_1a3C', 'HBS_4b3C', 'HBS_4c3C'] 
+            ODE_list = [HBS_1a4A, HBS_4b4A, HBS_4c4A]
+            name_list = ['HBS_1a4A', 'HBS_4b4A', 'HBS_4c4A']
         
         if t_type == 'plotting':
             
@@ -265,7 +210,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [k_pM0, k_dM0, k_pM1, k_dM1, k_dH1R, k_dH1P, k_pH2R, k_dHP, k_aH2P, k_tln2, deg_ratio] = p
+    [k_pH0, k_dH0, k_pH1, k_dH1, k_txnaH1, k_dH1R, k_dH1P, k_dHP, k_b, k_aH2P, k_iH2P] = p
     
     v = [[], 0]
     v[0] = p
@@ -874,9 +819,9 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
-    real_param_labels_all = ['k_pM0', 'k_dM0', 'k_pM1', 'k_dM1', 'k_dH1R',
-                             'k_dH1P', 'k_pH2R', 'k_dHP', 'k_aH2P', 'k_tln2',
-                             'deg_ratio']
+    real_param_labels_all = ['k_pH0', 'k_dH0', 'k_pH1', 'k_dH1', 'k_txnaH1',
+                             'k_dH1R', 'k_dH1P', 'k_dHP', 'k_b', 'k_aH2P',
+                             'k_iH2P']
     
     best_case_params = []
     for i in range(0, len(p_all)):
