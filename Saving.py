@@ -26,7 +26,7 @@ def makeMainDir(folder_name, location):
         results_folder_path = 'C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
         
     elif location == 'laptop':
-        results_folder_path =  '/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/Results/'
+        results_folder_path =  '/Users/kdreyer/Desktop/Github/HBS_GAMES/Results/'
         
     elif location == 'quest':
         results_folder_path = '/home/ksd844/HBS_GAMES/Results/'
