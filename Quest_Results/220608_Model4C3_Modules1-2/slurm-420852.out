@@ -1,0 +1,470 @@
+# conda environments:
+#
+GCAD_autograd            /home/ksd844/.conda/envs/GCAD_autograd
+root                     /software/anaconda3
+
+Main directory created at: 220608_Model4C3_Modules1-2
+***
+Main directory created at: 220608_Model4C3_Modules1-2
+***
+Generating PEM evaluation data...
+Global search complete
+Conditions saved.
+R2pass: 0.998
+Running parameter estimation with PEM evaluation data...
+Starting optimization for dataset number 1...
+Global search complete
+Conditions saved.
+Optimization round 11 complete.
+Optimization round 53 complete.
+Optimization round 84 complete.
+Optimization round 10 complete.
+Optimization round 36 complete.
+Optimization round 78 complete.
+Optimization round 93 complete.
+Optimization round 16 complete.
+Optimization round 56 complete.
+Optimization round 76 complete.
+Optimization round 95 complete.
+Optimization round 19 complete.
+Optimization round 35 complete.
+Optimization round 70 complete.
+Optimization round 1 complete.
+Optimization round 40 complete.
+Optimization round 74 complete.
+Optimization round 5 complete.
+Optimization round 86 complete.
+Optimization round 24 complete.
+Optimization round 57 complete.
+Optimization round 75 complete.
+Optimization round 85 complete.
+Optimization round 12 complete.
+Optimization round 67 complete.
+Optimization round 100 complete.
+Optimization round 3 complete.
+Optimization round 61 complete.
+Optimization round 87 complete.
+Optimization round 15 complete.
+Optimization round 44 complete.
+Optimization round 58 complete.
+Optimization round 6 complete.
+Optimization round 37 complete.
+Optimization round 50 complete.
+Optimization round 26 complete.
+Optimization round 46 complete.
+Optimization round 60 complete.
+Optimization round 68 complete.
+Optimization round 14 complete.
+Optimization round 30 complete.
+Optimization round 42 complete.
+Optimization round 64 complete.
+Optimization round 94 complete.
+Optimization round 25 complete.
+Optimization round 28 complete.
+Optimization round 71 complete.
+Optimization round 79 complete.
+Optimization round 9 complete.
+Optimization round 34 complete.
+Optimization round 2 complete.
+Optimization round 80 complete.
+Optimization round 91 complete.
+Optimization round 21 complete.
+Optimization round 39 complete.
+Optimization round 49 complete.
+Optimization round 55 complete.
+Optimization round 82 complete.
+Optimization round 22 complete.
+Optimization round 31 complete.
+Optimization round 48 complete.
+Optimization round 63 complete.
+Optimization round 77 complete.
+Optimization round 20 complete.
+Optimization round 43 complete.
+Optimization round 62 complete.
+Optimization round 18 complete.
+Optimization round 38 complete.
+Optimization round 52 complete.
+Optimization round 88 complete.
+Optimization round 13 complete.
+Optimization round 92 complete.
+Optimization round 4 complete.
+Optimization round 29 complete.
+Optimization round 59 complete.
+Optimization round 72 complete.
+Optimization round 96 complete.
+Optimization round 23 complete.
+Optimization round 33 complete.
+Optimization round 51 complete.
+Optimization round 65 complete.
+Optimization round 90 complete.
+Optimization round 8 complete.
+Optimization round 47 complete.
+Optimization round 73 complete.
+Optimization round 83 complete.
+Optimization round 99 complete.
+Optimization round 27 complete.
+Optimization round 69 complete.
+Optimization round 81 complete.
+Optimization round 98 complete.
+Optimization round 7 complete.
+Optimization round 41 complete.
+Optimization round 54 complete.
+Optimization round 66 complete.
+Optimization round 89 complete.
+Optimization round 97 complete.
+Optimization round 17 complete.
+Optimization round 32 complete.
+Optimization round 45 complete.
+Timecourses saved as HBS_1a4CStates.svg
+Timecourses saved as HBS_4b4CStates.svg
+Timecourses saved as HBS_4c4CStates.svg
+Starting optimization for dataset number 2...
+Conditions saved.
+Optimization round 22 complete.
+Optimization round 29 complete.
+Optimization round 54 complete.
+Optimization round 3 complete.
+Optimization round 38 complete.
+Optimization round 68 complete.
+Optimization round 11 complete.
+Optimization round 15 complete.
+Optimization round 41 complete.
+Optimization round 74 complete.
+Optimization round 98 complete.
+Optimization round 8 complete.
+Optimization round 61 complete.
+Optimization round 82 complete.
+Optimization round 18 complete.
+Optimization round 57 complete.
+Optimization round 99 complete.
+Optimization round 16 complete.
+Optimization round 39 complete.
+Optimization round 58 complete.
+Optimization round 92 complete.
+Optimization round 19 complete.
+Optimization round 73 complete.
+Optimization round 17 complete.
+Optimization round 35 complete.
+Optimization round 51 complete.
+Optimization round 81 complete.
+Optimization round 21 complete.
+Optimization round 49 complete.
+Optimization round 60 complete.
+Optimization round 90 complete.
+Optimization round 26 complete.
+Optimization round 47 complete.
+Optimization round 27 complete.
+Optimization round 31 complete.
+Optimization round 83 complete.
+Optimization round 9 complete.
+Optimization round 37 complete.
+Optimization round 62 complete.
+Optimization round 76 complete.
+Optimization round 24 complete.
+Optimization round 50 complete.
+Optimization round 65 complete.
+Optimization round 79 complete.
+Optimization round 96 complete.
+Optimization round 20 complete.
+Optimization round 34 complete.
+Optimization round 46 complete.
+Optimization round 93 complete.
+Optimization round 23 complete.
+Optimization round 63 complete.
+Optimization round 84 complete.
+Optimization round 4 complete.
+Optimization round 43 complete.
+Optimization round 7 complete.
+Optimization round 30 complete.
+Optimization round 48 complete.
+Optimization round 75 complete.
+Optimization round 94 complete.
+Optimization round 5 complete.
+Optimization round 36 complete.
+Optimization round 59 complete.
+Optimization round 69 complete.
+Optimization round 100 complete.
+Optimization round 6 complete.
+Optimization round 42 complete.
+Optimization round 78 complete.
+Optimization round 25 complete.
+Optimization round 32 complete.
+Optimization round 53 complete.
+Optimization round 67 complete.
+Optimization round 80 complete.
+Optimization round 97 complete.
+Optimization round 10 complete.
+Optimization round 70 complete.
+Optimization round 88 complete.
+Optimization round 1 complete.
+Optimization round 77 complete.
+Optimization round 91 complete.
+Optimization round 13 complete.
+Optimization round 45 complete.
+Optimization round 71 complete.
+Optimization round 87 complete.
+Optimization round 2 complete.
+Optimization round 40 complete.
+Optimization round 56 complete.
+Optimization round 72 complete.
+Optimization round 86 complete.
+Optimization round 12 complete.
+Optimization round 33 complete.
+Optimization round 55 complete.
+Optimization round 64 complete.
+Optimization round 28 complete.
+Optimization round 52 complete.
+Optimization round 85 complete.
+Optimization round 95 complete.
+Optimization round 14 complete.
+Optimization round 44 complete.
+Optimization round 66 complete.
+Optimization round 89 complete.
+Timecourses saved as HBS_1a4CStates.svg
+Timecourses saved as HBS_4b4CStates.svg
+Timecourses saved as HBS_4c4CStates.svg
+Starting optimization for dataset number 3...
+Conditions saved.
+Optimization round 11 complete.
+Optimization round 36 complete.
+Optimization round 61 complete.
+Optimization round 22 complete.
+Optimization round 46 complete.
+Optimization round 87 complete.
+Optimization round 13 complete.
+Optimization round 41 complete.
+Optimization round 59 complete.
+Optimization round 73 complete.
+Optimization round 28 complete.
+Optimization round 35 complete.
+Optimization round 79 complete.
+Optimization round 23 complete.
+Optimization round 40 complete.
+Optimization round 53 complete.
+Optimization round 60 complete.
+Optimization round 76 complete.
+Optimization round 98 complete.
+Optimization round 5 complete.
+Optimization round 43 complete.
+Optimization round 89 complete.
+Optimization round 15 complete.
+Optimization round 18 complete.
+Optimization round 45 complete.
+Optimization round 62 complete.
+Optimization round 78 complete.
+Optimization round 4 complete.
+Optimization round 50 complete.
+Optimization round 84 complete.
+Optimization round 14 complete.
+Optimization round 52 complete.
+Optimization round 82 complete.
+Optimization round 90 complete.
+Optimization round 25 complete.
+Optimization round 1 complete.
+Optimization round 32 complete.
+Optimization round 66 complete.
+Optimization round 83 complete.
+Optimization round 96 complete.
+Optimization round 6 complete.
+Optimization round 69 complete.
+Optimization round 7 complete.
+Optimization round 31 complete.
+Optimization round 47 complete.
+Optimization round 70 complete.
+Optimization round 12 complete.
+Optimization round 29 complete.
+Optimization round 48 complete.
+Optimization round 57 complete.
+Optimization round 94 complete.
+Optimization round 20 complete.
+Optimization round 38 complete.
+Optimization round 68 complete.
+Optimization round 85 complete.
+Optimization round 26 complete.
+Optimization round 44 complete.
+Optimization round 58 complete.
+Optimization round 86 complete.
+Optimization round 95 complete.
+Optimization round 16 complete.
+Optimization round 80 complete.
+Optimization round 99 complete.
+Optimization round 21 complete.
+Optimization round 39 complete.
+Optimization round 75 complete.
+Optimization round 92 complete.
+Optimization round 10 complete.
+Optimization round 64 complete.
+Optimization round 100 complete.
+Optimization round 24 complete.
+Optimization round 51 complete.
+Optimization round 71 complete.
+Optimization round 81 complete.
+Optimization round 8 complete.
+Optimization round 34 complete.
+Optimization round 93 complete.
+Optimization round 17 complete.
+Optimization round 54 complete.
+Optimization round 63 complete.
+Optimization round 72 complete.
+Optimization round 91 complete.
+Optimization round 9 complete.
+Optimization round 30 complete.
+Optimization round 77 complete.
+Optimization round 88 complete.
+Optimization round 2 complete.
+Optimization round 55 complete.
+Optimization round 67 complete.
+Optimization round 27 complete.
+Optimization round 42 complete.
+Optimization round 49 complete.
+Optimization round 65 complete.
+Optimization round 74 complete.
+Optimization round 97 complete.
+Optimization round 3 complete.
+Optimization round 33 complete.
+Optimization round 37 complete.
+Optimization round 56 complete.
+Optimization round 19 complete.
+Timecourses saved as HBS_1a4CStates.svg
+Timecourses saved as HBS_4b4CStates.svg
+Timecourses saved as HBS_4c4CStates.svg
+chi2_10_percent: 7.50757
+R2pass: 0.998
+
+********************************************
+MODULE 1
+Total run time (min): 8.607
+Total run time (hours): 0.143
+********************************************
+Conditions saved.
+Starting global search...
+Nan in solutions
+Nan in solutions
+Global search complete.
+Filtering complete.
+Starting optimization...
+Optimization round 27 complete.
+Optimization round 43 complete.
+Optimization round 87 complete.
+Optimization round 11 complete.
+Optimization round 39 complete.
+Optimization round 53 complete.
+Optimization round 86 complete.
+Optimization round 14 complete.
+Optimization round 74 complete.
+Optimization round 5 complete.
+Optimization round 60 complete.
+Optimization round 84 complete.
+Optimization round 90 complete.
+Optimization round 18 complete.
+Optimization round 36 complete.
+Optimization round 48 complete.
+Optimization round 56 complete.
+Optimization round 75 complete.
+Optimization round 10 complete.
+Optimization round 29 complete.
+Optimization round 33 complete.
+Optimization round 73 complete.
+Optimization round 81 complete.
+Optimization round 8 complete.
+Optimization round 34 complete.
+Optimization round 52 complete.
+Optimization round 64 complete.
+Optimization round 3 complete.
+Optimization round 66 complete.
+Optimization round 83 complete.
+Optimization round 19 complete.
+Optimization round 61 complete.
+Optimization round 6 complete.
+Optimization round 37 complete.
+Optimization round 47 complete.
+Optimization round 55 complete.
+Optimization round 93 complete.
+Optimization round 16 complete.
+Optimization round 38 complete.
+Optimization round 77 complete.
+Optimization round 17 complete.
+Optimization round 58 complete.
+Optimization round 70 complete.
+Optimization round 82 complete.
+Optimization round 96 complete.
+Optimization round 25 complete.
+Optimization round 32 complete.
+Optimization round 68 complete.
+Optimization round 21 complete.
+Optimization round 72 complete.
+Optimization round 95 complete.
+Optimization round 23 complete.
+Optimization round 78 complete.
+Optimization round 92 complete.
+Optimization round 22 complete.
+Optimization round 85 complete.
+Optimization round 13 complete.
+Optimization round 51 complete.
+Optimization round 94 complete.
+Optimization round 24 complete.
+Optimization round 28 complete.
+Optimization round 49 complete.
+Optimization round 100 complete.
+Optimization round 20 complete.
+Optimization round 42 complete.
+Optimization round 59 complete.
+Optimization round 79 complete.
+Optimization round 15 complete.
+Optimization round 41 complete.
+Optimization round 71 complete.
+Optimization round 91 complete.
+Optimization round 9 complete.
+Optimization round 45 complete.
+Optimization round 50 complete.
+Optimization round 57 complete.
+Optimization round 67 complete.
+Optimization round 76 complete.
+Optimization round 88 complete.
+Optimization round 97 complete.
+Optimization round 12 complete.
+Optimization round 40 complete.
+Optimization round 2 complete.
+Optimization round 31 complete.
+Optimization round 62 complete.
+Optimization round 80 complete.
+Optimization round 4 complete.
+Optimization round 30 complete.
+Optimization round 89 complete.
+Optimization round 98 complete.
+Optimization round 1 complete.
+Optimization round 46 complete.
+Optimization round 63 complete.
+Optimization round 26 complete.
+Optimization round 65 complete.
+Optimization round 7 complete.
+Optimization round 35 complete.
+Optimization round 44 complete.
+Optimization round 54 complete.
+Optimization round 69 complete.
+Optimization round 99 complete.
+Optimization complete.
+Timecourses saved as HBS_1a4CStates.svg
+Timecourses saved as HBS_4b4CStates.svg
+Timecourses saved as HBS_4c4CStates.svg
+*************************
+
+Calibrated parameters: [23.0746, 0.0, 20.8244, 0.1015, 0.3892, 2.6739, 0.4412, 5.8633, 2.6073, 0.1746, 0.37, 1.0]
+
+Rsq = 0.899
+
+chi2 = 1.615
+
+*************************
+
+********************************************
+MODULE 2
+Total run time (min): 1.965
+Total run time (hours): 0.033
+********************************************
+
+********************************************
+MODULES: [1, 2]
+Total run time (min): 10.572
+Total run time (hours): 0.176
+********************************************
