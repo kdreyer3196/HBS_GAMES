@@ -644,7 +644,7 @@ def HBS_4c4A(y, t, v):
 
 def HBS_1a4C(y, t, v):
 
-    [[k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P], O2] = v
+    [[k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2], O2] = v
 
     #parameters that will be held constant:
     # k_txnBH = 1.0
@@ -675,9 +675,9 @@ def HBS_1a4C(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11 = y
 
-    dydt = [k_txn - k_dR*y0,
+    dydt = [k_txnb1 - k_dR*y0,
             k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
-            k_txn - k_dR*y2,
+            k_txnb2 - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
             (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
             k_txnH*y7 + k_txnH*(k_aH2P*y9*y4/(1 + k_aH2P*y9*y4 + k_iH2P*y9))
@@ -696,7 +696,7 @@ def HBS_1a4C(y, t, v):
 
 def HBS_4b4C(y, t, v):
 
-    [[k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P], O2] = v
+    [[k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2], O2] = v
 
     #parameters that will be held constant:
     # k_txnBH = 1.0
@@ -727,9 +727,9 @@ def HBS_4b4C(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11 = y
 
-    dydt = [k_txn - k_dR*y0,
+    dydt = [k_txnb1 - k_dR*y0,
             k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
-            k_txn - k_dR*y2,
+            k_txnb2 - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
             (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
             k_txnH*y7 + k_txnH*(k_aH2P*y9*y4/(1 + k_aH2P*y9*y4 + k_iH2P*y9))
@@ -750,7 +750,7 @@ def HBS_4b4C(y, t, v):
 
 def HBS_4c4C(y, t, v):
 
-    [[k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P], O2] = v
+    [[k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2], O2] = v
 
     #parameters that will be held constant:
     # k_txnBH = 1.0
@@ -781,9 +781,9 @@ def HBS_4c4C(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11 = y
 
-    dydt = [k_txn - k_dR*y0,
+    dydt = [k_txnb1 - k_dR*y0,
             k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
-            k_txn - k_dR*y2,
+            k_txnb2 - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
             (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
             k_txnH*y7 + k_txnH*(k_aH2P*y9*y4/(1 + k_aH2P*y9*y4 + k_iH2P*y9))

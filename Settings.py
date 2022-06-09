@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220607_Model4C2_Modules1-2_Redo'
+    folder_name = '220608_Model4C4_Modules1-2'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -54,9 +54,9 @@ def init():
     #Set list of all potentially free parameters
     
     p_ref = [1.0, 1.0e-1, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0e-2, 1.0, 1.0e-2,
-             1.0e-2]
+             1.0e-2, 1.0, 1.0]
 
-    [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P] = p_ref
+    [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2] = p_ref
     
     if conditions_dictionary["model"] == 'model_4C':
         k_rbHS = 0
@@ -65,10 +65,11 @@ def init():
 
         
         p_ref = [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP,
-                 k_txnBH, k_aH2P, k_iH2P]
+                 k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2]
         
         real_param_labels_free = ['k_bHS', 'k_txnH', 'k_txnHAF', 'k_dH1R', 'k_dH1P',
-                                  'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P']
+                                  'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P', 'k_txnb1',
+                                  'k_txnb2']
     
     # p_ref = [10.0, 1.0e-2, 1.0e-4, 1.0e-3, 1.0, 1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2,
     #           1.0e-2, 1.0e-2]
@@ -128,12 +129,13 @@ def init():
     #real labels for p_ref and p_all      
     
     real_param_labels_all = ['k_bHS', 'k_rbHS', 'k_txnH','k_txnHAF', 'k_dH1R',
-                             'k_dH1P','k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P']
+                             'k_dH1P','k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P',
+                             'k_txnb1', 'k_txnb2']
 
     #general labels for p_ref and p_all
 
     p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9',
-                    'p10']
+                    'p10', 'p11', 'p12']
     
     #if a param in real_param_labels_all is not included in realParamLabels_free,
     #it is fixed at the value set in p_all
