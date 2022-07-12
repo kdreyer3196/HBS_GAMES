@@ -803,6 +803,177 @@ def HBS_4c4C(y, t, v):
     return dydt
 
 # =============================================================================
+# MODEL 4D
+# =============================================================================
+
+def HBS_1a4D(y, t, v):
+
+    [[k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn], O2] = v
+
+    #parameters that will be held constant:
+    # k_txnBH = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_dRep = 0.029 #1/hr
+
+    # k_txn = 1 #au/h
+    # k_txnH = k_txn
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
+    # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
+    # y5 = antisense HIF1a RNA, y6 = HIF1a mRNA, y7 = HIF1a protein,
+    # y8 = HIF2a mRNA, y9 = HIF2a protein, y10 = HIF2a* protein,
+    # y11 = DsRED2 mRNA, y12 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
+
+    dydt = [k_txnb1 - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
+            k_txnb2 - k_dR*y2,
+            k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
+            (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
+            k_txnH*y7 + k_txnH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y5,
+            
+            k_txn - k_dR*y6 - k_dH1R*y5*y6,
+            k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
+            k_txn - k_dR*y8,
+            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9,
+            k_bHH*y9*y4 - k_dP*y10,
+            
+            k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y11,
+            
+            k_tln*y11 - k_dRep*y12]
+        
+    return dydt
+
+def HBS_4b4D(y, t, v):
+
+    [[k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn], O2] = v
+
+    #parameters that will be held constant:
+    # k_txnBH = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_dRep = 0.029 #1/hr
+
+    # k_txn = 1 #au/h
+    # k_txnH = k_txn
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
+    # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
+    # y5 = antisense HIF1a RNA, y6 = HIF1a mRNA, y7 = HIF1a protein,
+    # y8 = HIF2a mRNA, y9 = HIF2a protein, y10 = HIF2a* protein,
+    # y11 = DsRED2 mRNA, y12 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
+
+    dydt = [k_txnb1 - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
+            k_txnb2 - k_dR*y2,
+            k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
+            (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
+            k_txnH*y7 + k_txnH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y5,
+            
+            k_txn + k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y6 - k_dH1R*y5*y6,
+            
+            k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
+            k_txn - k_dR*y8,
+            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9,
+            k_bHH*y9*y4 - k_dP*y10,
+            
+            
+            k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y11,
+            
+            k_tln*y11 - k_dRep*y12]
+        
+    return dydt
+
+def HBS_4c4D(y, t, v):
+
+    [[k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn], O2] = v
+
+    #parameters that will be held constant:
+    # k_txnBH = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_dRep = 0.029 #1/hr
+
+    # k_txn = 1 #au/h
+    # k_txnH = k_txn
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
+    # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
+    # y5 = antisense HIF1a RNA, y6 = HIF1a mRNA, y7 = HIF1a protein,
+    # y8 = HIF2a mRNA, y9 = HIF2a protein, y10 = HIF2a* protein,
+    # y11 = DsRED2 mRNA, y12 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
+
+    dydt = [k_txnb1 - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
+            k_txnb2 - k_dR*y2,
+            k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
+            (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
+            k_txnH*y7 + k_txnH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y5,
+            
+            k_txn - k_dR*y6 - k_dH1R*y5*y6,
+            k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
+            k_txn + k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y8,
+            
+            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9,
+            k_bHH*y9*y4 - k_dP*y10,
+            
+            k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
+            - k_dR*y11,
+            
+            k_tln*y11 - k_dRep*y12]
+        
+    return dydt
+
+# =============================================================================
 # CODE TO SOLVE ONE HBS in Normoxia and Hypoxia 
 # ============================================================================= 
 def solveSingle(args): 
@@ -901,6 +1072,11 @@ def solveSingle(args):
             fig.subplots_adjust(hspace=.5)
             fig.subplots_adjust(wspace=0.3)
             
+        elif num_states == 13:
+            fig, axs = plt.subplots(nrows=3, ncols=5, sharex=False, sharey=False, figsize = (8, 6))
+            fig.subplots_adjust(hspace=.5)
+            fig.subplots_adjust(wspace=0.3)
+            
         axs = axs.ravel()
         for i in range(0, num_states):
             axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = colors[0], 
@@ -912,7 +1088,6 @@ def solveSingle(args):
             axs[i].set_xlabel('Time Post-Plating (hours)')
             axs[i].set_ylabel('Simulation value (a.u.)')
             axs[i].set_title(state_names[i])
-            axs[i].legend()
             axs[i].set_ylim(bottom = 0)
             
             max1 = max(SS_hox[7.6][state_names[i]])
@@ -929,6 +1104,12 @@ def solveSingle(args):
         if num_states == 7:
             axs[-1].axis('off')
             
+        elif num_states == 13:
+            axs[-1].axis('off')
+            axs[-2].axis('off')
+        
+        axs[0].legend()
+        
         fig.suptitle(name + ' States')
         fig_name = name + 'States' + '.svg'
         plt.savefig(fig_name)

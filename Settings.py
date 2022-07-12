@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220608_Model4C4_Modules1-2'
+    folder_name = '220711_Model4D_Test_redo'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -36,8 +36,8 @@ def init():
     #Initialize conditions dictionary
     #Items that you might want to change
     conditions_dictionary = {}
-    conditions_dictionary["model"] = 'model_4C' #'model_0', 'model_0A', 'model_0B', 'model_1', 'model_1A', 'model_2', 'model_2A', 'model_3'
-    conditions_dictionary["modules"] = [1, 2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
+    conditions_dictionary["model"] = 'model_4D' #'model_0', 'model_0A', 'model_0B', 'model_1', 'model_1A', 'model_2', 'model_2A', 'model_3'
+    conditions_dictionary["modules"] = [] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 1000
     conditions_dictionary["n_initial_guesses"] = 100
     conditions_dictionary["confidence_interval"] = .99 
@@ -46,30 +46,46 @@ def init():
     conditions_dictionary["n_search_pem_eval"] = 1000
     conditions_dictionary["param_index_PL"] = 'all' #'all' or index of p (int)
     conditions_dictionary["data"] = 'hypox only'
-    conditions_dictionary["location"] = 'quest' #'desktop', 'laptop', 'quest'
+    conditions_dictionary["location"] = 'laptop' #'desktop', 'laptop', 'quest'
     
     # =============================================================================
     # 3. Define free parameters and bounds
     # =============================================================================
     #Set list of all potentially free parameters
     
-    p_ref = [1.0, 1.0e-1, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0e-2, 1.0, 1.0e-2,
-             1.0e-2, 1.0, 1.0]
+    p_ref = [1.0, 1.0e-1, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0, 1.0, 1.0e-2,
+             1.0e-2, 1.0, 1.0, 1.0]
 
-    [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2] = p_ref
+    [k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn] = p_ref
     
-    if conditions_dictionary["model"] == 'model_4C':
+    if conditions_dictionary["model"] == 'model_4D':
         k_rbHS = 0
-        # k_txnH = 1.0
-        # k_txnBH = 1.0
+        k_txnH = 1.0
+        k_txnBH = 1.0
+        k_txnb1 = 1.0
+        k_txnb2 = 1.0
+        k_txn = 1.0
 
         
-        p_ref = [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP,
-                 k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2]
+        p_ref = [k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH,
+                 k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn]
         
-        real_param_labels_free = ['k_bHS', 'k_txnH', 'k_txnHAF', 'k_dH1R', 'k_dH1P',
-                                  'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P', 'k_txnb1',
-                                  'k_txnb2']
+        real_param_labels_free = ['k_bHS', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_bHH',
+                                  'k_aH2P', 'k_iH2P']
+    
+    
+    # if conditions_dictionary["model"] == 'model_4C':
+    #     k_rbHS = 0
+    #     # k_txnH = 1.0
+    #     # k_txnBH = 1.0
+
+        
+    #     p_ref = [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP,
+    #              k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2]
+        
+    #     real_param_labels_free = ['k_bHS', 'k_txnH', 'k_txnHAF', 'k_dH1R', 'k_dH1P',
+    #                               'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P', 'k_txnb1',
+    #                               'k_txnb2']
     
     # p_ref = [10.0, 1.0e-2, 1.0e-4, 1.0e-3, 1.0, 1.0e-2, 1.0e-2, 1.0e-2, 1.0e-2,
     #           1.0e-2, 1.0e-2]
@@ -126,16 +142,19 @@ def init():
 
     #Define parameter labels (real and general)
     
-    #real labels for p_ref and p_all      
+    #real labels for p_ref and p_all  
+
+    [k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn] = p_ref
     
-    real_param_labels_all = ['k_bHS', 'k_rbHS', 'k_txnH','k_txnHAF', 'k_dH1R',
-                             'k_dH1P','k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P',
-                             'k_txnb1', 'k_txnb2']
+    
+    real_param_labels_all = ['k_bHS', 'k_rbHS', 'k_txnH', 'k_dH1R',
+                             'k_dH1P','k_dHP', 'k_bHH', 'k_txnBH', 'k_aH2P', 'k_iH2P',
+                             'k_txnb1', 'k_txnb2', 'k_txn']
 
     #general labels for p_ref and p_all
 
     p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9',
-                    'p10', 'p11', 'p12']
+                    'p10', 'p11', 'p12', 'p13']
     
     #if a param in real_param_labels_all is not included in realParamLabels_free,
     #it is fixed at the value set in p_all
@@ -308,4 +327,26 @@ def init():
                                            'HIF2R', 'HIF2P', 'DSRed2R',
                                            'DSRed2P']
     
+    # MODEL 4D
+    HBS_info['HBS_1a4D'] = {}
+    HBS_info['HBS_1a4D']['# states'] = 13
+    HBS_info['HBS_1a4D']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF1R', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRed2R',
+                                           'DSRed2P']
+    
+    HBS_info['HBS_4b4D'] = {}
+    HBS_info['HBS_4b4D']['# states'] = 13
+    HBS_info['HBS_4b4D']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF1R', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRed2R',
+                                           'DSRed2P']
+
+    HBS_info['HBS_4c4D'] = {}
+    HBS_info['HBS_4c4D']['# states'] = 13
+    HBS_info['HBS_4c4D']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF1R', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRed2R',
+                                           'DSRed2P']
+
     return conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info

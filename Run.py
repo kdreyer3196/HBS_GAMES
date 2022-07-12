@@ -163,6 +163,11 @@ def solveAll(p, exp_data, t_type, model, output):
             
             ODE_list = [HBS_1a4C, HBS_4b4C, HBS_4c4C]
             name_list = ['HBS_1a4C', 'HBS_4b4C', 'HBS_4c4C']
+            
+        elif model == 'model_4D':
+            
+            ODE_list = [HBS_1a4D, HBS_4b4D, HBS_4c4D]
+            name_list = ['HBS_1a4D', 'HBS_4b4D', 'HBS_4c4D']
         
         if t_type == 'plotting':
             
@@ -215,7 +220,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [k_bHS, k_rbHS, k_txnH, k_txnHAF, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2] = p
+    [k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn] = p
     
     v = [[], 0]
     v[0] = p
@@ -292,7 +297,7 @@ def solvePar(row):
 
     #Define parameters and solve ODEs
     p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8],
-         row[9], row[10], row[11], row[12]]
+         row[9], row[10], row[11], row[12], row[13]]
     norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
     output = [chi2]
    
@@ -332,10 +337,10 @@ def optPar(row):
     #Initialize list to keep track of CF at each function evaluation
     chi2_list = []
 
-    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12):
+    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13):
         #This is the function that is solved at each step in the optimization algorithm
         
-        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12]
+        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         chi2_list.append(chi2)
         
@@ -413,8 +418,8 @@ def optPar(row):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
     
-    result_row = result_row[:31]
-    result_row_labels = result_row_labels[:31]
+    result_row = result_row[:33]
+    result_row_labels = result_row_labels[:33]
 
     return result_row, result_row_labels
 
@@ -543,7 +548,7 @@ def plotTrainingDataFits(df):
 
     t_hox, solutions = solveAll(params_best, exp_data, t_type, model, 'all states')
  
-    fig = plt.figure(figsize = (9,3))
+    fig = plt.figure(figsize = (6,2))
     fig.subplots_adjust(wspace=0.2)
     ax1 = plt.subplot(131)   
     ax2 = plt.subplot(132)
@@ -824,9 +829,9 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
-    real_param_labels_all = ['k_bHS', 'k_rbHS', 'k_txnH','k_txnHAF', 'k_dH1R',
-                             'k_dH1P','k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P',
-                             'k_txnb1', 'k_txnb2']
+    real_param_labels_all = ['k_bHS', 'k_rbHS', 'k_txnH', 'k_dH1R',
+                             'k_dH1P','k_dHP', 'k_bHH', 'k_txnBH', 'k_aH2P', 'k_iH2P',
+                             'k_txnb1', 'k_txnb2', 'k_txn']
     
     best_case_params = []
     for i in range(0, len(p_all)):
@@ -1935,7 +1940,7 @@ def generatePemEvalData(df_global_search, num_datasets):
     for row in df_params.itertuples(name = None):
         #Define parameters
         p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
-             row[10], row[11], row[12], row[13]]
+             row[10], row[11], row[12], row[13], row[14]]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         
         #Add noise
