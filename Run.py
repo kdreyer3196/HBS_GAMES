@@ -195,7 +195,7 @@ def solveAll(p, exp_data, t_type, model, output):
                         t_hox2]
             t_hox2, SS_hox_1a2 = solveSingle(args_1a2)
             
-            norm = np.mean(SS_hox_1a2[7.6]['DSRed2P'])
+            norm = np.mean(SS_hox_1a2[7.6]['DSRE2P'])
             
         else:
             
@@ -216,7 +216,7 @@ def solveAll(p, exp_data, t_type, model, output):
                        t_hox]
             t_hox, SS_hox_4c = solveSingle(args_4c)
             
-            norm = np.mean(SS_hox_1a[7.6]['DSRed2P'][:5])
+            norm = np.mean(SS_hox_1a[7.6]['DSRE2P'][:5])
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
@@ -230,9 +230,9 @@ def solveAll(p, exp_data, t_type, model, output):
     
     
     if t_type == 'plotting':
-        DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRed2P'][:26], SS_hox_1a[138]['DSRed2P'][0])
-        DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][0])
-        DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][0])
+        DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRE2P'][:26], SS_hox_1a[138]['DSRE2P'][0])
+        DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
+        DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
         
         norm_1a = DSRed2P_1a/norm
         norm_4b = DSRed2P_4b/norm
@@ -243,14 +243,14 @@ def solveAll(p, exp_data, t_type, model, output):
         
     else:
         if data == 'hypox only':
-            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][0])
-            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][0])
-            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][0])
+            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRE2P'][:5], SS_hox_1a[138]['DSRE2P'][0])
+            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
+            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
 
         elif data == 'all':
-            DSRed2P_1a = np.concatenate((SS_hox_1a[7.6]['DSRed2P'][:5], SS_hox_1a[138]['DSRed2P'][:3]))
-            DSRed2P_4b = np.concatenate((SS_hox_4b[7.6]['DSRed2P'], SS_hox_4b[138]['DSRed2P'][:3]))
-            DSRed2P_4c = np.concatenate((SS_hox_4c[7.6]['DSRed2P'], SS_hox_4c[138]['DSRed2P'][:3]))     
+            DSRed2P_1a = np.concatenate((SS_hox_1a[7.6]['DSRE2P'][:5], SS_hox_1a[138]['DSRE2P'][:3]))
+            DSRed2P_4b = np.concatenate((SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][:3]))
+            DSRed2P_4c = np.concatenate((SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][:3]))     
     
         norm_1a = DSRed2P_1a/norm
         norm_4b = DSRed2P_4b/norm
@@ -515,18 +515,18 @@ def plotTrainingDataFits(df):
                  linestyle = linestyles[0], color = colors[0])
  
     ax1.set_xlabel('Time Post-Plating (hours)')
-    ax1.set_ylabel('Relative DsRed Expression')
+    ax1.set_ylabel('Relative DsRE2 Expression')
     ax1.set_ylim(ax2.get_ylim())
     ax1.set_title('Simple HBS')
     ax1.legend()
     
     ax2.set_xlabel('Time Post-Plating (hours)')
-    ax2.set_ylabel('Relative DsRed Expression')
+    ax2.set_ylabel('Relative DsRE2 Expression')
     ax2.set_title('HIF1a Feedback HBS')
     ax2.legend()
     
     ax3.set_xlabel('Time Post-Plating (hours)')
-    ax3.set_ylabel('Relative DsRed Expression')
+    ax3.set_ylabel('Relative DsRE2 Expression')
     ax3.set_ylim(ax2.get_ylim())
     ax3.set_title('HIF2a Feedback HBS')
     ax3.legend()
@@ -548,8 +548,8 @@ def plotTrainingDataFits(df):
 
     t_hox, solutions = solveAll(params_best, exp_data, t_type, model, 'all states')
  
-    fig = plt.figure(figsize = (6,2))
-    fig.subplots_adjust(wspace=0.2)
+    fig = plt.figure(figsize = (6.5,2.5))
+    fig.subplots_adjust(wspace=0.1)
     ax1 = plt.subplot(131)   
     ax2 = plt.subplot(132)
     ax3 = plt.subplot(133)
@@ -575,36 +575,39 @@ def plotTrainingDataFits(df):
      #Plot simulated data for the best case parameter set
     ax1.plot(t_hox[:26], solutions[0][:-1], marker = None, label = '1% O2 Best model fit', 
              linestyle = linestyles[0], color = colors[0])
-    ax1.plot(t_hox[0], solutions[0][-1], marker = None, label = '21% O2 Best model fit', 
-             linestyle = linestyles[0], color = colors[1])
+    ax1.plot(t_hox[0], solutions[0][-1], marker = None, linestyle = linestyles[0],
+             color = colors[1])
     
     ax2.plot(t_hox, solutions[1][:-1], marker = None, label = '1% O2 Best model fit', 
              linestyle = linestyles[0], color = colors[0])
-    ax2.plot(t_hox[0], solutions[1][-1], marker = None, label = '21% O2 Best model fit', 
-             linestyle = linestyles[0], color = colors[1])
+    ax2.plot(t_hox[0], solutions[1][-1], marker = None, linestyle = linestyles[0],
+             color = colors[1])
     
     ax3.plot(t_hox, solutions[2][:-1], marker = None, label = '1% O2 Best model fit', 
              linestyle = linestyles[0], color = colors[0])
-    ax3.plot(t_hox[0], solutions[2][-1], marker = None, label = '21% O2 Best model fit', 
-             linestyle = linestyles[0], color = colors[1])
+    ax3.plot(t_hox[0], solutions[2][-1], marker = None, linestyle = linestyles[0],
+             color = colors[1])
     
     #Set x and y labels and ylim
     ax1.set_xlabel('Time Post-Plating (hours)')
-    ax1.set_ylabel('Relative DsRed Expression')
+    ax1.set_ylabel('Relative DsRE2 Expression')
     ax1.set_ylim(ax2.get_ylim())
     ax1.set_title('Simple HBS')
     ax1.legend()
+    ax1.set_box_aspect(1)
     
     ax2.set_xlabel('Time Post-Plating (hours)')
-    ax2.set_ylabel('Relative DsRed Expression')
+    ax2.set_ylabel('Relative DsRE2 Expression')
     ax2.set_title('HIF1a Feedback HBS')
-    ax2.legend()
+    # ax2.legend()
+    ax2.set_box_aspect(1)
     
     ax3.set_xlabel('Time Post-Plating (hours)')
-    ax3.set_ylabel('Relative DsRed Expression')
+    ax3.set_ylabel('Relative DsRE2 Expression')
     ax3.set_ylim(ax2.get_ylim())
     ax3.set_title('HIF2a Feedback HBS')
-    ax3.legend()
+    # ax3.legend()
+    ax3.set_box_aspect(1)
 
     plt.savefig('./BEST_FIT.svg', bbox_inches="tight")
         

@@ -843,14 +843,14 @@ def HBS_1a4D(y, t, v):
             k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
             k_txnb2 - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
-            (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
+            (k_bHS/O2_rate)*y1*y3 - k_dP*y4 - k_bHH*y9*y4,
             k_txnH*y7 + k_txnH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
             - k_dR*y5,
             
             k_txn - k_dR*y6 - k_dH1R*y5*y6,
             k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
             k_txn - k_dR*y8,
-            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9,
+            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9 - k_bHH*y9*y4,
             k_bHH*y9*y4 - k_dP*y10,
             
             k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
@@ -897,7 +897,7 @@ def HBS_4b4D(y, t, v):
             k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
             k_txnb2 - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
-            (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
+            (k_bHS/O2_rate)*y1*y3 - k_dP*y4 - k_bHH*y9*y4,
             k_txnH*y7 + k_txnH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
             - k_dR*y5,
             
@@ -906,7 +906,7 @@ def HBS_4b4D(y, t, v):
             
             k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
             k_txn - k_dR*y8,
-            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9,
+            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9 - k_bHH*y9*y4,
             k_bHH*y9*y4 - k_dP*y10,
             
             
@@ -954,7 +954,7 @@ def HBS_4c4D(y, t, v):
             k_tln*y0 - k_dP*y1 - (k_bHS/O2_rate)*y1*y3,
             k_txnb2 - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2_rate)*y1*y3,
-            (k_bHS/O2_rate)*y1*y3 - k_dP*y4,
+            (k_bHS/O2_rate)*y1*y3 - k_dP*y4 - k_bHH*y9*y4,
             k_txnH*y7 + k_txnH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
             - k_dR*y5,
             
@@ -963,7 +963,7 @@ def HBS_4c4D(y, t, v):
             k_txn + k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
             - k_dR*y8,
             
-            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9,
+            k_tln*y8 - k_dP*y9 - k_dHP*O2_rate*y9 - k_bHH*y9*y4,
             k_bHH*y9*y4 - k_dP*y10,
             
             k_txnBH*y7 + k_txnBH*(k_aH2P*y10/(1 + k_aH2P*y10 + k_iH2P*y9))
@@ -1073,20 +1073,18 @@ def solveSingle(args):
             fig.subplots_adjust(wspace=0.3)
             
         elif num_states == 13:
-            fig, axs = plt.subplots(nrows=3, ncols=5, sharex=False, sharey=False, figsize = (8, 6))
+            fig, axs = plt.subplots(nrows=3, ncols=5, sharex=False, sharey=False, figsize = (10, 6))
             fig.subplots_adjust(hspace=.5)
             fig.subplots_adjust(wspace=0.3)
             
         axs = axs.ravel()
         for i in range(0, num_states):
             axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = colors[0], 
-                        linestyle = linestyle,
-                        label = '1% O2')
+                        linestyle = linestyle)
             axs[i].plot(t_hox[0], SS_hox[138][state_names[i]][0], color = colors[1], 
-                        linestyle = linestyle,
-                        label = '21% O2')
+                        linestyle = linestyle)
             axs[i].set_xlabel('Time Post-Plating (hours)')
-            axs[i].set_ylabel('Simulation value (a.u.)')
+            axs[i].set_ylabel('1% O2 sim value (a.u.)')
             axs[i].set_title(state_names[i])
             axs[i].set_ylim(bottom = 0)
             
@@ -1107,9 +1105,7 @@ def solveSingle(args):
         elif num_states == 13:
             axs[-1].axis('off')
             axs[-2].axis('off')
-        
-        axs[0].legend()
-        
+                
         fig.suptitle(name + ' States')
         fig_name = name + 'States' + '.svg'
         plt.savefig(fig_name)

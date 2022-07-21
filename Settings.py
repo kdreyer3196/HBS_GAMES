@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220711_Model4D_Test_redo'
+    folder_name = '220713_Model4D8_Test'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -60,18 +60,19 @@ def init():
     
     if conditions_dictionary["model"] == 'model_4D':
         k_rbHS = 0
-        k_txnH = 1.0
-        k_txnBH = 1.0
-        k_txnb1 = 1.0
-        k_txnb2 = 1.0
-        k_txn = 1.0
+        # k_txnH = 1.0
+        # k_txnBH = 1.0
+        # k_txnb1 = 1.0
+        # k_txnb2 = 1.0
+        # k_txn = 1.0
 
         
         p_ref = [k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH,
                  k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn]
         
-        real_param_labels_free = ['k_bHS', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_bHH',
-                                  'k_aH2P', 'k_iH2P']
+        real_param_labels_free = ['k_bHS', 'k_txnH', 'k_dH1R', 'k_dH1P', 'k_dHP',
+                                  'k_bHH', 'k_txnBH', 'k_aH2P', 'k_iH2P',
+                                  'k_txnb1','k_txnb2', 'k_txn']
     
     
     # if conditions_dictionary["model"] == 'model_4C':
@@ -331,22 +332,22 @@ def init():
     HBS_info['HBS_1a4D'] = {}
     HBS_info['HBS_1a4D']['# states'] = 13
     HBS_info['HBS_1a4D']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
-                                           'HAFS', 'aHIF1R', 'HIF1R', 'HIF1P',
-                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRed2R',
-                                           'DSRed2P']
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
     
     HBS_info['HBS_4b4D'] = {}
     HBS_info['HBS_4b4D']['# states'] = 13
     HBS_info['HBS_4b4D']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
-                                           'HAFS', 'aHIF1R', 'HIF1R', 'HIF1P',
-                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRed2R',
-                                           'DSRed2P']
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
 
     HBS_info['HBS_4c4D'] = {}
     HBS_info['HBS_4c4D']['# states'] = 13
     HBS_info['HBS_4c4D']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
-                                           'HAFS', 'aHIF1R', 'HIF1R', 'HIF1P',
-                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRed2R',
-                                           'DSRed2P']
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
 
     return conditions_dictionary, initial_params_dictionary, data_dictionary, HBS_info
