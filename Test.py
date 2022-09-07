@@ -32,7 +32,7 @@ if location == 'desktop':
     plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
     
 elif location == 'laptop':
-    plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    plt.style.use('/Users/kdreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')
 
 elif location == 'quest':
     plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
@@ -179,8 +179,8 @@ def generateRefData(p_ref):
     # #Save reference dataframe as an excel sheet
     # saveRefData(noise_solutions)
 
-p_ref = [1.0, 1.0e-1, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0, 1.0, 1.0e-2,
-         1.0e-2, 1.0, 1.0, 1.0]
+p_ref = [1.0, 1.0, 1.0e-1, 1.0, 1.0, 1.0e-1, 1.0, 1.0, 1.0e-1, 1.0e-2,
+         1.0e-2, 1.0, 1.0e-2, 1.0e-2]
 
 generateRefData(p_ref)
 

@@ -85,7 +85,7 @@ if location == 'desktop':
     parallelization = 'no' 
     
 elif location == 'laptop':
-    plt.style.use('/Users/kdreyer/Google Drive/My Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    plt.style.use('/Users/kdreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')
     parallelization = 'no' 
 
 elif location == 'quest':
@@ -139,35 +139,16 @@ def solveAll(p, exp_data, t_type, model, output):
                 
                 [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args
                 '''
-        if model == 'model_0':
-            
-            ODE_list = [HBS_1a0, HBS_4b0, HBS_4c0]
-            name_list = ['HBS_1a0', 'HBS_4b0', 'HBS_4c0']
-
-        elif model == 'model_2G':
-            
-            ODE_list = [HBS_1a2G, HBS_4b2G, HBS_4c2G]
-            name_list = ['HBS_1a2G', 'HBS_4b2G', 'HBS_4c2G'] 
-
-        elif model == 'model_4':
-            
-            ODE_list = [HBS_1a4, HBS_4b4, HBS_4c4]
-            name_list = ['HBS_1a4', 'HBS_4b4', 'HBS_4c4'] 
-            
-        elif model == 'model_4A':
-            
-            ODE_list = [HBS_1a4A, HBS_4b4A, HBS_4c4A]
-            name_list = ['HBS_1a4A', 'HBS_4b4A', 'HBS_4c4A']
-        
-        elif model == 'model_4C':
-            
-            ODE_list = [HBS_1a4C, HBS_4b4C, HBS_4c4C]
-            name_list = ['HBS_1a4C', 'HBS_4b4C', 'HBS_4c4C']
-            
-        elif model == 'model_4D':
+                
+        if model == 'model_4D':
             
             ODE_list = [HBS_1a4D, HBS_4b4D, HBS_4c4D]
             name_list = ['HBS_1a4D', 'HBS_4b4D', 'HBS_4c4D']
+            
+        if model == 'model_4E':
+            
+            ODE_list = [HBS_1a4E, HBS_4b4E, HBS_4c4E]
+            name_list = ['HBS_1a4E', 'HBS_4b4E', 'HBS_4c4E']
         
         if t_type == 'plotting':
             
@@ -220,7 +201,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [k_bHS, k_rbHS, k_txnH, k_dH1R, k_dH1P, k_dHP, k_bHH, k_txnBH, k_aH2P, k_iH2P, k_txnb1, k_txnb2, k_txn] = p
+    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P] = p
     
     v = [[], 0]
     v[0] = p
@@ -297,7 +278,7 @@ def solvePar(row):
 
     #Define parameters and solve ODEs
     p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8],
-         row[9], row[10], row[11], row[12], row[13]]
+         row[9], row[10], row[11], row[12], row[13], row[14]]
     norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
     output = [chi2]
    
@@ -337,10 +318,10 @@ def optPar(row):
     #Initialize list to keep track of CF at each function evaluation
     chi2_list = []
 
-    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13):
+    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14):
         #This is the function that is solved at each step in the optimization algorithm
         
-        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13]
+        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         chi2_list.append(chi2)
         
@@ -418,8 +399,8 @@ def optPar(row):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
     
-    result_row = result_row[:33]
-    result_row_labels = result_row_labels[:33]
+    result_row = result_row[:35]
+    result_row_labels = result_row_labels[:35]
 
     return result_row, result_row_labels
 
@@ -832,9 +813,9 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
-    real_param_labels_all = ['k_bHS', 'k_rbHS', 'k_txnH', 'k_dH1R',
-                             'k_dH1P','k_dHP', 'k_bHH', 'k_txnBH', 'k_aH2P', 'k_iH2P',
-                             'k_txnb1', 'k_txnb2', 'k_txn']
+    real_param_labels_all = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_bHH',
+                             'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R', 'k_dH1P',
+                             'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P']
     
     best_case_params = []
     for i in range(0, len(p_all)):
@@ -1943,7 +1924,7 @@ def generatePemEvalData(df_global_search, num_datasets):
     for row in df_params.itertuples(name = None):
         #Define parameters
         p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
-             row[10], row[11], row[12], row[13], row[14]]
+             row[10], row[11], row[12], row[13], row[14], row[15]]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         
         #Add noise
