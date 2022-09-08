@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220819_Model4E6_Modules1-2'
+    folder_name = '220907_Param_Sweep'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -37,7 +37,7 @@ def init():
     #Items that you might want to change
     conditions_dictionary = {}
     conditions_dictionary["model"] = 'model_4E' #'model_0', 'model_0A', 'model_0B', 'model_1', 'model_1A', 'model_2', 'model_2A', 'model_3'
-    conditions_dictionary["modules"] = [1,2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
+    conditions_dictionary["modules"] = [] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 1000
     conditions_dictionary["n_initial_guesses"] = 100
     conditions_dictionary["confidence_interval"] = .99 
@@ -46,7 +46,7 @@ def init():
     conditions_dictionary["n_search_pem_eval"] = 1000
     conditions_dictionary["param_index_PL"] = 'all' #'all' or index of p (int)
     conditions_dictionary["data"] = 'hypox only'
-    conditions_dictionary["location"] = 'quest' #'desktop', 'laptop', 'quest'
+    conditions_dictionary["location"] = 'desktop' #'desktop', 'laptop', 'quest'
     
     # =============================================================================
     # 3. Define free parameters and bounds

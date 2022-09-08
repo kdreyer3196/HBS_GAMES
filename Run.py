@@ -81,7 +81,7 @@ save_internal_states_flag = False
 
 #Set style file
 if location == 'desktop':
-    plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    plt.style.use('C://Users/Katie_Dreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')
     parallelization = 'no' 
     
 elif location == 'laptop':
