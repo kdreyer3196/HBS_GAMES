@@ -253,7 +253,7 @@ def solveAll(p, exp_data, t_type, model, output):
         chi2 = calcChi2(exp_data, solutions, error)
 
         if save_internal_states_flag:
-            return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c
+            return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
         else:
             return solutions, chi2
 
@@ -1663,7 +1663,7 @@ def plotPLConsequences(df, param_label):
     sns.set_palette("Greys", len(y))
     
     for param_list in y: # for each parameter set
-        t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c = solveAll(param_list, exp_data, ' ', model, ' ')
+        t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm = solveAll(param_list, exp_data, ' ', model, ' ')
 
         fig, axs = plt.subplots(nrows=2, ncols=4, sharex=True, sharey=False, figsize = (8, 4))
         fig.subplots_adjust(hspace=.5)

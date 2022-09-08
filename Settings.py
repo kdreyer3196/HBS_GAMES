@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220907_Param_Sweep'
+    folder_name = '220907_Param_Sweep_Test'
     
     # =============================================================================
     # 2. Define conditions dictionary

@@ -29,7 +29,7 @@ location = conditions_dictionary["location"]
 
 #Set style file
 if location == 'desktop':
-    plt.style.use('C://Users/Katie_Dreyer/Google_Drive/Documents/Leonard_Lab/HBS_Modeling/HBS_GAMES/paper.mplstyle.py')
+    plt.style.use('C://Users/Katie_Dreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')
     
 elif location == 'laptop':
     plt.style.use('/Users/kdreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')

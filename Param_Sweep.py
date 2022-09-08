@@ -65,7 +65,7 @@ exp_data_original = data_dictionary["exp_data"]
 error = data_dictionary["error"]
 location = conditions_dictionary["location"]
 
-save_internal_states_flag = False
+save_internal_states_flag = True
 
 #Set style file
 if location == 'desktop':
@@ -122,10 +122,12 @@ def get_param_lists(p_ref, param_sweeps):
 
 # def run_param_sims(param_lists):
     
-#     #run solveAll (look at optPar)
+#     for param_label, param_sets in param_lists.items():
 
+#         for params in param_sets:
+#             t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm = solveAll(params, exp_data, 'plotting', model, ' ')
 
-#     return 
+        
 
 # def plot_param_sweep():
     
