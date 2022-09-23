@@ -22,9 +22,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import cycler
 from math import sqrt
+import json
 
 #Import GAMES functions
 from Solvers import *
+from Saving import createFolder
 import Settings
 from Run import solveAll, solvePar 
 
@@ -65,7 +67,6 @@ exp_data_original = data_dictionary["exp_data"]
 error = data_dictionary["error"]
 location = conditions_dictionary["location"]
 
-save_internal_states_flag = True
 
 #Set style file
 if location == 'desktop':
@@ -87,7 +88,7 @@ def get_param_sweeps(p_ref, orders_of_mag):
     
     param_sweeps = {}
     
-    for index, param in enumerate(p_ref):
+    for index, param in enumerate(p_ref[:-1]):
         param_label = real_param_labels_all[index]
         
         param_sweeps[param_label] = []
@@ -104,7 +105,7 @@ def get_param_lists(p_ref, param_sweeps):
     
     param_lists = {}
     
-    for index, param in enumerate(p_ref):
+    for index, param in enumerate(p_ref[:-1]):
         
         param_label = real_param_labels_all[index]
         
@@ -120,22 +121,142 @@ def get_param_lists(p_ref, param_sweeps):
             
     return param_lists
 
-# def run_param_sims(param_lists):
+def run_param_sims(param_lists, orders_of_mag):
     
-#     for param_label, param_sets in param_lists.items():
+    HBS_1a_sweeps = {}
+    HBS_4b_sweeps = {}
+    HBS_4c_sweeps = {}
 
-#         for params in param_sets:
-#             t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm = solveAll(params, exp_data, 'plotting', model, ' ')
+    for param_label, param_sets in list(param_lists.items()):
+        HBS_1a_sweeps[param_label] = {}
+        HBS_4b_sweeps[param_label] = {}
+        HBS_4c_sweeps[param_label] = {}
+
+        for index, params in enumerate(param_sets):
+            t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm = solveAll(params, exp_data, 'plotting', model, ' ')
+            HBS_1a_sweeps[param_label][orders_of_mag[index]] = SS_hox_1a
+            HBS_4b_sweeps[param_label][orders_of_mag[index]] = SS_hox_4b
+            HBS_4b_sweeps[param_label][orders_of_mag[index]] = SS_hox_4b
+        
+        # break
+        
+    return t_hox, HBS_1a_sweeps, HBS_4b_sweeps, HBS_4c_sweeps
+
 
         
 
-# def plot_param_sweep():
-    
-    
+def plot_param_sweeps(t_hox, HBS_1a_sweeps, HBS_4b_sweeps, HBS_4c_sweeps, orders_of_mag):
+
+    orange_ = [i/255 for i in [230, 159, 0]]
+    sky_blue = [i/255 for i in [86, 180, 233]]
+    pink_ = [i/255 for i in [204, 121, 167]]
+    bluish_green = [i/255 for i in [0, 158, 115]]
+    vermillion = [i/255 for i in [213, 94, 0]]
+    yellow_ = [i/255 for i in [240, 228, 66]]
+    blue_ = [i/255 for i in [0, 114, 178]]
+
+    colors = [orange_, sky_blue, pink_, bluish_green, vermillion, yellow_, blue_]
+
+    for sweep in list(HBS_1a_sweeps.keys()):
+        fig, axs = plt.subplots(nrows=3, ncols=5, sharex=False, sharey=False, figsize = (10, 6))
+        fig.subplots_adjust(hspace=.5)
+        fig.subplots_adjust(wspace=0.3)
+        axs = axs.ravel()
+
+        for index, mag in enumerate(orders_of_mag):
+            plot_color = colors[index]
+
+            for i, state in enumerate(HBS_info['HBS_1a4F']['state names']):
+                axs[i].plot(
+                    t_hox,
+                    HBS_1a_sweeps[sweep][mag][7.6][state],
+                    color=plot_color,
+                    linestyle='dotted',
+                    label='10^' + str(mag))
+                axs[i].set_xlabel('Time Post-Plating (hours)')
+                axs[i].set_ylabel('1% O2 sim value (a.u.)')
+                axs[i].set_title(state)
+                # axs[i].set_ylim(bottom = 0)
+                axs[i].legend()
+        for ax in axs:
+            ax.relim()
+            ax.autoscale_view()
+
+        axs[-1].axis('off')
+        axs[-2].axis('off')
+        plt.savefig(full_path + '/HBS_1a/' + sweep + '.svg')
+
+    for sweep in list(HBS_4b_sweeps.keys()):
+        fig, axs = plt.subplots(nrows=3, ncols=5, sharex=False, sharey=False, figsize = (10, 6))
+        fig.subplots_adjust(hspace=.5)
+        fig.subplots_adjust(wspace=0.3)
+        axs = axs.ravel()
+
+        for index, mag in enumerate(orders_of_mag):
+            plot_color = colors[index]
+
+            for i, state in enumerate(HBS_info['HBS_4b4F']['state names']):
+                axs[i].plot(
+                    t_hox,
+                    HBS_4b_sweeps[sweep][mag][7.6][state],
+                    color=plot_color,
+                    linestyle='dotted',
+                    label='10^' + str(mag))
+                axs[i].set_xlabel('Time Post-Plating (hours)')
+                axs[i].set_ylabel('1% O2 sim value (a.u.)')
+                axs[i].set_title(state)
+                # axs[i].set_ylim(bottom = 0)
+                axs[i].legend()
+        for ax in axs:
+            ax.relim()
+            ax.autoscale_view()
+
+        axs[-1].axis('off')
+        axs[-2].axis('off')
+        plt.savefig(full_path + '/HBS_4b/' + sweep + '.svg')
+
+    for sweep in list(HBS_4c_sweeps.keys()):
+        fig, axs = plt.subplots(nrows=3, ncols=5, sharex=False, sharey=False, figsize = (10, 6))
+        fig.subplots_adjust(hspace=.5)
+        fig.subplots_adjust(wspace=0.3)
+        axs = axs.ravel()
+
+        for index, mag in enumerate(orders_of_mag):
+            plot_color = colors[index]
+
+            for i, state in enumerate(HBS_info['HBS_4c4F']['state names']):
+                axs[i].plot(
+                    t_hox,
+                    HBS_4b_sweeps[sweep][mag][7.6][state],
+                    color=plot_color,
+                    linestyle='dotted',
+                    label='10^' + str(mag))
+                axs[i].set_xlabel('Time Post-Plating (hours)')
+                axs[i].set_ylabel('1% O2 sim value (a.u.)')
+                axs[i].set_title(state)
+                # axs[i].set_ylim(bottom = 0)
+                axs[i].legend()
+        for ax in axs:
+            ax.relim()
+            ax.autoscale_view()
+
+        axs[-1].axis('off')
+        axs[-2].axis('off')
+        plt.savefig(full_path + '/HBS_4c/' + sweep + '.svg')
+
+
+
 # os.chdir(full_path)
+# createFolder('./HBS_1a')
+# createFolder('./HBS_4b')
+# createFolder('./HBS_4c')
 
 orders_of_mag = [-3, -2, -1, 0, 1, 2, 3]
 
 param_sweeps = get_param_sweeps(p_ref, orders_of_mag)
 param_lists = get_param_lists(p_ref, param_sweeps)
-print(param_lists)
+# print(param_lists)
+
+t_hox, HBS_1a_sweeps, HBS_4b_sweeps, HBS_4c_sweeps = run_param_sims(param_lists, orders_of_mag)
+
+plot_param_sweeps(t_hox, HBS_1a_sweeps, HBS_4b_sweeps, HBS_4c_sweeps, orders_of_mag)

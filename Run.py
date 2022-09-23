@@ -149,6 +149,11 @@ def solveAll(p, exp_data, t_type, model, output):
             
             ODE_list = [HBS_1a4E, HBS_4b4E, HBS_4c4E]
             name_list = ['HBS_1a4E', 'HBS_4b4E', 'HBS_4c4E']
+
+        if model == 'model_4F':
+            
+            ODE_list = [HBS_1a4F, HBS_4b4F, HBS_4c4F]
+            name_list = ['HBS_1a4F', 'HBS_4b4F', 'HBS_4c4F']
         
         if t_type == 'plotting':
             
@@ -201,7 +206,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P] = p
+    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
     
     v = [[], 0]
     v[0] = p
@@ -211,16 +216,21 @@ def solveAll(p, exp_data, t_type, model, output):
     
     
     if t_type == 'plotting':
-        DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRE2P'][:26], SS_hox_1a[138]['DSRE2P'][0])
-        DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
-        DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
         
-        norm_1a = DSRed2P_1a/norm
-        norm_4b = DSRed2P_4b/norm
-        norm_4c = DSRed2P_4c/norm
+        if save_internal_states_flag:
+            return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
         
-        solutions = [norm_1a, norm_4b, norm_4c]
-        return t_hox, solutions
+        else:
+            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRE2P'][:26], SS_hox_1a[138]['DSRE2P'][0])
+            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
+            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
+            
+            norm_1a = DSRed2P_1a/norm
+            norm_4b = DSRed2P_4b/norm
+            norm_4c = DSRed2P_4c/norm
+            
+            solutions = [norm_1a, norm_4b, norm_4c]
+            return t_hox, solutions
         
     else:
         if data == 'hypox only':
@@ -278,7 +288,7 @@ def solvePar(row):
 
     #Define parameters and solve ODEs
     p = [row[1], row[2], row[3], row[4], row[5], row[6], row[7], row[8],
-         row[9], row[10], row[11], row[12], row[13], row[14]]
+         row[9], row[10], row[11], row[12]]
     norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
     output = [chi2]
    
@@ -318,10 +328,10 @@ def optPar(row):
     #Initialize list to keep track of CF at each function evaluation
     chi2_list = []
 
-    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14):
+    def solveForOpt(pO2, p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12):
         #This is the function that is solved at each step in the optimization algorithm
         
-        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12, p13, p14]
+        p = [p1, p2, p3, p4, p5, p6, p7, p8, p9, p10, p11, p12]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         chi2_list.append(chi2)
         
@@ -399,8 +409,8 @@ def optPar(row):
         result_row.append(items[i])
         result_row_labels.append(item_labels[i])
     
-    result_row = result_row[:35]
-    result_row_labels = result_row_labels[:35]
+    result_row = result_row[:31]
+    result_row_labels = result_row_labels[:31]
 
     return result_row, result_row_labels
 
@@ -815,7 +825,7 @@ def runParameterEstimation():
     #Save best case calibrated parameters (lowest chi2)
     real_param_labels_all = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_bHH',
                              'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R', 'k_dH1P',
-                             'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P']
+                             'k_dHP', 'k_txnBH']
     
     best_case_params = []
     for i in range(0, len(p_all)):
@@ -1924,7 +1934,7 @@ def generatePemEvalData(df_global_search, num_datasets):
     for row in df_params.itertuples(name = None):
         #Define parameters
         p = [row[2], row[3], row[4], row[5], row[6], row[7], row[8], row[9],
-             row[10], row[11], row[12], row[13], row[14], row[15]]
+             row[10], row[11], row[12], row[13]]
         norm_solutions, chi2 = solveAll(p, exp_data, ' ', model, ' ')
         
         #Add noise

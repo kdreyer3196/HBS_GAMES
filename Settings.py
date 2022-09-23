@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220907_Param_Sweep_Test'
+    folder_name = '220922_Model4F_Param_Sweep'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -36,7 +36,7 @@ def init():
     #Initialize conditions dictionary
     #Items that you might want to change
     conditions_dictionary = {}
-    conditions_dictionary["model"] = 'model_4E' #'model_0', 'model_0A', 'model_0B', 'model_1', 'model_1A', 'model_2', 'model_2A', 'model_3'
+    conditions_dictionary["model"] = 'model_4F' #'model_0', 'model_0A', 'model_0B', 'model_1', 'model_1A', 'model_2', 'model_2A', 'model_3'
     conditions_dictionary["modules"] = [] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 1000
     conditions_dictionary["n_initial_guesses"] = 100
@@ -46,7 +46,7 @@ def init():
     conditions_dictionary["n_search_pem_eval"] = 1000
     conditions_dictionary["param_index_PL"] = 'all' #'all' or index of p (int)
     conditions_dictionary["data"] = 'hypox only'
-    conditions_dictionary["location"] = 'desktop' #'desktop', 'laptop', 'quest'
+    conditions_dictionary["location"] = 'laptop' #'desktop', 'laptop', 'quest'
     
     # =============================================================================
     # 3. Define free parameters and bounds
@@ -54,23 +54,36 @@ def init():
     #Set list of all potentially free parameters
     
     p_ref = [1.0, 1.0, 1.0e-2, 1.0, 1.0, 1.0e-1, 1.0, 1.0, 1.0e-1, 1.0e-3,
-              1.0e-1, 1.0, 1.0, 1.0]
+              1.0e-1, 1.0]
+    # p_ref = [
+    #     0.291980292, 
+    #     256.6180909, 
+    #     7.781541152, 
+    #     1, 
+    #     18.46887227, 
+    #     6.071573323, 
+    #     10.51916582, 
+    #     1, 
+    #     5.871081989,
+    #     0.038900417,
+    #     0.17829599,
+    #     8.74217769,
+    #     3.893812742, 
+    #     0
+    # ]
              
-    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P] = p_ref
+    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p_ref
     
-    if conditions_dictionary["model"] == 'model_4E':
+    if conditions_dictionary["model"] == 'model_4F':
         # k_txnb1 = 1.0
-        k_txnb2 = 1.0
+        # k_txnb2 = 1.0
         # k_txnH = 1.0
         # k_txnb3 = 1.0
-        k_iH2P = 0.0
         
         p_ref = [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3,
-                 k_dH1R, k_dH1P, k_dHP, k_txnBH, k_aH2P, k_iH2P]
+                 k_dH1R, k_dH1P, k_dHP, k_txnBH]
         
-        real_param_labels_free = ['k_txnb1','k_bHS', 'k_rbHS', 'k_bHH', 'k_rbHH',
-                                  'k_txnH', 'k_txnb3', 'k_dH1R', 'k_dH1P', 'k_dHP',
-                                  'k_txnBH', 'k_aH2P']
+        real_param_labels_free = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_bHH', 'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_txnBH']
     
     p_all = p_ref
 
@@ -81,12 +94,12 @@ def init():
     
     real_param_labels_all = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_bHH',
                              'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R', 'k_dH1P',
-                             'k_dHP', 'k_txnBH', 'k_aH2P', 'k_iH2P']
+                             'k_dHP', 'k_txnBH']
 
     #general labels for p_ref and p_all
 
     p_labels_all = ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9',
-                    'p10', 'p11', 'p12', 'p13', 'p14']
+                    'p10', 'p11', 'p12']
     
     #if a param in real_param_labels_all is not included in realParamLabels_free,
     #it is fixed at the value set in p_all
@@ -204,6 +217,29 @@ def init():
     HBS_info['HBS_4c4E'] = {}
     HBS_info['HBS_4c4E']['# states'] = 13
     HBS_info['HBS_4c4E']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+
+
+    # MODEL 4F
+    HBS_info['HBS_1a4F'] = {}
+    HBS_info['HBS_1a4F']['# states'] = 13
+    HBS_info['HBS_1a4F']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+    
+    HBS_info['HBS_4b4F'] = {}
+    HBS_info['HBS_4b4F']['# states'] = 13
+    HBS_info['HBS_4b4F']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+
+    HBS_info['HBS_4c4F'] = {}
+    HBS_info['HBS_4c4F']['# states'] = 13
+    HBS_info['HBS_4c4F']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
                                            'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
                                            'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
                                            'DSRE2P']
