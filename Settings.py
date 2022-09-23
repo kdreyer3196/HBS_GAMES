@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '220922_Model4F_Param_Sweep'
+    folder_name = '220922_Model4F_Modules1-2Redo'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -78,12 +78,12 @@ def init():
         # k_txnb1 = 1.0
         # k_txnb2 = 1.0
         # k_txnH = 1.0
-        # k_txnb3 = 1.0
+        k_txnb3 = 1.0
         
         p_ref = [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3,
                  k_dH1R, k_dH1P, k_dHP, k_txnBH]
         
-        real_param_labels_free = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_bHH', 'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_txnBH']
+        real_param_labels_free = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_bHH', 'k_rbHH', 'k_txnH', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_txnBH']
     
     p_all = p_ref
 

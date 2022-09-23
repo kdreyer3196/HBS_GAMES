@@ -615,7 +615,7 @@ def HBS_1a4F(y, t, v):
             (k_bHS/O2_rate)*y1*y3 - k_rbHS*y4 - k_dP*y4 - k_bHH*y9*y4
             + k_rbHH*y10,
             
-            k_txnH*(y7 + y10) - k_dR*y5,
+            k_txnH*(y7 + y10) - k_dR*y5 - k_dH1R*y5*y6,
             k_txnb - k_dR*y6 - k_dH1R*y5*y6,
             k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
             k_txnb3 - k_dR*y8,
@@ -665,7 +665,7 @@ def HBS_4b4F(y, t, v):
             (k_bHS/O2_rate)*y1*y3 - k_rbHS*y4 - k_dP*y4 - k_bHH*y9*y4
             + k_rbHH*y10,
             
-            k_txnH*(y7 + y10) - k_dR*y5,
+            k_txnH*(y7 + y10) - k_dR*y5 - k_dH1R*y5*y6,
             k_txnb + k_txnBH*(y7 + y10) - k_dR*y6 - k_dH1R*y5*y6,
             k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
             k_txnb3 - k_dR*y8,
@@ -714,7 +714,7 @@ def HBS_4c4F(y, t, v):
             (k_bHS/O2_rate)*y1*y3 - k_rbHS*y4 - k_dP*y4 - k_bHH*y9*y4
             + k_rbHH*y10,
             
-            k_txnH*(y7 + y10) - k_dR*y5,
+            k_txnH*(y7 + y10) - k_dR*y5 - k_dH1R*y5*y6,
             k_txnb - k_dR*y6 - k_dH1R*y5*y6,
             k_tln*y6 - k_dP*y7 - k_dHP*O2_rate*y7 - k_dH1P*y7*(y1 + y4),
             k_txnb3 + k_txnBH*(y7 + y10) - k_dR*y8,
