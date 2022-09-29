@@ -724,6 +724,161 @@ def HBS_4c4F(y, t, v):
             k_tln*y11 - k_dRep*y12]
         
     return dydt
+
+# =============================================================================
+# MODEL 5
+# =============================================================================
+
+def HBS_1a5(y, t, v):
+
+    [[k_txnb1, k_bHS, k_rbHS, k_txnb2, k_m, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+
+    #parameters that will be held constant:
+    # k_txnBH = 1.0
+    k_txnb = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_dRep = 0.029 #1/hr
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
+    # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO* protein,
+    # y5 = SUMO HAF, y6 = antisense HIF1a RNA, y7 = HIF1a mRNA,
+    # y8 = HIF1a protein, y9 = HIF2a mRNA, y10 = HIF2a protein,
+    # y11 = HIF2a* protein, y12 = DsRED2 mRNA, y13 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13 = y
+
+    dydt = [k_txnb1 - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - k_bHS*y1*y4 + k_rbHS*y5,
+            k_txnb2 - k_dR*y2,
+            k_tln*y2 - k_dP*y3 - (k_m/O2_rate)*y3,
+            (k_m/O2_rate)*y3 - k_dP*y4 - k_bHS*y1*y4 + k_rbHS*y5,
+            k_bHS*y1*y4 - k_rbHS*y5 - k_dP*y5 - k_bHH*y10*y5
+            + k_rbHH*y11,
+            
+            k_txnH*(y8 + y11) - k_dR*y6 - k_dH1R*y6*y7,
+            k_txnb - k_dR*y7 - k_dH1R*y6*y7,
+            k_tln*y7 - k_dP*y8 - k_dHP*O2_rate*y8 - k_dH1P*y8*(y1 + y5),
+            k_txnb3 - k_dR*y9,
+            k_tln*y9 - k_dP*y10 - k_dHP*O2_rate*y10 - k_bHH*y10*y5 + k_rbHH*y11,
+            k_bHH*y10*y5 - k_rbHH*y11 - k_dP*y11,
+            k_txnBH*(y8 + y11) - k_dR*y12,
+            k_tln*y12 - k_dRep*y13]
+        
+    return dydt
+
+def HBS_4b5(y, t, v):
+
+    [[k_txnb1, k_bHS, k_rbHS, k_txnb2, k_m, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+
+    #parameters that will be held constant:
+    # k_txnBH = 1.0
+    k_txnb = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_dRep = 0.029 #1/hr
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
+    # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO* protein,
+    # y5 = SUMO HAF, y6 = antisense HIF1a RNA, y7 = HIF1a mRNA,
+    # y8 = HIF1a protein, y9 = HIF2a mRNA, y10 = HIF2a protein,
+    # y11 = HIF2a* protein, y12 = DsRED2 mRNA, y13 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13 = y
+
+    dydt = [k_txnb1 - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - k_bHS*y1*y4 + k_rbHS*y5,
+            k_txnb2 - k_dR*y2,
+            k_tln*y2 - k_dP*y3 - (k_m/O2_rate)*y3,
+            (k_m/O2_rate)*y3 - k_dP*y4 - k_bHS*y1*y4 + k_rbHS*y5,
+            k_bHS*y1*y4 - k_rbHS*y5 - k_dP*y5 - k_bHH*y10*y5
+            + k_rbHH*y11,
+            
+            k_txnH*(y8 + y11) - k_dR*y6 - k_dH1R*y6*y7,
+            k_txnb + k_txnBH*(y8 + y11) - k_dR*y7 - k_dH1R*y6*y7,
+            k_tln*y7 - k_dP*y8 - k_dHP*O2_rate*y8 - k_dH1P*y8*(y1 + y5),
+            k_txnb3 - k_dR*y9,
+            k_tln*y9 - k_dP*y10 - k_dHP*O2_rate*y10 - k_bHH*y10*y5 + k_rbHH*y11,
+            k_bHH*y10*y5 - k_rbHH*y11 - k_dP*y11,
+            k_txnBH*(y8 + y11) - k_dR*y12,
+            k_tln*y12 - k_dRep*y13]
+        
+    return dydt
+
+def HBS_4c5(y, t, v):
+
+    [[k_txnb1, k_bHS, k_rbHS, k_txnb2, k_m, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+
+    #parameters that will be held constant:
+    # k_txnBH = 1.0
+    k_txnb = 1.0
+    k_dR = 2.7 #1/h
+    k_tln = 1 #1/h
+    k_dP = 0.35 #1/h
+    k_dRep = 0.029 #1/hr
+
+    #when in normoxic incubator, use normoxic pO2
+    if O2 == 138:
+        O2_rate = O2
+
+    #Exponential decrease in pO2 from fit to diffusion equation
+    else:
+        # O2_rate = max(144.41*np.exp(-0.011*(60*t)), O2)
+        O2_rate = (135.81 - 7.6)*np.exp(-(3600*t-500)*4.25e-4) + 7.6
+        if O2_rate > 138:
+            O2_rate = 138
+        
+    # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
+    # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO* protein,
+    # y5 = SUMO HAF, y6 = antisense HIF1a RNA, y7 = HIF1a mRNA,
+    # y8 = HIF1a protein, y9 = HIF2a mRNA, y10 = HIF2a protein,
+    # y11 = HIF2a* protein, y12 = DsRED2 mRNA, y13 = DsRED2 protein
+
+    y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13 = y
+
+    dydt = [k_txnb1 - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - k_bHS*y1*y4 + k_rbHS*y5,
+            k_txnb2 - k_dR*y2,
+            k_tln*y2 - k_dP*y3 - (k_m/O2_rate)*y3,
+            (k_m/O2_rate)*y3 - k_dP*y4 - k_bHS*y1*y4 + k_rbHS*y5,
+            k_bHS*y1*y4 - k_rbHS*y5 - k_dP*y5 - k_bHH*y10*y5
+            + k_rbHH*y11,
+            
+            k_txnH*(y8 + y11) - k_dR*y6 - k_dH1R*y6*y7,
+            k_txnb - k_dR*y7 - k_dH1R*y6*y7,
+            k_tln*y7 - k_dP*y8 - k_dHP*O2_rate*y8 - k_dH1P*y8*(y1 + y5),
+            k_txnb3 + k_txnBH*(y8 + y11) - k_dR*y9,
+            k_tln*y9 - k_dP*y10 - k_dHP*O2_rate*y10 - k_bHH*y10*y5 + k_rbHH*y11,
+            k_bHH*y10*y5 - k_rbHH*y11 - k_dP*y11,
+            k_txnBH*(y8 + y11) - k_dR*y12,
+            k_tln*y12 - k_dRep*y13]
+        
+    return dydt
+
 # =============================================================================
 # CODE TO SOLVE ONE HBS in Normoxia and Hypoxia 
 # ============================================================================= 
