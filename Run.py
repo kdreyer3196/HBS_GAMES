@@ -139,17 +139,6 @@ def solveAll(p, exp_data, t_type, model, output):
                 
                 [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args
                 '''
-                
-        if model == 'model_4D':
-            
-            ODE_list = [HBS_1a4D, HBS_4b4D, HBS_4c4D]
-            name_list = ['HBS_1a4D', 'HBS_4b4D', 'HBS_4c4D']
-            
-        if model == 'model_4E':
-            
-            ODE_list = [HBS_1a4E, HBS_4b4E, HBS_4c4E]
-            name_list = ['HBS_1a4E', 'HBS_4b4E', 'HBS_4c4E']
-
         if model == 'model_4F':
             
             ODE_list = [HBS_1a4F, HBS_4b4F, HBS_4c4F]
@@ -164,6 +153,11 @@ def solveAll(p, exp_data, t_type, model, output):
             
             ODE_list = [HBS_1a5A, HBS_4b5A, HBS_4c5A]
             name_list = ['HBS_1a5A', 'HBS_4b5A', 'HBS_4c5A']
+
+        if model == 'model_6':
+            
+            ODE_list = [HBS_1a6, HBS_4b6, HBS_4c6]
+            name_list = ['HBS_1a6', 'HBS_4b6', 'HBS_4c6']
         
         if t_type == 'plotting':
             
@@ -216,7 +210,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_m, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
+    [k_txnb1, k_bHS, k_rbHS, k_txnb2, k_p, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
     
     v = [[], 0]
     v[0] = p
@@ -833,7 +827,7 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
-    real_param_labels_all = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_m', 
+    real_param_labels_all = ['k_txnb1', 'k_bHS', 'k_rbHS', 'k_txnb2', 'k_p', 
                              'k_bHH', 'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R',
                              'k_dH1P', 'k_dHP', 'k_txnBH']
     

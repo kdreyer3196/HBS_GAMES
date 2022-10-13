@@ -181,7 +181,7 @@ def generateRefData(p_ref):
 
     
 p_ref = [1.0, 1.0, 1.0e-2, 1.0, 0.1, 1.0, 1.0e-1, 1.0, 1.0, 1.0e-1, 1.0e-3,
-              1.0e-1, 1.0]
+         1.0e-1, 1.0]
 
 generateRefData(p_ref)
 
