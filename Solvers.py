@@ -1061,7 +1061,7 @@ def HBS_1a6(y, t, v):
         if O2_rate > 138:
             O2_rate = 138
         
-        k_p = np.piecewise(t, [t < 44, t >= 44], [0, k_p])
+        k_p = np.piecewise(t, [t < 36, t >= 36], [0, k_p])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = HAF* protein, y3 = SUMO mRNA, y4 = SUMO protein,
@@ -1114,7 +1114,7 @@ def HBS_4b6(y, t, v):
         if O2_rate > 138:
             O2_rate = 138
         
-        k_p = np.piecewise(t, [t < 44, t >= 44], [0, k_p])
+        k_p = np.piecewise(t, [t < 36, t >= 36], [0, k_p])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = HAF* protein, y3 = SUMO mRNA, y4 = SUMO protein,
@@ -1167,7 +1167,7 @@ def HBS_4c6(y, t, v):
         if O2_rate > 138:
             O2_rate = 138
         
-        k_p = np.piecewise(t, [t < 44, t >= 44], [0, k_p])
+        k_p = np.piecewise(t, [t < 36, t >= 36], [0, k_p])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = HAF* protein, y3 = SUMO mRNA, y4 = SUMO protein,

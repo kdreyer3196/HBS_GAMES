@@ -61,3 +61,13 @@ for param_label, param_sets in param_lists.items():
     print(param_label, ': ', param_sets)
     for params in param_sets:
         print(params)
+
+
+
+#k_p = 0.02
+
+# t = np.linspace(0,120,31)
+
+# k_p = np.piecewise(t, [t < 44, t >= 44], [0, k_p])
+
+# print(k_p)
