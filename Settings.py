@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '221025_Model8_Modules1-2'
+    folder_name = '221104_Model8_Modules1-2_err'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -53,8 +53,8 @@ def init():
     # =============================================================================
     #Set list of all potentially free parameters
     
-    #start here
-    p_ref = [1.0, 1.0e-2, 1.0, 1.0e-2, 1.0, 0.1, 0.1, 1.0, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0]
+    # p_ref = [1.0, 1.0e-2, 1.0, 1.0e-2, 1.0, 0.1, 0.1, 1.0, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0]
+    p_ref = [83.8141, 5.0953, 27.8231, 0.0, 1.0, 0.4185, 0.0057, 5.1422, 1.0, 0.0825, 0.0252, 0.2454, 3.4582]
   
              
     [k_txnb1, k_dHAF, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p_ref

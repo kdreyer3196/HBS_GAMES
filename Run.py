@@ -368,7 +368,7 @@ def optPar(row):
         
     #Perform fit and print results
     weights_ = [1/i for i in error] 
-    results = model_.fit(exp_data, params, method=method, pO2=O2_range) #, weights = weights_)
+    results = model_.fit(exp_data, params, method=method, pO2=O2_range, weights = weights_)
     
     #If not in the PL section, print to the console after each optimization round is complete 
     #(printing this in the PL clogs up the console because so many optimization rounds must be
