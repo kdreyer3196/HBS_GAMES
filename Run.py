@@ -139,20 +139,11 @@ def solveAll(p, exp_data, t_type, model, output):
                 
                 [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args
                 '''
-        if model == 'model_4F':
-            
-            ODE_list = [HBS_1a4F, HBS_4b4F, HBS_4c4F]
-            name_list = ['HBS_1a4F', 'HBS_4b4F', 'HBS_4c4F']
 
-        if model == 'model_6':
+        if model == 'model_D':
             
-            ODE_list = [HBS_1a6, HBS_4b6, HBS_4c6]
-            name_list = ['HBS_1a6', 'HBS_4b6', 'HBS_4c6']
-
-        if model == 'model_8':
-            
-            ODE_list = [HBS_1a8, HBS_4b8, HBS_4c8]
-            name_list = ['HBS_1a8', 'HBS_4b8', 'HBS_4c8']
+            ODE_list = [HBS_1aD, HBS_4bD, HBS_4cD]
+            name_list = ['HBS_1aD', 'HBS_4bD', 'HBS_4cD']
         
         if t_type == 'plotting':
             
@@ -205,7 +196,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [k_txnb1, k_dHAF, k_bHS, k_rbHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
+    [t_HAF, k_txnb1, k_dHAF, k_bHS, k_txnb2, k_bHH, k_rbHH, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
     
     v = [[], 0]
     v[0] = p
@@ -368,7 +359,7 @@ def optPar(row):
         
     #Perform fit and print results
     weights_ = [1/i for i in error] 
-    results = model_.fit(exp_data, params, method=method, pO2=O2_range, weights = weights_)
+    results = model_.fit(exp_data, params, method=method, pO2=O2_range) #, weights = weights_)
     
     #If not in the PL section, print to the console after each optimization round is complete 
     #(printing this in the PL clogs up the console because so many optimization rounds must be
@@ -538,7 +529,7 @@ def plotTrainingDataFits(df):
 
     t_hox, solutions = solveAll(params_best, exp_data, t_type, model, 'all states')
  
-    fig = plt.figure(figsize = (6.5,2.5))
+    fig = plt.figure(figsize = (6.6,2.6))
     fig.subplots_adjust(wspace=0.1)
     ax1 = plt.subplot(131)   
     ax2 = plt.subplot(132)
@@ -546,34 +537,32 @@ def plotTrainingDataFits(df):
         
     colors = [sky_blue, 'gray']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 training data')
     
     ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 training data')
     ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 training data')
     
     ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 training data')
     ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
-             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 training data')
 
-
-  
      #Plot simulated data for the best case parameter set
-    ax1.plot(t_hox[:26], solutions[0][:-1], marker = None, label = '1% O2 Best model fit', 
+    ax1.plot(t_hox[:26], solutions[0][:-1], marker = None, label = '1% O2 best fit', 
              linestyle = linestyles[0], color = colors[0])
     ax1.plot(t_hox[0], solutions[0][-1], marker = None, linestyle = linestyles[0],
              color = colors[1])
     
-    ax2.plot(t_hox, solutions[1][:-1], marker = None, label = '1% O2 Best model fit', 
+    ax2.plot(t_hox, solutions[1][:-1], marker = None, label = '1% O2 best fit', 
              linestyle = linestyles[0], color = colors[0])
     ax2.plot(t_hox[0], solutions[1][-1], marker = None, linestyle = linestyles[0],
              color = colors[1])
     
-    ax3.plot(t_hox, solutions[2][:-1], marker = None, label = '1% O2 Best model fit', 
+    ax3.plot(t_hox, solutions[2][:-1], marker = None, label = '1% O2 best fit', 
              linestyle = linestyles[0], color = colors[0])
     ax3.plot(t_hox[0], solutions[2][-1], marker = None, linestyle = linestyles[0],
              color = colors[1])
@@ -581,6 +570,7 @@ def plotTrainingDataFits(df):
     #Set x and y labels and ylim
     ax1.set_xlabel('Time Post-Plating (hours)')
     ax1.set_ylabel('Relative DsRE2 Expression')
+    ax1.set_xticks([0, 20, 40, 60, 80, 100])
     ax1.set_ylim(ax2.get_ylim())
     ax1.set_title('Simple HBS')
     ax1.legend()
@@ -588,12 +578,14 @@ def plotTrainingDataFits(df):
     
     ax2.set_xlabel('Time Post-Plating (hours)')
     ax2.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_xticks([0, 20, 40, 60, 80, 100, 120])
     ax2.set_title('HIF1a Feedback HBS')
     # ax2.legend()
     ax2.set_box_aspect(1)
     
     ax3.set_xlabel('Time Post-Plating (hours)')
     ax3.set_ylabel('Relative DsRE2 Expression')
+    ax3.set_xticks([0, 20, 40, 60, 80, 100, 120])
     ax3.set_ylim(ax2.get_ylim())
     ax3.set_title('HIF2a Feedback HBS')
     # ax3.legend()
@@ -822,7 +814,7 @@ def runParameterEstimation():
     df = df_opt.sort_values(by=['chi2'], ascending = True)
     
     #Save best case calibrated parameters (lowest chi2)
-    real_param_labels_all = ['k_txnb1', 'k_dHAF', 'k_bHS', 'k_rbHS', 'k_txnb2',
+    real_param_labels_all = ['t_HAF', 'k_txnb1', 'k_dHAF', 'k_bHS', 'k_txnb2',
                              'k_bHH', 'k_rbHH', 'k_txnH', 'k_txnb3', 'k_dH1R',
                              'k_dH1P', 'k_dHP', 'k_txnBH']
     
@@ -844,6 +836,8 @@ def runParameterEstimation():
         Rsq = calcRsq(norm_solutions, exp_data)  
         Rsq_list.append(Rsq)
     df['Rsq'] = Rsq_list
+
+    #plotParamDistributions(df)
    
     #Save results of the optimization rounds
     filename = 'OPT RESULTS'
