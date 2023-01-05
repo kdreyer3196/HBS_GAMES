@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '230103_ModelD_Modules1-2'
+    folder_name = '230104_ModelD5_Modules1-2'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -63,8 +63,10 @@ def init():
         # k_txnb1 = 1.0
         # k_rbHS = 0.0
         k_txnb2 = 1.0
+        # k_rbHH = 0.0
         k_txnb3 = 1.0
         # k_txnH = 1.0
+        k_txnBH = 1.0
 
         p_ref = [
             t_HAF,
@@ -84,16 +86,14 @@ def init():
         
         real_param_labels_free = [
             't_HAF',
-            'k_txnb1', 
+            'k_txnb1',
             'k_dHAF', 
             'k_bHS', 
             'k_bHH', 
-            'k_rbHH', 
-            'k_txnH',
+            'k_rbHH',
             'k_dH1R',
             'k_dH1P', 
             'k_dHP', 
-            'k_txnBH'
         ]
     
     p_all = p_ref

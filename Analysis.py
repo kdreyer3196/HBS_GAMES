@@ -35,7 +35,9 @@ dpi_ = 600
 colors = ['teal', 'deeppink' ,'rebeccapurple', 'darkseagreen', 'darkorange', 'dimgrey', 
           'crimson', 'cornflowerblue', 'springgreen', 'sandybrown', 'lightseagreen', 'blue', 
           'palegreen', 'lightcoral', 'lightpink', 'lightsteelblue', 'indigo', 'darkolivegreen',
-          'maroon', 'lightblue', 'gold', 'olive', 'silver', 'darkmagenta'] * 5 
+          'maroon', 'lightblue', 'gold', 'olive', 'silver', 'darkmagenta']
+
+colors = colors * -(conditions_dictionary["n_initial_guesses"] // -len(colors))
      
 def analyzeSingleRun(df_opt, count):
     
