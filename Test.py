@@ -180,7 +180,7 @@ def generateRefData(p_ref):
     # saveRefData(noise_solutions)
 
 
-p_ref = [1.0, 1.0e-2, 1.0, 1.0e-2, 1.0, 0.1, 0.1, 1.0, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0]
+p_ref = [1.0, 1.0e-2, 1.0e-2, 0.1, 0.1, 1.0, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0]
 
 
 
