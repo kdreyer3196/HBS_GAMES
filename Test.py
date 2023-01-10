@@ -115,7 +115,6 @@ def generateRefData(p_ref):
     marker_ = 'o'
     linestyles = ['dotted', 'dotted', 'dotted']
 
-    
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
@@ -130,43 +129,46 @@ def generateRefData(p_ref):
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 training data')
     ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 training data')
-  
+
      #Plot simulated data for the best case parameter set
-    ax1.plot(t_hox[:26], solutions[0][:-1], marker = None, label = '1% O2 model fit', 
+    ax1.plot(t_hox[:26], solutions[0][:-1], marker = None, label = '1% O2 best fit', 
              linestyle = linestyles[0], color = colors[0])
-    ax1.plot(t_hox[0], solutions[0][-1], marker = None, label = '21% O2 model fit', 
-             linestyle = linestyles[0], color = colors[1])
+    ax1.plot(t_hox[0], solutions[0][-1], marker = None, linestyle = linestyles[0],
+             color = colors[1])
     
-    ax2.plot(t_hox, solutions[1][:-1], marker = None, label = '1% O2 model fit', 
+    ax2.plot(t_hox, solutions[1][:-1], marker = None, label = '1% O2 best fit', 
              linestyle = linestyles[0], color = colors[0])
-    ax2.plot(t_hox[0], solutions[1][-1], marker = None, label = '21% O2 model fit', 
-             linestyle = linestyles[0], color = colors[1])
+    ax2.plot(t_hox[0], solutions[1][-1], marker = None, linestyle = linestyles[0],
+             color = colors[1])
     
-    ax3.plot(t_hox, solutions[2][:-1], marker = None, label = '1% O2 model fit', 
+    ax3.plot(t_hox, solutions[2][:-1], marker = None, label = '1% O2 best fit', 
              linestyle = linestyles[0], color = colors[0])
-    ax3.plot(t_hox[0], solutions[2][-1], marker = None, label = '21% O2 model fit', 
-             linestyle = linestyles[0], color = colors[1])
+    ax3.plot(t_hox[0], solutions[2][-1], marker = None, linestyle = linestyles[0],
+             color = colors[1])
     
     #Set x and y labels and ylim
     ax1.set_xlabel('Time Post-Plating (hours)')
-    ax1.set_ylabel('Relative DsRed Expression')
+    ax1.set_ylabel('Relative DsRE2 Expression')
+    ax1.set_xticks([0, 20, 40, 60, 80, 100])
     ax1.set_ylim(ax2.get_ylim())
     ax1.set_title('Simple HBS')
-    ax1.set_box_aspect(1)
     ax1.legend()
+    ax1.set_box_aspect(1)
     
     ax2.set_xlabel('Time Post-Plating (hours)')
-    ax2.set_ylabel('Relative DsRed Expression')
+    ax2.set_ylabel('Relative DsRE2 Expression')
+    ax2.set_xticks([0, 20, 40, 60, 80, 100, 120])
     ax2.set_title('HIF1a Feedback HBS')
+    # ax2.legend()
     ax2.set_box_aspect(1)
-    ax2.legend()
     
     ax3.set_xlabel('Time Post-Plating (hours)')
-    ax3.set_ylabel('Relative DsRed Expression')
+    ax3.set_ylabel('Relative DsRE2 Expression')
+    ax3.set_xticks([0, 20, 40, 60, 80, 100, 120])
     ax3.set_ylim(ax2.get_ylim())
     ax3.set_title('HIF2a Feedback HBS')
+    # ax3.legend()
     ax3.set_box_aspect(1)
-    ax3.legend()
 
     plt.savefig('./Model_Fit.svg', bbox_inches="tight")
     
@@ -180,9 +182,7 @@ def generateRefData(p_ref):
     # saveRefData(noise_solutions)
 
 
-p_ref = [1.0, 1.0e-2, 1.0e-2, 0.1, 0.1, 1.0, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0]
-
-
+p_ref = [36, 1.0, 1.0e-2, 0.1, 0.1, 0.1, 1.0, 1.0e-1, 1.0e-2, 1.0e-2, 1.0]
 
 generateRefData(p_ref)
 

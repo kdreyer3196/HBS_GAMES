@@ -140,10 +140,10 @@ def solveAll(p, exp_data, t_type, model, output):
                 [ODEs, v, name, num_states, state_names, output, O2_range, t_hox] = args
                 '''
 
-        if model == 'model_DnH2s':
+        if model == 'model_A':
             
-            ODE_list = [HBS_1aDnH2s, HBS_4bDnH2s, HBS_4cDnH2s]
-            name_list = ['HBS_1aDnH2s', 'HBS_4bDnH2s', 'HBS_4cDnH2s']
+            ODE_list = [HBS_1aA, HBS_4bA, HBS_4cA]
+            name_list = ['HBS_1aA', 'HBS_4bA', 'HBS_4cA']
         
         if t_type == 'plotting':
             
@@ -196,7 +196,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [t_HAF, k_txnb1, k_dHAF, k_bHS, k_txnb2, k_txnH, k_txnb3, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
+    [t_HAF, k_txnb1, k_dHAF, k_bHS, k_bHH, k_rbHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
     
     v = [[], 0]
     v[0] = p
@@ -815,7 +815,7 @@ def runParameterEstimation():
     
     #Save best case calibrated parameters (lowest chi2)
     real_param_labels_all = ['t_HAF', 'k_txnb1', 'k_dHAF', 'k_bHS', 
-                             'k_txnb2', 'k_txnH', 'k_txnb3', 'k_dH1R',
+                             'k_bHH', 'k_rbHH', 'k_txnH', 'k_dH1R',
                              'k_dH1P', 'k_dHP', 'k_txnBH']
     
     best_case_params = []
