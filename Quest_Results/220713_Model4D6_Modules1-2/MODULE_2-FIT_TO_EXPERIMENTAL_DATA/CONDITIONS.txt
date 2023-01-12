@@ -1,8 +1,0 @@
-Conditions: {'model': 'model_4D', 'modules': [1, 2], 'n_search': 1000, 'n_initial_guesses': 100, 'confidence_interval': 0.99, 'num_cores': 28, 'num_datasets_pem_eval': 3, 'n_search_pem_eval': 1000, 'param_index_PL': 'all', 'data': 'hypox only', 'location': 'quest', 'real_param_labels_free': ['k_bHS', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_bHH', 'k_aH2P', 'k_iH2P', 'k_txn'], 'real_param_labels_all': ['k_bHS', 'k_rbHS', 'k_txnH', 'k_dH1R', 'k_dH1P', 'k_dHP', 'k_bHH', 'k_txnBH', 'k_aH2P', 'k_iH2P', 'k_txnb1', 'k_txnb2', 'k_txn'], 'p_all': [1.0, 0, 1.0, 0.1, 0.01, 0.01, 1.0, 1.0, 0.01, 0.01, 1.0, 1.0, 1.0], 'p_ref_free': [1.0, 0.1, 0.01, 0.01, 1.0, 0.01, 0.01, 1.0], 'p_labels_free': ['p1', 'p4', 'p5', 'p6', 'p7', 'p9', 'p10', 'p13'], 'p_ref': [1.0, 0, 1.0, 0.1, 0.01, 0.01, 1.0, 1.0, 0.01, 0.01, 1.0, 1.0, 1.0], 'directory': '/home/ksd844/HBS_GAMES/Results/220713_Model4D6_Modules1-2', 'run': '1', 'problem': {'num_vars': 8, 'names': ['p1', 'p4', 'p5', 'p6', 'p7', 'p9', 'p10', 'p13'], 'bounds': [[-3.0, 3.0], [-4.0, 2.0], [-5.0, 1.0], [-5.0, 1.0], [-3.0, 3.0], [-5.0, 1.0], [-5.0, 1.0], [-3.0, 3.0]]}, 'problem_all_params': {'num_vars': 13, 'names': ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'p11', 'p12', 'p13'], 'bounds': [[]]}}
-
-Initial parameters: {'k_bHS': 1.0, 'k_dH1R': 0.1, 'k_dH1P': 0.01, 'k_dHP': 0.01, 'k_bHH': 1.0, 'k_aH2P': 0.01, 'k_iH2P': 0.01, 'k_txn': 1.0}
-
-Data: {'exp_data': array([0.05283705, 0.67962974, 1.16449789, 1.4784657 , 1.62456962,
-       0.08186413, 0.10170503, 1.56638713, 2.48000408, 2.16604941,
-       1.92634939, 1.86611176, 0.14972954, 0.04500414, 0.92674452,
-       2.41478445, 2.33898713, 2.12466181, 2.04507265, 0.06671348]), 'error': [], 'data_type': 'experimental'}
