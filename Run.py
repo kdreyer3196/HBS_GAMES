@@ -145,8 +145,11 @@ def solveAll(p, exp_data, t_type, model, output):
             ODE_list = [HBS_1aA, HBS_4bA, HBS_4cA]
             name_list = ['HBS_1aA', 'HBS_4bA', 'HBS_4cA']
 
+        if model == 'model_B1':
+            
+            ODE_list = [HBS_1aB1, HBS_4bB1, HBS_4cB1]
+            name_list = ['HBS_1aB1', 'HBS_4bB1', 'HBS_4cB1']
 
-        
         if t_type == 'plotting':
             
             t_hox = np.linspace(0,120,31)
