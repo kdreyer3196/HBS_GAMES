@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '230118_ModelB1_2_Modules1-2'
+    folder_name = '230120_ModelC2_Modules1-2'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -36,7 +36,7 @@ def init():
     #Initialize conditions dictionary
     #Items that you might want to change
     conditions_dictionary = {}
-    conditions_dictionary["model"] = 'model_B1' #'model_A', 'model_B1', 'model_D', 'model_Dns', 'model_DnH2s'
+    conditions_dictionary["model"] = 'model_C' #'model_A', 'model_B1', 'model_D', 'model_Dns', 'model_DnH2s'
     conditions_dictionary["modules"] = [1,2] #[1,2,3] or [1,2] or [2,3] or [1] or [2] or [3] or [] for test only
     conditions_dictionary["n_search"] = 1000
     conditions_dictionary["n_initial_guesses"] = 100
@@ -127,6 +127,118 @@ def init():
             'k_dHP', 
             'k_txnBH'
         ]
+
+    if conditions_dictionary["model"] == 'model_B2':
+        t_HAF = 0.0
+        k_txnb1 = 1.0
+        k_dHAF = 0.0
+        # k_bHS = 0.0
+        # k_bHH = 0.0
+        k_rbHH = 0.0
+
+        # k_txnH = 1.0
+        # k_txnBH = 1.0
+
+        p_ref = [
+            t_HAF,
+            k_txnb1,
+            k_dHAF,
+            k_bHS,
+            k_bHH,
+            k_rbHH,
+            k_txnH,
+            k_dH1R, 
+            k_dH1P, 
+            k_dHP, 
+            k_txnBH
+        ]
+        
+        real_param_labels_free = [
+            'k_bHS',
+            'k_bHH',
+            'k_txnH',
+            'k_dH1R',
+            'k_dH1P', 
+            'k_dHP', 
+            'k_txnBH'
+        ]
+
+    if conditions_dictionary["model"] == 'model_C':
+        # t_HAF = 0.0
+        # k_txnb1 = 1.0
+        # k_dHAF = 0.0
+        # k_bHS = 0.0
+        # k_bHH = 0.0
+        k_rbHH = 0.0
+
+        # k_txnH = 1.0
+        # k_txnBH = 1.0
+
+        p_ref = [
+            t_HAF,
+            k_txnb1,
+            k_dHAF,
+            k_bHS,
+            k_bHH,
+            k_rbHH,
+            k_txnH,
+            k_dH1R, 
+            k_dH1P, 
+            k_dHP, 
+            k_txnBH
+        ]
+        
+        real_param_labels_free = [
+            't_HAF',
+            'k_txnb1',
+            'k_dHAF',
+            'k_bHS',
+            'k_bHH',
+            'k_txnH',
+            'k_dH1R',
+            'k_dH1P', 
+            'k_dHP', 
+            'k_txnBH'
+        ]
+
+    if conditions_dictionary["model"] == 'model_D':
+        # t_HAF = 0.0
+        # k_txnb1 = 1.0
+        # k_dHAF = 0.0
+        # k_bHS = 0.0
+        # k_bHH = 0.0
+        k_rbHH = 0.0
+
+        # k_txnH = 1.0
+        # k_txnBH = 1.0
+
+        p_ref = [
+            t_HAF,
+            k_txnb1,
+            k_dHAF,
+            k_bHS,
+            k_bHH,
+            k_rbHH,
+            k_txnH,
+            k_dH1R, 
+            k_dH1P, 
+            k_dHP, 
+            k_txnBH
+        ]
+        
+        real_param_labels_free = [
+            't_HAF',
+            'k_txnb1',
+            'k_dHAF',
+            'k_bHS',
+            'k_bHH',
+            'k_txnH',
+            'k_dH1R',
+            'k_dH1P', 
+            'k_dHP', 
+            'k_txnBH'
+        ]
+
 
     p_all = p_ref
 
@@ -275,6 +387,50 @@ def init():
                                           'HIF1R', 'HIF1P', 'HIF2R',
                                           'HIF2P', 'HIF2P*', 'DSRE2R',
                                           'DSRE2P']
+
+    #Model B2
+    HBS_info['HBS_1aB2'] = {}
+    HBS_info['HBS_1aB2']['# states'] = 13
+    HBS_info['HBS_1aB2']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+    
+    HBS_info['HBS_4bB2'] = {}
+    HBS_info['HBS_4bB2']['# states'] = 13
+    HBS_info['HBS_4bB2']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+
+    HBS_info['HBS_4cB2'] = {}
+    HBS_info['HBS_4cB2']['# states'] = 13
+    HBS_info['HBS_4cB2']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+
+    #Model C
+    HBS_info['HBS_1aC'] = {}
+    HBS_info['HBS_1aC']['# states'] = 13
+    HBS_info['HBS_1aC']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+    
+    HBS_info['HBS_4bC'] = {}
+    HBS_info['HBS_4bC']['# states'] = 13
+    HBS_info['HBS_4bC']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
+
+    HBS_info['HBS_4cC'] = {}
+    HBS_info['HBS_4cC']['# states'] = 13
+    HBS_info['HBS_4cC']['state names'] = ['HAFR', 'HAFP', 'SUMOR', 'SUMOP',
+                                           'HAFS', 'aHIF', 'HIF1R', 'HIF1P',
+                                           'HIF2R', 'HIF2P', 'HIF2P*', 'DSRE2R',
+                                           'DSRE2P']
 
     #Model D
     HBS_info['HBS_1aD'] = {}

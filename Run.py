@@ -150,6 +150,21 @@ def solveAll(p, exp_data, t_type, model, output):
             ODE_list = [HBS_1aB1, HBS_4bB1, HBS_4cB1]
             name_list = ['HBS_1aB1', 'HBS_4bB1', 'HBS_4cB1']
 
+        if model == 'model_B2':
+            
+            ODE_list = [HBS_1aB2, HBS_4bB2, HBS_4cB2]
+            name_list = ['HBS_1aB2', 'HBS_4bB2', 'HBS_4cB2']
+
+        if model == 'model_C':
+            
+            ODE_list = [HBS_1aC, HBS_4bC, HBS_4cC]
+            name_list = ['HBS_1aC', 'HBS_4bC', 'HBS_4cC']
+
+        if model == 'model_D':
+            
+            ODE_list = [HBS_1aD, HBS_4bD, HBS_4cD]
+            name_list = ['HBS_1aD', 'HBS_4bD', 'HBS_4cD']
+
         if t_type == 'plotting':
             
             t_hox = np.linspace(0,120,31)
