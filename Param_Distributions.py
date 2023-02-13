@@ -20,9 +20,8 @@ from math import sqrt
 
 #Import GAMES functions
 from Solvers import *
-from Saving import createFolder, saveConditions, savePL
 import Settings
-from Run import solveAll
+# from Run import solveAll
 
 #ignore ODEint warnings that clog up the console - user can remove this line if they want to see the warnings
 warnings.filterwarnings("ignore")
@@ -83,6 +82,11 @@ elif location == 'quest':
     plt.style.use('/home/ksd844/HBS_GAMES/paper.mplstyle.py')
     parallelization = 'yes' 
 
+def get_df(f_name):
+    os.chdir(full_path)
+    df = pd.read_excel(f_name, header=0, index_col=0, engine='openpyxl')
+    return df
+
 def plotParamDistributions(df):
     '''
     Purpose: Plot parameter distributions across initial guesses following parameter estimation with 
@@ -99,7 +103,7 @@ def plotParamDistributions(df):
         'OPTIMIZED PARAMETER DISTRIBUTIONS.svg' (plot of parameter distributions for 
              parameter sets with Rsq > = 0.99)
    '''
-   
+
     #Only keep rows for which chi2 >
     # df = df[df["Rsq"] >= 0.95]
     all_sims = list(df['Simulation results'])
@@ -119,11 +123,11 @@ def plotParamDistributions(df):
     # =============================================================================
     # 1. time series for parameter sets in df
     # ============================================================================
-    fig = plt.figure(figsize = (6.6,2.6))
-    fig.subplots_adjust(wspace=0.1)
-    ax1 = plt.subplot(131)   
-    ax2 = plt.subplot(132)
-    ax3 = plt.subplot(133)
+    # fig = plt.figure(figsize = (6.6,2.6))
+    # fig.subplots_adjust(wspace=0.1)
+    # ax1 = plt.subplot(131)   
+    # ax2 = plt.subplot(132)
+    # ax3 = plt.subplot(133)
     marker_ = 'o'
     linestyle_ = 'dotted'
     
@@ -140,71 +144,72 @@ def plotParamDistributions(df):
     t_4c = t_4b    
     
     #Plot experimental/training data
-    colors = ['dimgrey', 'black']
-    ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
-    ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    # colors = ['dimgrey', 'black']
+    # ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
+    #              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    # ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
+    #              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
     
-    ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
-    ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    # ax2.errorbar(t_4b, exp_4b[:-1], color = colors[0], marker = marker_, yerr = err_4b[:-1], 
+    #              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    # ax2.errorbar(t_4b[0], exp_4b[-1], color = colors[1], marker = marker_, yerr = err_4b[-1], 
+    #              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
     
-    ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
-                 fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
-    ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
-             fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
+    # ax3.errorbar(t_4c, exp_4c[:-1], color = colors[0], marker = marker_, yerr = err_4c[:-1], 
+    #              fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 Training data')
+    # ax3.errorbar(t_4c[0], exp_4c[-1], color = colors[1], marker = marker_, yerr = err_4c[-1], 
+    #          fillstyle = 'none', linestyle = 'none',capsize = 2, label = '21% O2 Training data')
     
     #Plot simulated data for each parameter set in df
     sns.set_palette("Greys", len(all_sims))
     count = 0
-    for sim in all_sims:
-        count += 1
-        sim_1a = sim[:6]
-        sim_4b = sim[6:13]
-        sim_4c = sim[13:]
+    # for sim in all_sims:
+    #     count += 1
+    #     sim_1a = sim[:6]
+    #     sim_4b = sim[6:13]
+    #     sim_4c = sim[13:]
         
-        ax1.plot(t_1a, sim_1a[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_)
-        ax1.plot(t_1a[0], sim_1a[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[1])
+    #     ax1.plot(t_1a, sim_1a[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+    #              linestyle = linestyle_)
+    #     ax1.plot(t_1a[0], sim_1a[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+    #              linestyle = linestyle_, color = colors[1])
         
-        ax2.plot(t_4b, sim_4b[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_)
-        ax2.plot(t_4b[0], sim_4b[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[1])
+    #     ax2.plot(t_4b, sim_4b[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+    #              linestyle = linestyle_)
+    #     ax2.plot(t_4b[0], sim_4b[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+    #              linestyle = linestyle_, color = colors[1])
         
-        ax3.plot(t_4c, sim_4c[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_)
-        ax3.plot(t_4c[0], sim_4c[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
-                 linestyle = linestyle_, color = colors[1])
+    #     ax3.plot(t_4c, sim_4c[:-1], marker = None, label = '1% O2 Model fit ' + str(count), 
+    #              linestyle = linestyle_)
+    #     ax3.plot(t_4c[0], sim_4c[-1], marker = None, label = '21% O2 Model fit ' + str(count), 
+    #              linestyle = linestyle_, color = colors[1])
  
-    #Set x and y labels and ylim
-    ax1.set_xlabel('Time Post-Plating (hours)')
-    ax1.set_ylabel('Relative DsRE2 Expression')
-    ax1.set_xticks([0, 20, 40, 60, 80, 100])
-    ax1.set_ylim(ax2.get_ylim())
-    ax1.set_title('Simple HBS')
-    ax1.legend()
-    ax1.set_box_aspect(1)
+    # #Set x and y labels and ylim
+    # ax1.set_xlabel('Time Post-Plating (hours)')
+    # ax1.set_ylabel('Relative DsRE2 Expression')
+    # ax1.set_xticks([0, 20, 40, 60, 80, 100])
+    # ax1.set_ylim(ax2.get_ylim())
+    # ax1.set_title('Simple HBS')
+    # ax1.legend()
+    # ax1.set_box_aspect(1)
     
-    ax2.set_xlabel('Time Post-Plating (hours)')
-    ax2.set_ylabel('Relative DsRE2 Expression')
-    ax2.set_xticks([0, 20, 40, 60, 80, 100, 120])
-    ax2.set_title('HIF1a Feedback HBS')
-    # ax2.legend()
-    ax2.set_box_aspect(1)
+    # ax2.set_xlabel('Time Post-Plating (hours)')
+    # ax2.set_ylabel('Relative DsRE2 Expression')
+    # ax2.set_xticks([0, 20, 40, 60, 80, 100, 120])
+    # ax2.set_title('HIF1a Feedback HBS')
+    # # ax2.legend()
+    # ax2.set_box_aspect(1)
     
-    ax3.set_xlabel('Time Post-Plating (hours)')
-    ax3.set_ylabel('Relative DsRE2 Expression')
-    ax3.set_xticks([0, 20, 40, 60, 80, 100, 120])
-    ax3.set_ylim(ax2.get_ylim())
-    ax3.set_title('HIF2a Feedback HBS')
+    # ax3.set_xlabel('Time Post-Plating (hours)')
+    # ax3.set_ylabel('Relative DsRE2 Expression')
+    # ax3.set_xticks([0, 20, 40, 60, 80, 100, 120])
+    # ax3.set_ylim(ax2.get_ylim())
+    # ax3.set_title('HIF2a Feedback HBS')
     # ax3.legend()
-    ax3.set_box_aspect(1)
+    # ax3.set_box_aspect(1)
 
-    plt.savefig('./FITS_Rsq_ABOVE_0.96.svg', bbox_inches="tight")
+    # plt.show()
+    # plt.savefig('./FITS_Rsq_ABOVE_0.96.svg', bbox_inches="tight")
     
     # =============================================================================
     # 2. parameter distributions for parameter sets in df
@@ -223,4 +228,11 @@ def plotParamDistributions(df):
     ax = sns.boxplot(x='variable', y='value', data=df, color = sky_blue)
     ax = sns.swarmplot(x='variable', y='value', data=df, color="gray")
     ax.set(xlabel='Parameter', ylabel='log(value)')
-    plt.savefig('OPTIMIZED_PARAMETER_DISTRIBUTIONS.svg', dpi = 600)
+    
+    plt.show()
+    # plt.savefig('OPTIMIZED_PARAMETER_DISTRIBUTIONS.svg', dpi = 600)
+
+
+df = get_df('Opt_Results_chi2_10pct.xlsx')
+# print(df['t_HAF'])
+plotParamDistributions(df)
