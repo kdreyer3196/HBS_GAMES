@@ -77,7 +77,7 @@ def calcChi2(exp, sim, std):
 
 def HBS_1aA(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -85,12 +85,6 @@ def HBS_1aA(y, t, v):
     k_tln = 1 #1/h
     k_dP = 0.35 #1/h
     k_dRep = 0.029 #1/hr
-
-    if O2 == 138:
-        k_dHAF = 0
-
-    else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = antisense HIF1a RNA, y3 = HIF1a mRNA, y4 = HIF1a protein,
@@ -99,8 +93,8 @@ def HBS_1aA(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_dHAF*y1 - k_bHH*y6*y1,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - k_bHH*y6*y1,
             k_txnH*(y4 + y7) - k_dR*y2,
             k_txn - k_dR*y3 - k_dH1R*y2*y3,
             k_tln*y3 - k_dP*y4 - k_dHP*O2*y4 - k_dH1P*y4*y1,
@@ -114,7 +108,7 @@ def HBS_1aA(y, t, v):
 
 def HBS_4bA(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -123,12 +117,6 @@ def HBS_4bA(y, t, v):
     k_dP = 0.35 #1/h
     k_dRep = 0.029 #1/hr
 
-    if O2 == 138:
-        k_dHAF = 0
-
-    else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
-        
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = antisense HIF1a RNA, y3 = HIF1a mRNA, y4 = HIF1a protein,
     # y5 = HIF2a mRNA, y6 = HIF2a protein, y7 = HIF2a* protein,
@@ -136,8 +124,8 @@ def HBS_4bA(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_dHAF*y1 - k_bHH*y6*y1,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - k_bHH*y6*y1,
             k_txnH*(y4 + y7) - k_dR*y2,
             k_txn + k_txnBH*(y4 + y7) - k_dR*y3 - k_dH1R*y2*y3,
             k_tln*y3 - k_dP*y4 - k_dHP*O2*y4 - k_dH1P*y4*y1,
@@ -151,7 +139,7 @@ def HBS_4bA(y, t, v):
 
 def HBS_4cA(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -160,12 +148,6 @@ def HBS_4cA(y, t, v):
     k_dP = 0.35 #1/h
     k_dRep = 0.029 #1/hr
 
-    if O2 == 138:
-        k_dHAF = 0
-
-    else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
-        
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = antisense HIF1a RNA, y3 = HIF1a mRNA, y4 = HIF1a protein,
     # y5 = HIF2a mRNA, y6 = HIF2a protein, y7 = HIF2a* protein,
@@ -173,8 +155,8 @@ def HBS_4cA(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_dHAF*y1 - k_bHH*y6*y1,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 - k_bHH*y6*y1,
             k_txnH*(y4 + y7) - k_dR*y2,
             k_txn - k_dR*y3 - k_dH1R*y2*y3,
             k_tln*y3 - k_dP*y4 - k_dHP*O2*y4 - k_dH1P*y4*y1,
@@ -192,7 +174,7 @@ def HBS_4cA(y, t, v):
 
 def HBS_1aB(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -202,10 +184,11 @@ def HBS_1aB(y, t, v):
     k_dRep = 0.029 #1/hr
 
     if O2 == 138:
-        k_dHAF = 0
+        k_HAF = 0
 
     else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
+        k_HAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [-k_dHAF, k_dHAF])
+        # k_rHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [0, k_rHAF])
 
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = antisense HIF1a RNA, y3 = HIF1a mRNA, y4 = HIF1a protein,
@@ -214,8 +197,8 @@ def HBS_1aB(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_bHH*y6*y1,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 + k_HAF*y1 - k_bHH*y6*y1,
             k_txnH*(y4 + y7) - k_dR*y2,
             k_txn - k_dR*y3 - k_dH1R*y2*y3,
             k_tln*y3 - k_dP*y4 - k_dHP*O2*y4 - k_dH1P*y4*y1,
@@ -229,7 +212,7 @@ def HBS_1aB(y, t, v):
 
 def HBS_4bB(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -239,10 +222,11 @@ def HBS_4bB(y, t, v):
     k_dRep = 0.029 #1/hr
 
     if O2 == 138:
-        k_dHAF = 0
+        k_HAF = 0
 
     else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
+        k_HAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [-k_dHAF, k_dHAF])
+        # k_rHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [0, k_rHAF])
 
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = antisense HIF1a RNA, y3 = HIF1a mRNA, y4 = HIF1a protein,
@@ -251,8 +235,8 @@ def HBS_4bB(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_bHH*y6*y1,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 + k_HAF*y1 - k_bHH*y6*y1,
             k_txnH*(y4 + y7) - k_dR*y2,
             k_txn + k_txnBH*(y4 + y7) - k_dR*y3 - k_dH1R*y2*y3,
             k_tln*y3 - k_dP*y4 - k_dHP*O2*y4 - k_dH1P*y4*y1,
@@ -266,7 +250,7 @@ def HBS_4bB(y, t, v):
 
 def HBS_4cB(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -276,10 +260,11 @@ def HBS_4cB(y, t, v):
     k_dRep = 0.029 #1/hr
 
     if O2 == 138:
-        k_dHAF = 0
+        k_HAF = 0
 
     else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
+        k_HAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [-k_dHAF, k_dHAF])
+        # k_rHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [0, k_rHAF])
 
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = antisense HIF1a RNA, y3 = HIF1a mRNA, y4 = HIF1a protein,
@@ -288,8 +273,8 @@ def HBS_4cB(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_bHH*y6*y1,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 + k_HAF*y1 - k_bHH*y6*y1,
             k_txnH*(y4 + y7) - k_dR*y2,
             k_txn - k_dR*y3 - k_dH1R*y2*y3,
             k_tln*y3 - k_dP*y4 - k_dHP*O2*y4 - k_dH1P*y4*y1,
@@ -307,7 +292,7 @@ def HBS_4cB(y, t, v):
 
 def HBS_1aC(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -315,13 +300,7 @@ def HBS_1aC(y, t, v):
     k_tln = 1 #1/h
     k_dP = 0.35 #1/h
     k_dRep = 0.029 #1/hr
-
-    if O2 == 138:
-        k_dHAF = 0
-
-    else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
-        
+   
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
     # y5 = antisense HIF1a RNA, y6 = HIF1a mRNA, y7 = HIF1a protein,
@@ -330,7 +309,7 @@ def HBS_1aC(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
 
-    dydt = [k_txn2 - k_dR*y0,
+    dydt = [k_txn - k_dR*y0,
             k_tln*y0 - k_dP*y1 - (k_bHS/O2)*y1*y3,
             k_txn - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2)*y1*y3,
@@ -348,7 +327,7 @@ def HBS_1aC(y, t, v):
 
 def HBS_4bC(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -356,12 +335,6 @@ def HBS_4bC(y, t, v):
     k_tln = 1 #1/h
     k_dP = 0.35 #1/h
     k_dRep = 0.029 #1/hr
-
-    if O2 == 138:
-        k_dHAF = 0
-
-    else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
@@ -371,7 +344,7 @@ def HBS_4bC(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
 
-    dydt = [k_txn2 - k_dR*y0,
+    dydt = [k_txn - k_dR*y0,
             k_tln*y0 - k_dP*y1 - (k_bHS/O2)*y1*y3,
             k_txn - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2)*y1*y3,
@@ -389,7 +362,7 @@ def HBS_4bC(y, t, v):
 
 def HBS_4cC(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -398,12 +371,6 @@ def HBS_4cC(y, t, v):
     k_dP = 0.35 #1/h
     k_dRep = 0.029 #1/hr
 
-    if O2 == 138:
-        k_dHAF = 0
-
-    else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
-        
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
     # y5 = antisense HIF1a RNA, y6 = HIF1a mRNA, y7 = HIF1a protein,
@@ -412,7 +379,7 @@ def HBS_4cC(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
 
-    dydt = [k_txn2 - k_dR*y0,
+    dydt = [k_txn - k_dR*y0,
             k_tln*y0 - k_dP*y1 - (k_bHS/O2)*y1*y3,
             k_txn - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2)*y1*y3,
@@ -434,7 +401,7 @@ def HBS_4cC(y, t, v):
 
 def HBS_1aD(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     # k_txnBH = 1.0
@@ -445,10 +412,11 @@ def HBS_1aD(y, t, v):
     k_dRep = 0.029 #1/hr
 
     if O2 == 138:
-        k_dHAF = 0
+        k_HAF = 0
 
     else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
+        k_HAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [-k_dHAF, k_dHAF])
+        # k_rHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [0, k_rHAF])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
@@ -458,8 +426,8 @@ def HBS_1aD(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_dHAF*y1 - (k_bHS/O2)*y1*y3,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 + k_HAF*y1 - (k_bHS/O2)*y1*y3,
             k_txn - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2)*y1*y3,
             (k_bHS/O2)*y1*y3 - k_dP*y4 - k_bHH*y9*y4,
@@ -476,7 +444,7 @@ def HBS_1aD(y, t, v):
 
 def HBS_4bD(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     # k_txnBH = 1.0
@@ -487,10 +455,11 @@ def HBS_4bD(y, t, v):
     k_dRep = 0.029 #1/hr
 
     if O2 == 138:
-        k_dHAF = 0
+        k_HAF = 0
 
     else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
+        k_HAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [-k_dHAF, k_dHAF])
+        # k_rHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [0, k_rHAF])
         
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
@@ -500,8 +469,8 @@ def HBS_4bD(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_dHAF*y1 - (k_bHS/O2)*y1*y3,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 + k_HAF*y1 - (k_bHS/O2)*y1*y3,
             k_txn - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2)*y1*y3,
             (k_bHS/O2)*y1*y3 - k_dP*y4 - k_bHH*y9*y4,
@@ -518,7 +487,7 @@ def HBS_4bD(y, t, v):
 
 def HBS_4cD(y, t, v):
 
-    [[t_HAF, k_txn2, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
+    [[t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH], O2] = v
 
     #parameters that will be held constant:
     k_txn = 1.0 #U/hr
@@ -528,11 +497,12 @@ def HBS_4cD(y, t, v):
     k_dRep = 0.029 #1/hr
 
     if O2 == 138:
-        k_dHAF = 0
+        k_HAF = 0
 
     else:
-        k_dHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [k_dHAF, 0])
-        
+        k_HAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [-k_dHAF, k_dHAF])
+        # k_rHAF = np.piecewise(t, [t < t_HAF, t >= t_HAF], [0, k_rHAF])
+
     # y holds these state variables: y0 = HAF mRNA, y1 = HAF protein,
     # y2 = SUMO mRNA, y3 = SUMO protein, y4 = SUMO HAF, 
     # y5 = antisense HIF1a RNA, y6 = HIF1a mRNA, y7 = HIF1a protein,
@@ -541,8 +511,8 @@ def HBS_4cD(y, t, v):
 
     y0, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12 = y
 
-    dydt = [k_txn2 - k_dR*y0,
-            k_tln*y0 - k_dP*y1 - k_dHAF*y1 - (k_bHS/O2)*y1*y3,
+    dydt = [k_txn - k_dR*y0,
+            k_tln*y0 - k_dP*y1 + k_HAF*y1 - (k_bHS/O2)*y1*y3,
             k_txn - k_dR*y2,
             k_tln*y2 - k_dP*y3 - (k_bHS/O2)*y1*y3,
             (k_bHS/O2)*y1*y3 - k_dP*y4 - k_bHH*y9*y4,
