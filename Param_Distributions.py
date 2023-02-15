@@ -223,14 +223,14 @@ def plotParamDistributions(df):
         new_list = [log10(i) for i in list(df[label])]
         df[label] = new_list
     
-    plt.subplots(1,1, figsize=(4,3), sharex = True)
+    plt.subplots(1,1, figsize=(5.5,4), sharex = True)
     df = pd.melt(df, id_vars=['Rsq'], value_vars=param_labels)
     ax = sns.boxplot(x='variable', y='value', data=df, color = sky_blue)
     ax = sns.swarmplot(x='variable', y='value', data=df, color="gray")
     ax.set(xlabel='Parameter', ylabel='log(value)')
     
-    plt.show()
-    # plt.savefig('OPTIMIZED_PARAMETER_DISTRIBUTIONS.svg', dpi = 600)
+    # plt.show()
+    plt.savefig('OPTIMIZED_PARAMETER_DISTRIBUTIONS.svg', dpi = 600)
 
 
 df = get_df('Opt_Results_chi2_10pct.xlsx')
