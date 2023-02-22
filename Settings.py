@@ -28,7 +28,7 @@ def init():
     # 1. Define and create folder for saving results
     # =============================================================================
     #This will be the name of the run-specific results folder. 
-    folder_name = '230214_ModelD_Modules1-2'
+    folder_name = '230215_ModelD_Modules1-2'
     
     # =============================================================================
     # 2. Define conditions dictionary
@@ -53,19 +53,20 @@ def init():
     # =============================================================================
     #Set list of all potentially free parameters
     
-    p_ref = [36, 1.0, 1.0e-2, 0.1, 0.1, 1.0, 0.1, 1.0e-2, 1.0e-2, 1.0]
+    p_ref = [36, 0.1, 0.1, 1.0, 0.1, 1.0e-3, 0.1, 1.0e-2, 1.0e-2, 1.0]
+    # [25.1807, 0.0, 0.3767, 39.8547, 0.2755, 0.0082, 36.8215, 1.3076, 0.2984, 5.3232]
                  
-    [t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p_ref
+    [t_HAF, m, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p_ref
     
     if conditions_dictionary["model"] == 'model_A':
         t_HAF = 0.0
-        k_rHAF = 0.0
+        m = 0.0
         k_dHAF = 0.0
         k_bHS = 0.0
 
         p_ref = [
             t_HAF, 
-            k_rHAF, 
+            m, 
             k_dHAF, 
             k_bHS, 
             k_bHH, 
@@ -87,13 +88,12 @@ def init():
     
     if conditions_dictionary["model"] == 'model_B':
         # t_HAF = 0.0
-        k_rHAF = 0.0
         # k_dHAF = 0.0
         k_bHS = 0.0
 
         p_ref = [
             t_HAF, 
-            k_rHAF, 
+            m, 
             k_dHAF, 
             k_bHS, 
             k_bHH, 
@@ -106,6 +106,7 @@ def init():
         
         real_param_labels_free = [
             't_HAF',
+            'm',
             'k_dHAF',
             'k_bHH',
             'k_txnH',
@@ -117,13 +118,13 @@ def init():
 
     if conditions_dictionary["model"] == 'model_C':
         t_HAF = 0.0
-        k_rHAF = 0.0
+        m = 0.0
         k_dHAF = 0.0
         # k_bHS = 0.0
 
         p_ref = [
             t_HAF, 
-            k_rHAF, 
+            m, 
             k_dHAF, 
             k_bHS, 
             k_bHH, 
@@ -146,14 +147,13 @@ def init():
 
     if conditions_dictionary["model"] == 'model_D':
         # t_HAF = 0.0
-        k_rHAF = 0.0
         # k_dHAF = 0.0
         # k_bHS = 0.0
         # k_bHH = 0.0
 
         p_ref = [
             t_HAF, 
-            k_rHAF, 
+            m, 
             k_dHAF, 
             k_bHS, 
             k_bHH, 
@@ -166,6 +166,7 @@ def init():
         
         real_param_labels_free = [
             't_HAF',
+            'm',
             'k_dHAF',
             'k_bHS',
             'k_bHH',
@@ -184,7 +185,7 @@ def init():
     
     real_param_labels_all = [
         't_HAF',
-        'k_rHAF', 
+        'm', 
         'k_dHAF',
         'k_bHS', 
         'k_bHH',

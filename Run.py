@@ -211,7 +211,7 @@ def solveAll(p, exp_data, t_type, model, output):
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
-    [t_HAF, k_rHAF, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
+    [t_HAF, m, k_dHAF, k_bHS, k_bHH, k_txnH, k_dH1R, k_dH1P, k_dHP, k_txnBH] = p
     
     v = [[], 0]
     v[0] = p
@@ -831,7 +831,7 @@ def runParameterEstimation():
     #Save best case calibrated parameters (lowest chi2)
     real_param_labels_all = [
         't_HAF',
-        'k_rHAF', 
+        'm', 
         'k_dHAF',
         'k_bHS', 
         'k_bHH',
