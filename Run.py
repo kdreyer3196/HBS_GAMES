@@ -85,7 +85,7 @@ if location == 'desktop':
     parallelization = 'no' 
     
 elif location == 'laptop':
-    plt.style.use('/Users/kdreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')
+    plt.style.use('/Users/kdreyer/Documents/Github/HBS_GAMES/paper.mplstyle.py')
     parallelization = 'no' 
 
 elif location == 'quest':
@@ -97,7 +97,7 @@ elif location == 'quest':
 # General parameter estimation and solver code (used by modules 1, 2, 3)
 # =============================================================================    
 #Define pO2 conditions
-O2_range = [7.6, 138]
+O2_range = [6.6, 138]
 
 def solveAll(p, exp_data, t_type, model, output):
     
@@ -186,7 +186,7 @@ def solveAll(p, exp_data, t_type, model, output):
                         t_hox2]
             t_hox2, SS_hox_1a2 = solveSingle(args_1a2)
             
-            norm = np.mean(SS_hox_1a2[7.6]['DSRE2P'])
+            norm = np.mean(SS_hox_1a2[6.6]['DSRE2P'])
             
         else:
             
@@ -207,7 +207,7 @@ def solveAll(p, exp_data, t_type, model, output):
                        t_hox]
             t_hox, SS_hox_4c = solveSingle(args_4c)
             
-            norm = np.mean(SS_hox_1a[7.6]['DSRE2P'][:5])
+            norm = np.mean(SS_hox_1a[6.6]['DSRE2P'][:5])
 
         return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
     
@@ -226,9 +226,9 @@ def solveAll(p, exp_data, t_type, model, output):
             return t_hox, SS_hox_1a, SS_hox_4b, SS_hox_4c, norm
         
         else:
-            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRE2P'][:26], SS_hox_1a[138]['DSRE2P'][0])
-            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
-            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
+            DSRed2P_1a = np.append(SS_hox_1a[6.6]['DSRE2P'][:26], SS_hox_1a[138]['DSRE2P'][0])
+            DSRed2P_4b = np.append(SS_hox_4b[6.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
+            DSRed2P_4c = np.append(SS_hox_4c[6.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
             
             norm_1a = DSRed2P_1a/norm
             norm_4b = DSRed2P_4b/norm
@@ -239,14 +239,14 @@ def solveAll(p, exp_data, t_type, model, output):
         
     else:
         if data == 'hypox only':
-            DSRed2P_1a = np.append(SS_hox_1a[7.6]['DSRE2P'][:5], SS_hox_1a[138]['DSRE2P'][0])
-            DSRed2P_4b = np.append(SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
-            DSRed2P_4c = np.append(SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
+            DSRed2P_1a = np.append(SS_hox_1a[6.6]['DSRE2P'][:5], SS_hox_1a[138]['DSRE2P'][0])
+            DSRed2P_4b = np.append(SS_hox_4b[6.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][0])
+            DSRed2P_4c = np.append(SS_hox_4c[6.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][0])
 
         elif data == 'all':
-            DSRed2P_1a = np.concatenate((SS_hox_1a[7.6]['DSRE2P'][:5], SS_hox_1a[138]['DSRE2P'][:3]))
-            DSRed2P_4b = np.concatenate((SS_hox_4b[7.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][:3]))
-            DSRed2P_4c = np.concatenate((SS_hox_4c[7.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][:3]))     
+            DSRed2P_1a = np.concatenate((SS_hox_1a[6.6]['DSRE2P'][:5], SS_hox_1a[138]['DSRE2P'][:3]))
+            DSRed2P_4b = np.concatenate((SS_hox_4b[6.6]['DSRE2P'], SS_hox_4b[138]['DSRE2P'][:3]))
+            DSRed2P_4c = np.concatenate((SS_hox_4c[6.6]['DSRE2P'], SS_hox_4c[138]['DSRE2P'][:3]))     
     
         norm_1a = DSRed2P_1a/norm
         norm_4b = DSRed2P_4b/norm
@@ -550,7 +550,7 @@ def plotTrainingDataFits(df):
     ax2 = plt.subplot(132)
     ax3 = plt.subplot(133)
         
-    colors = [sky_blue, 'gray']
+    colors = ['black', 'gray']
     ax1.errorbar(t_1a, exp_1a[:-1], color = colors[0], marker = marker_, yerr = err_1a[:-1], 
                  fillstyle = 'none', linestyle = 'none',capsize = 2, label = '1% O2 training data')
     ax1.errorbar(t_1a[0], exp_1a[-1], color = colors[1], marker = marker_, yerr = err_1a[-1], 
@@ -1700,14 +1700,14 @@ def plotPLConsequences(df, param_label):
         num_states = HBS_info['HBS_1a']['# states']
         state_names = HBS_info['HBS_1a']['state names']
         for i in range(0, num_states):
-            axs[i].plot(t_hox, SS_hox_1a[7.6][state_names[i]], label = '1% O2')
+            axs[i].plot(t_hox, SS_hox_1a[6.6][state_names[i]], label = '1% O2')
             axs[i].plot(t_hox, SS_hox_1a[138][state_names[i]], color = 'black',
                         label = '21% O2')
             axs[i].set_xlabel('Time (hours)', fontsize = 8)
             axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
             axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
             
-            max1 = max(SS_hox_1a[7.6][state_names[i]])
+            max1 = max(SS_hox_1a[6.6][state_names[i]])
             axs[i].set_ylim(top = max1 + .1 * max1 )
             
         plt.savefig('INTERNAL_STATES_1a_ALONG_' + param_label + '.svg', dpi = 600)
@@ -1720,14 +1720,14 @@ def plotPLConsequences(df, param_label):
         num_states = HBS_info['HBS_4b']['# states']
         state_names = HBS_info['HBS_4b']['state names']
         for i in range(0, num_states):
-            axs[i].plot(t_hox, SS_hox_4b[7.6][state_names[i]], label = '1% O2')
+            axs[i].plot(t_hox, SS_hox_4b[6.6][state_names[i]], label = '1% O2')
             axs[i].plot(t_hox, SS_hox_4b[138][state_names[i]], color = 'black', 
                         label = '21% O2')
             axs[i].set_xlabel('Time (hours)', fontsize = 8)
             axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
             axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
             
-            max1 = max(SS_hox_4b[7.6][state_names[i]])
+            max1 = max(SS_hox_4b[6.6][state_names[i]])
             axs[i].set_ylim(top = max1 + .1 * max1 )
             
         plt.savefig('INTERNAL_STATES_4b_ALONG_' + param_label + '.svg', dpi = 600)
@@ -1740,14 +1740,14 @@ def plotPLConsequences(df, param_label):
         num_states = HBS_info['HBS_4c']['# states']
         state_names = HBS_info['HBS_4c']['state names']
         for i in range(0, num_states):
-            axs[i].plot(t_hox, SS_hox_4c[7.6][state_names[i]], label = '1% O2')
+            axs[i].plot(t_hox, SS_hox_4c[6.6][state_names[i]], label = '1% O2')
             axs[i].plot(t_hox, SS_hox_4c[138][state_names[i]], color = 'black', 
                         label = '21% O2')
             axs[i].set_xlabel('Time (hours)', fontsize = 8)
             axs[i].set_ylabel('Simulation value (a.u.)', fontsize = 8)
             axs[i].set_title(state_names[i], fontweight = 'bold', fontsize = 10)
             
-            max1 = max(SS_hox_4c[7.6][state_names[i]])
+            max1 = max(SS_hox_4c[6.6][state_names[i]])
             axs[i].set_ylim(top = max1 + .1 * max1 )
             
         plt.savefig('INTERNAL_STATES_4c_ALONG_' + param_label + '.svg', dpi = 600)

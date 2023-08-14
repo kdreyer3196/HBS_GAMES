@@ -592,7 +592,7 @@ def solveSingle(args):
         #Plot timecourse
         linestyle = 'dotted'
         sky_blue = [i/255 for i in [86, 180, 233]]
-        colors = [sky_blue, 'gray']
+        colors = ['black', 'gray']
             
         if num_states == 9:
             fig, axs = plt.subplots(nrows=3, ncols=3, sharex=False, sharey=False, figsize = (6.5, 6.75))
@@ -611,7 +611,7 @@ def solveSingle(args):
             
         axs = axs.ravel()
         for i in range(0, num_states):
-            axs[i].plot(t_hox, SS_hox[7.6][state_names[i]], color = colors[0], 
+            axs[i].plot(t_hox, SS_hox[6.6][state_names[i]], color = colors[0], 
                         linestyle = linestyle)
             axs[i].plot(t_hox[0], SS_hox[138][state_names[i]][0], color = colors[1], 
                         linestyle = linestyle)
@@ -626,7 +626,7 @@ def solveSingle(args):
 
             axs[i].set_ylim(bottom = 0)
             
-            max1 = max(SS_hox[7.6][state_names[i]])
+            max1 = max(SS_hox[6.6][state_names[i]])
             
             # if max1 < 0.5 and max1 >= 0.1:
             #     axs[i].set_ylim(top = max1 + .01 * max1 )

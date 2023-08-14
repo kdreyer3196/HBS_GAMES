@@ -75,7 +75,7 @@ if location == 'desktop':
     parallelization = 'no' 
     
 elif location == 'laptop':
-    plt.style.use('/Users/kdreyer/Desktop/Github/HBS_GAMES/paper.mplstyle.py')
+    plt.style.use('/Users/kdreyer/Documents/Github/HBS_GAMES/paper.mplstyle.py')
     parallelization = 'no' 
 
 elif location == 'quest':
@@ -225,14 +225,14 @@ def plotParamDistributions(df):
     
     plt.subplots(1,1, figsize=(5.5,4), sharex = True)
     df = pd.melt(df, id_vars=['Rsq'], value_vars=param_labels)
-    ax = sns.boxplot(x='variable', y='value', data=df, color = sky_blue)
-    ax = sns.swarmplot(x='variable', y='value', data=df, color="gray")
+    ax = sns.boxplot(x='variable', y='value', data=df, color = 'gray')
+    ax = sns.swarmplot(x='variable', y='value', data=df, color="black")
     ax.set(xlabel='Parameter', ylabel='log(value)')
     
     # plt.show()
     plt.savefig('OPTIMIZED_PARAMETER_DISTRIBUTIONS.svg', dpi = 600)
 
 
-df = get_df('Opt_Results_chi2_10pct.xlsx')
+df = get_df('Opt_Results_chi2_10_pct.xlsx')
 # print(df['t_HAF'])
 plotParamDistributions(df)
